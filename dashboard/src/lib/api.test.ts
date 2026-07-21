@@ -89,8 +89,8 @@ describe('fetchHistory', () => {
 });
 
 describe('pctColor', () => {
-  it('returns green for positive', () => expect(pctColor(5)).toBe('text-green-400'));
-  it('returns red for negative', () => expect(pctColor(-3)).toBe('text-red-400'));
+  it('returns red for positive', () => expect(pctColor(5)).toBe('text-red-400'));
+  it('returns green for negative', () => expect(pctColor(-3)).toBe('text-green-400'));
   it('returns gray for zero', () => expect(pctColor(0)).toBe('text-gray-400'));
 });
 

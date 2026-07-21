@@ -44,7 +44,7 @@ export function cn(...classes: (string | undefined | null | false)[]) {
 }
 
 export function pctColor(p: number): string {
-  return p > 0 ? 'text-green-400' : p < 0 ? 'text-red-400' : 'text-gray-400';
+  return p > 0 ? 'text-red-400' : p < 0 ? 'text-green-400' : 'text-gray-400';
 }
 
 export function formatPct(p: number): string {

@@ -204,8 +204,8 @@ export default function Dashboard() {
         <h2 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">市场总览</h2>
         <GlassCard>
           <div className="flex flex-wrap gap-4 text-sm">
-            <span>涨 <span className="text-green-400 font-bold">{mv.advance}</span></span>
-            <span>跌 <span className="text-red-400 font-bold">{mv.decline}</span></span>
+            <span>涨 <span className="text-red-400 font-bold">{mv.advance}</span></span>
+            <span>跌 <span className="text-green-400 font-bold">{mv.decline}</span></span>
             <span>平 <span className="text-gray-400">{mv.flat}</span></span>
             <span>涨停 <span className="text-purple-400 font-bold">{data.indices.length > 0 ? '—' : '—'}</span></span>
             <span>合计 <span className="text-gray-300">{mv.total || mv.advance + mv.decline + (mv.flat || 0)}</span></span>
