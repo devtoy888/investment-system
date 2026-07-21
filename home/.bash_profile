@@ -1,1 +1,0 @@
-export PYTHONPATH="/opt/data/home/.venvs/firecrawl/lib/python3.13/site-packages:$PYTHONPATH"

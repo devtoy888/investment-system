@@ -1,3 +1,15 @@
+# === 只追踪投资系统相关文件 ===
+# 其余所有Hermes系统文件、缓存、依赖都排除
+
+# 要追踪的路径白名单模式
+# scripts/        ← 数据采集脚本
+# fund_system_data/ ← 数据仓库
+# dashboard/      ← 前端SPA (待创建)
+# schema.sql      ← D1表结构 (待创建)
+# README.md       ← 已创建
+# .gitignore      ← 本文件
+# .hermes/plans/  ← 开发计划存档
+
 # === Python ===
 __pycache__/
 *.py[cod]
@@ -7,11 +19,12 @@ build/
 *.egg
 .venv/
 venv/
-.env*
+*.so
 
 # === Node ===
 node_modules/
 .npm/
+.cache/
 .cache/
 
 # === IDE ===
@@ -19,24 +32,12 @@ node_modules/
 .idea/
 *.swp
 *.swo
+*~
 
-# === Hermes System ===
-state.db*
-sessions/
-logs/
-cron/output/
-pairing/
-memories/
-plugins/
-platforms/
-hooks/
-gateway/
-config/
-shared/
-sandboxes/
-spawn-trees/
-plans/
-kanban/
+# === Hermes System (全部排除) ===
+.config/
+.local/
+.ssh/
 .hermes_history
 .skills_prompt_snapshot.json
 models_dev_cache.json
@@ -44,34 +45,47 @@ channel_directory.json
 gateway_state.json
 gateway.lock
 gateway.pid
-weibo_cookies.json
-weibo_uid.txt
+state.db
+state.db-shm
+state.db-wal
+config.yaml
+_config.yaml.bak
 auth.json
 auth.lock
-_config.yaml
-_config.yaml.bak
-.find_session*.py
-_recovery_*
-
-# === Temp / Generated ===
-/tmp/
-*.bak
-*.tmp
-daily-card*.png
-gen_daily_card*.py
+feishu_seen_message_ids.json
+find_session*.py
 _r2_url.txt
 _fix*.py
 _patch*.py
 _revert*.py
 _verify*.py
 _gen_index.py
-_patch_lib*.py
 _*.py
 _*.js
+upload_r2.py
+r2_uploader.py
+test_*.py
+test_*.js
+
+# === Temp / Generated ===
+*.bak
+*.tmp
+daily-card*.png
+gen_daily_card*.py
+*.tar.gz
+
+# === Cron ===
+cron/
+
+# === Gateway ===
+gateway/
 
 # === OS ===
 .DS_Store
 Thumbs.db
+
+# === Hermes profiles ===
+profiles/
 
 # === Project deps ===
 akshare-deps/
@@ -79,18 +93,47 @@ mootdx-deps/
 pip-deps/
 lazy-packages/
 .feishu-deps/
+.cache/
+
+# === Media ===
 audio_cache/
 image_cache/
 
-# === Media ===
-*.mp4
-*.mp3
-*.wav
-
-# === Test files ===
-test_*.py
-test_*.js
-
-# === Vibe Research (external references) ===
+# === Vibe Research (external references, not part of the project) ===
 Vibe-Research/
 Vibe-Trading/
+Vibe-Research-analysis.md
+vibe-trading-data-source-analysis.md
+
+# === Hermes home ===
+home/
+weixin/
+whatsapp/
+kanban.db*
+kanban/
+sandboxes/
+spawn-trees/
+platforms/
+pairing/
+memories/
+plugins/
+hooks/
+sessions/
+logs/
+past es/
+workspace/
+docs/
+analysis/
+llm-wiki/
+skins/
+plan s/
+bin/
+skills/
+backups/
+cache/
+.paste*
+
+# === Temp ===
+tmp
+/tmp/
+/tmp/*

@@ -1,1 +1,0 @@
-/opt/data/scripts/send_morning_cards.py

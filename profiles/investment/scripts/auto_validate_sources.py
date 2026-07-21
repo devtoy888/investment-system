@@ -1,1 +1,0 @@
-/opt/data/scripts/auto_validate_sources.py
