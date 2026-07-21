@@ -91,6 +91,14 @@ def size_fmt(size_bytes):
     return f'{size_bytes:.1f}TB'
 
 
+def _should_ignored(path):
+    """Check if a path should be excluded from backup.
+    Large recoverable dirs (node_modules, venvs, git) and development code."""
+    ignored_dirs = {'node_modules', '__pycache__', '.venv', 'venv', '.git', '.npm', '.cache', 'lsp'}
+    parts = path.split(os.sep)
+    return any(part in ignored_dirs for part in parts)
+
+
 def create_backup_tar():
     """Build an in-memory tar.gz of all essential files."""
     beijing = ZoneInfo('Asia/Shanghai')
