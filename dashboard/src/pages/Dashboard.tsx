@@ -284,10 +284,13 @@ export default function Dashboard() {
                 ✕
               </button>
             </div>
-            {/* 弹窗内容 — 纯文本渲染 */}
+            {/* 弹窗内容 — 检测HTML/MD渲染 */}
             <div className="overflow-y-auto p-4 flex-1">
               {detailLoading ? (
                 <div className="text-gray-400 text-sm">加载中...</div>
+              ) : detail?.url.endsWith('.html') ? (
+                <div className="text-sm text-gray-300 leading-relaxed"
+                     dangerouslySetInnerHTML={{ __html: detailContent }} />
               ) : (
                 <pre className="text-xs text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">{detailContent}</pre>
               )}

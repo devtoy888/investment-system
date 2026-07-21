@@ -292,7 +292,7 @@ def collect_operations():
         except:
             pass
         ops.append({'date': date_str, 'file': fn, 'title': title, 'summary': summary,
-                     'detail_url': f'{R2_BASE}/operations/{fn}'})
+                     'detail_url': f'{R2_BASE}/operations/{fn.replace(".md",".html")}'})
     return ops
 
 

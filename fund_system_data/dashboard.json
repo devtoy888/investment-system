@@ -1,13 +1,13 @@
 {
   "date": "2026-07-22",
-  "time": "00:13",
-  "updated_at": "2026-07-22T00:13:30.970285+08:00",
+  "time": "00:25",
+  "updated_at": "2026-07-22T00:25:05.102989+08:00",
   "indices": [
     {
-      "code": "上证指数",
-      "name": "上证指数",
-      "price": 3864.37,
-      "change_pct": 1.79
+      "code": "沪深300",
+      "name": "沪深300",
+      "price": 4739.23,
+      "change_pct": 3.06
     },
     {
       "code": "科创50",
@@ -16,16 +16,16 @@
       "change_pct": 10.73
     },
     {
-      "code": "沪深300",
-      "name": "沪深300",
-      "price": 4739.23,
-      "change_pct": 3.06
-    },
-    {
       "code": "创业板指",
       "name": "创业板指",
       "price": 3685.97,
       "change_pct": 7.05
+    },
+    {
+      "code": "上证指数",
+      "name": "上证指数",
+      "price": 3864.37,
+      "change_pct": 1.79
     },
     {
       "code": "上证50",
@@ -386,14 +386,14 @@
       "file": "operation_2026-07-17.md",
       "title": "📋 操作记录 · 2026-07-17",
       "summary": "> 记录日期: 2026-07-17 | 成交净值: (待确认，以今日7月17日收盘净值为准) > 操作类型: **加仓** | 方向: 📈 买入 > 交易平台: **京东金融** | 申购费: 0 (C类免申购费)",
-      "detail_url": "https://hermes-main-media.devtoy.xyz/fund-system/operations/operation_2026-07-17.md"
+      "detail_url": "https://hermes-main-media.devtoy.xyz/fund-system/operations/operation_2026-07-17.html"
     },
     {
       "date": "2026-07-16",
       "file": "operation_2026-07-16.md",
       "title": "📋 操作记录 · 2026-07-16",
       "summary": "> 记录日期: 2026-07-16 | 成交净值: (待确认，以今日7月16日收盘净值为准) > 操作类型: **建仓** | 方向: 📈 买入 > 交易平台: **京东金融** | 申购费: 0 (C类免申购费)",
-      "detail_url": "https://hermes-main-media.devtoy.xyz/fund-system/operations/operation_2026-07-16.md"
+      "detail_url": "https://hermes-main-media.devtoy.xyz/fund-system/operations/operation_2026-07-16.html"
     }
   ]
 }
