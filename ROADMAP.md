@@ -149,11 +149,11 @@
 ### 线上部署
 
 ```
-Pages:       https://investment-system-dashboard.pages.dev
-API:         /api/dashboard /api/analysis /api/history (Pages Functions)
-数据管道:    generate_dashboard_json.py → R2 dashboard.json
-数据更新:    手动运行或cron每4h
-DevOps:      git push → Pages自动构建(~30s)
+访问:      https://investment-system-dashboard.pages.dev
+API:       /api/dashboard /api/analysis /api/history (Pages Functions)
+数据管道:  generate_dashboard_json.py → R2 dashboard.json
+数据更新:  手动运行或cron每4h
+测试:      21 Vitest单元测试 + 9线上集成测试
 ```
 | DB-2 | 持仓页 | v0.3.0 | 🔴 待开始 | 14基金盈亏表 + 偏离度仪表Gauge + 行业饼图 + 建仓进度 |
 | DB-3 | 板块分析 | v0.3.0 | 🔴 待开始 | 行业涨跌排名 + 资金流柱状图 + 板块轮动热力图 |
