@@ -1,0 +1,1 @@
+{"pid": 171, "kind": "hermes-gateway", "argv": ["/opt/hermes/.venv/bin/hermes", "gateway", "run", "--replace"], "start_time": 186950003, "scope": "qqbot-appid", "identity_hash": "02f244f8b79cc285", "metadata": {"platform": "qqbot"}, "updated_at": "2026-07-21T01:02:55.531527+00:00"}

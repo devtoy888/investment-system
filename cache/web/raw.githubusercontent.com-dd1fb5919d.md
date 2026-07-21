@@ -1,0 +1,857 @@
+\# xiaohongshu-mcp
+
+\[!\[All Contributors\](https://img.shields.io/badge/all\_contributors-22-orange.svg?style=flat-square)\](#contributors-)
+
+\[!\[Philanthropy\](https://img.shields.io/badge/Philanthropy-CNY%201810.00-brightgreen?style=flat-square)\](./DONATIONS.md)
+\[!\[Gratitude\](https://img.shields.io/badge/Gratitude-CNY%201524.64-blue?style=flat-square)\](./DONATIONS.md)
+\[!\[Docker Pulls\](https://img.shields.io/docker/pulls/xpzouying/xiaohongshu-mcp?style=flat-square&logo=docker)\](https://hub.docker.com/r/xpzouying/xiaohongshu-mcp)
+
+MCP for RedNote (Xiaohongshu) platform.
+
+\- My blog article: \[haha.ai/xiaohongshu-mcp\](https://www.haha.ai/xiaohongshu-mcp)
+
+\> \*\*📌 Please read before submitting a PR: \[Contributing Guide\](./CONTRIBUTING.md)\*\*
+
+\*\*If you encounter any issues, be sure to check \[Common Issues and Solutions\](https://github.com/xpzouying/xiaohongshu-mcp/issues/56) first.\*\*
+
+After checking the \*\*Common Issues\*\* list, if you still can't resolve your deployment problems, we strongly recommend using another tool I've created: \[xpzouying/x-mcp\](https://github.com/xpzouying/x-mcp). This tool doesn't require deployment - you only need a browser extension to drive your MCP, making it more user-friendly for non-technical users.
+
+\## Star History
+
+\[!\[Star History Chart\](https://api.star-history.com/svg?repos=xpzouying/xiaohongshu-mcp&type=Timeline)\](https://www.star-history.com/#xpzouying/xiaohongshu-mcp&Timeline)
+
+\## Appreciation and Support
+
+All donations received for this project will be used for charitable giving. For all charitable donation records, please refer to \[DONATIONS.md\](./DONATIONS.md).
+
+\*\*When donating, please note "MCP" and your name.\*\*
+If you need to correct/withdraw your name attribution, please open an Issue or contact via email.
+
+\*\*Alipay (QR code not displayed):\*\*
+
+Donate via Alipay to \*\*xpzouying@gmail.com\*\*.
+
+\*\*WeChat:\*\*
+
+![WeChat Pay QR](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/donate/wechat@2x.png)
+
+\## Project Overview
+
+\*\*Main Features\*\*
+
+\> 💡 \*\*Tip:\*\* Click on the feature titles below to expand and view video demonstrations
+
+**1\. Login and Check Login Status**
+
+The first step is required - RedNote needs to be logged in. You can check current login status.
+
+\*\*Login Demo:\*\*
+
+https://github.com/user-attachments/assets/8b05eb42-d437-41b7-9235-e2143f19e8b7
+
+\*\*Check Login Status Demo:\*\*
+
+https://github.com/user-attachments/assets/bd9a9a4a-58cb-4421-b8f3-015f703ce1f9
+
+**2\. Publish Image and Text Content**
+
+Supports publishing image and text content to RedNote, including title, content description, and images.
+
+\*\*Image Support Methods:\*\*
+
+Supports two image input methods:
+
+1\. \*\*HTTP/HTTPS Image Links\*\*
+
+ \`\`\`
+ \["https://example.com/image1.jpg", "https://example.com/image2.png"\]
+ \`\`\`
+
+2\. \*\*Local Image Absolute Paths\*\* (Recommended)
+ \`\`\`
+ \["/Users/username/Pictures/image1.jpg", "/home/user/images/image2.png"\]
+ \`\`\`
+
+\*\*Why Local Paths are Recommended:\*\*
+
+\- ✅ Better stability, not dependent on network
+\- ✅ Faster upload speed
+\- ✅ Avoid image link expiration issues
+\- ✅ Support more image formats
+
+\*\*Publish Image-Text Post Demo:\*\*
+
+https://github.com/user-attachments/assets/8aee0814-eb96-40af-b871-e66e6bbb6b06
+
+**3\. Publish Video Content**
+
+Supports publishing video content to RedNote, including title, content description, and local video files.
+
+\*\*Video Support Methods:\*\*
+
+Only supports local video file absolute paths:
+
+\`\`\`
+"/Users/username/Videos/video.mp4"
+\`\`\`
+
+\*\*Features:\*\*
+
+\- ✅ Supports local video file upload
+\- ✅ Automatic video format processing
+\- ✅ Supports title, content description, and tags
+\- ✅ Automatically publishes after video processing is complete
+
+\*\*Important Notes:\*\*
+
+\- Only supports local video files, not HTTP links
+\- Video processing takes longer, please be patient
+\- Recommended video file size should not exceed 1GB
+
+**4\. Search Content**
+
+Search RedNote content by keywords.
+
+\*\*Search Posts Demo:\*\*
+
+https://github.com/user-attachments/assets/03c5077d-6160-4b18-b629-2e40933a1fd3
+
+**5\. Get Recommendation List**
+
+Get RedNote homepage recommendation content list.
+
+\*\*Get Recommendation List Demo:\*\*
+
+https://github.com/user-attachments/assets/110fc15d-46f2-4cca-bdad-9de5b5b8cc28
+
+**6\. Get Post Details (Including Interaction Data and Comments)**
+
+Get complete details of RedNote posts, including:
+
+\- Post content (title, description, images, etc.)
+\- User information
+\- Interaction data (likes, favorites, shares, comment count)
+\- Comment list and sub-comments
+
+\*\*⚠️ Important Note:\*\*
+
+\- Both post ID and xsec\_token are required (both parameters are essential)
+\- These two parameters can be obtained from Feed list or search results
+\- Must login first to use this feature
+
+\*\*Get Post Details Demo:\*\*
+
+https://github.com/user-attachments/assets/76a26130-a216-4371-a6b3-937b8fda092a
+
+**7\. Post Comments to Posts**
+
+Supports automatically posting comments to RedNote posts.
+
+\*\*Feature Description:\*\*
+
+\- Automatically locate comment input box
+\- Input comment content and publish
+\- Supports HTTP API and MCP tool calls
+
+\*\*⚠️ Important Note:\*\*
+
+\- Must login first to use this feature
+\- Need to provide post ID, xsec\_token, and comment content
+\- These parameters can be obtained from Feed list or search results
+
+\*\*Post Comment Demo:\*\*
+
+https://github.com/user-attachments/assets/cc385b6c-422c-489b-a5fc-63e92c695b80
+
+**8\. Get User Profile**
+
+Get RedNote user's personal profile information, including basic user information and note content.
+
+\*\*Feature Description:\*\*
+
+\- Get user basic information (nickname, bio, avatar, etc.)
+\- Get follower count, following count, likes count statistics
+\- Get user's published note content list
+\- Supports HTTP API and MCP tool calls
+
+\*\*⚠️ Important Note:\*\*
+
+\- Must login first to use this feature
+\- Need to provide user ID and xsec\_token
+\- These parameters can be obtained from Feed list or search results
+
+\*\*Returned Information Includes:\*\*
+
+\- User basic info: nickname, bio, avatar, verification status
+\- Statistics: following count, follower count, likes count, note count
+\- Note list: all public notes published by the user
+
+**9\. Reply to Comments**
+
+Reply to a specific comment under a note, supporting precise replies to specific users' comments.
+
+\*\*Feature Description:\*\*
+
+\- Reply to a specific comment under a note
+\- Support locating target comment by comment ID or user ID
+\- Requires feed\_id, xsec\_token, comment\_id/user\_id, and reply content
+
+\*\*⚠️ Important Note:\*\*
+
+\- Must login first to use this feature
+\- At least one of comment\_id or user\_id must be provided
+\- These parameters can be obtained from the comment list in post details
+
+**10\. Like / Unlike**
+
+Like or unlike a note, with smart detection of current status to avoid duplicate operations.
+
+\*\*Feature Description:\*\*
+
+\- Like or unlike a specified note
+\- Smart detection: skips liking if already liked, skips unliking if not liked
+\- Requires feed\_id and xsec\_token
+
+\*\*⚠️ Important Note:\*\*
+
+\- Must login first to use this feature
+\- Default action is like, set unlike=true to unlike
+
+**11\. Favorite / Unfavorite**
+
+Favorite a note or unfavorite it, with smart detection of current status to avoid duplicate operations.
+
+\*\*Feature Description:\*\*
+
+\- Favorite or unfavorite a specified note
+\- Smart detection: skips favoriting if already favorited, skips unfavoriting if not favorited
+\- Requires feed\_id and xsec\_token
+
+\*\*⚠️ Important Note:\*\*
+
+\- Must login first to use this feature
+\- Default action is favorite, set unfavorite=true to unfavorite
+
+\*\*RedNote Basic Operation Knowledge\*\*
+
+\- \*\*Title: (Very Important) RedNote requires titles to not exceed 20 characters\*\*
+\- \*\*Content: (Very Important) Content cannot exceed 1000 characters\*\*
+\- Currently supports both image-text and video posting: From a recommendation perspective, image-text posts get better traffic than video or pure text.
+\- (Low priority) Pure text support can be considered. 1. I personally feel pure text would greatly increase operation complexity; 2. Pure text has low value in my use scenarios.
+\- Tags: Now supported. Adding appropriate tags can bring more traffic.
+\- According to my practical experience, RedNote should allow \*\*50 posts\*\* per day.
+\- \*\*(Very Important) RedNote does not allow the same account to login on multiple web platforms\*\*. If you login to the current xiaohongshu-mcp, don't login to that account on other web platforms, otherwise it will "kick out" the current MCP account login. You can use the mobile app to check current account information.
+
+\*\*Risk Explanation\*\*
+
+1\. This project is open-sourced based on another project of mine. The original project has been running stably for over a year without any account bans, only occasional cookie expiration requiring re-login.
+2\. I used Claude Code CLI integration and verified stable automated operation for several weeks before open-sourcing.
+
+This project is for learning purposes only. All illegal activities are prohibited.
+
+\*\*Practical Results\*\*
+
+First day likes/favorites reached 999+,
+
+![CleanShot 2025-09-05 at 01 31 55@2x](https://github.com/user-attachments/assets/4b5a283b-bd38-45b8-b608-8f818997366c)![CleanShot 2025-09-05 at 01 32 49@2x](https://github.com/user-attachments/assets/4481e1e7-3ef6-4bbd-8483-dcee8f77a8f2)
+
+Results after about a week
+
+![CleanShot 2025-09-05 at 01 33 13@2x](https://github.com/user-attachments/assets/fb367944-dc48-4bbd-8ece-934caa86323e)
+
+\## 1\. Usage Tutorial
+
+\### 1.1. Quick Start (Recommended)
+
+\*\*Method 1: Download Pre-compiled Binaries\*\*
+
+Download pre-compiled binaries for your platform directly from \[GitHub Releases\](https://github.com/xpzouying/xiaohongshu-mcp/releases):
+
+\*\*Main Program (MCP Service):\*\*
+
+\- \*\*macOS Apple Silicon\*\*: \`xiaohongshu-mcp-darwin-arm64\`
+\- \*\*macOS Intel\*\*: \`xiaohongshu-mcp-darwin-amd64\`
+\- \*\*Windows x64\*\*: \`xiaohongshu-mcp-windows-amd64.exe\`
+\- \*\*Linux x64\*\*: \`xiaohongshu-mcp-linux-amd64\`
+
+\*\*Login Tool:\*\*
+
+\- \*\*macOS Apple Silicon\*\*: \`xiaohongshu-login-darwin-arm64\`
+\- \*\*macOS Intel\*\*: \`xiaohongshu-login-darwin-amd64\`
+\- \*\*Windows x64\*\*: \`xiaohongshu-login-windows-amd64.exe\`
+\- \*\*Linux x64\*\*: \`xiaohongshu-login-linux-amd64\`
+
+Usage Steps:
+
+\`\`\`bash
+\# 1\. First run the login tool
+chmod +x xiaohongshu-login-darwin-arm64
+./xiaohongshu-login-darwin-arm64
+
+\# 2\. Then start the MCP service
+chmod +x xiaohongshu-mcp-darwin-arm64
+./xiaohongshu-mcp-darwin-arm64
+\`\`\`
+
+\*\*⚠️ Important Note\*\*: The headless browser will be automatically downloaded on first run (about 150MB), please ensure a stable network connection. Subsequent runs will not require re-downloading.
+
+\*\*Method 2: Build from Source\*\*
+
+Build from Source Details
+
+Requires Golang environment. For installation instructions, please refer to \[Golang Official Documentation\](https://go.dev/doc/install).
+
+Set Go domestic proxy source:
+
+\`\`\`bash
+\# Configure GOPROXY environment variable, choose one of the following three
+
+\# 1\. Qiniu CDN
+go env -w GOPROXY=https://goproxy.cn,direct
+
+\# 2\. Alibaba Cloud
+go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
+
+\# 3\. Official
+go env -w GOPROXY=https://goproxy.io,direct
+\`\`\`
+
+\*\*Method 3: Using Docker Container (Simplest)\*\*
+
+Docker Deployment Details
+
+Using Docker deployment is the simplest method, requiring no development environment installation.
+
+\*\*1\. Pull Image from Docker Hub (Recommended)\*\*
+
+We provide pre-built Docker images that can be directly pulled from Docker Hub:
+
+\`\`\`bash
+\# Pull the latest image
+docker pull xpzouying/xiaohongshu-mcp
+\`\`\`
+
+Docker Hub URL: \[https://hub.docker.com/r/xpzouying/xiaohongshu-mcp\](https://hub.docker.com/r/xpzouying/xiaohongshu-mcp)
+
+\*\*2\. Start with Docker Compose (Recommended)\*\*
+
+We provide a pre-configured \`docker-compose.yml\` file that can be used directly:
+
+\`\`\`bash
+\# Download docker-compose.yml
+wget https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/docker/docker-compose.yml
+
+\# Or if you've already cloned the project, enter the docker directory
+cd docker
+
+\# Start service
+docker compose up -d
+
+\# View logs
+docker compose logs -f
+
+\# Stop service
+docker compose stop
+\`\`\`
+
+\*\*3\. Build Image Yourself (Optional)\*\*
+
+If you need to customize or modify the code, you can build the image yourself:
+
+\`\`\`bash
+\# Run in project root directory
+docker build -t xpzouying/xiaohongshu-mcp .
+\`\`\`
+
+\*\*4\. Configuration Notes\*\*
+
+The Docker version automatically:
+
+\- Configures CloakBrowser Chromium and Chinese fonts
+\- Mounts \`./data\` for storing cookies and runtime data directories
+\- Mounts \`./images\` for storing publish images
+\- Exposes port 18060 for MCP connection
+
+For detailed instructions, please refer to: \[Docker Deployment Guide\](./docker/README.md)
+
+For Windows issues, check here first: \[Windows Installation Guide\](./docs/windows\_guide.md)
+
+\### 1.2. Login
+
+First time requires manual login to save RedNote login status.
+
+\*\*Using Binary Files:\*\*
+
+\`\`\`bash
+\# Run the login tool for your platform
+./xiaohongshu-login-darwin-arm64
+\`\`\`
+
+\*\*Using Source Code:\*\*
+
+\`\`\`bash
+go run cmd/login/main.go
+\`\`\`
+
+\### 1.3. Start MCP Service
+
+Start xiaohongshu-mcp service.
+
+\*\*Using Binary Files:\*\*
+
+\`\`\`bash
+\# Default: Headless mode, no browser interface
+./xiaohongshu-mcp-darwin-arm64
+
+\# Non-headless mode, with browser interface
+./xiaohongshu-mcp-darwin-arm64 -headless=false
+\`\`\`
+
+\*\*Using Source Code:\*\*
+
+\`\`\`bash
+\# Default: Headless mode, no browser interface
+go run .
+
+\# Non-headless mode, with browser interface
+go run . -headless=false
+\`\`\`
+
+\## 1.4. Verify MCP
+
+\`\`\`bash
+npx @modelcontextprotocol/inspector
+\`\`\`
+
+!\[Run Inspector\](./assets/run\_inspect.png)
+
+After running, open the red-marked link, configure MCP inspector, enter \`http://localhost:18060/mcp\`, and click the \`Connect\` button.
+
+![bf9532dd0b7ba423491accf511a467de](https://github.com/user-attachments/assets/08bc3cef-73e7-42d2-b923-7ba9e6c8af30)
+
+\*\*Note:\*\* Check if the options in the left sidebar are correct.
+
+After configuring MCP inspector as above, click the \`List Tools\` button to view all Tools.
+
+\## 1.5. Use MCP for Publishing
+
+\### Check Login Status
+
+!\[Check Login Status\](./assets/check\_login.gif)
+
+\### Publish Image-Text
+
+The example uses a random image from https://unsplash.com/ for testing.
+
+!\[Publish Image-Text\](./assets/inspect\_mcp\_publish.gif)
+
+\### Search Content
+
+Use search functionality to search RedNote content by keywords:
+
+!\[Search Content\](./assets/search\_result.png)
+
+\## 2\. MCP Client Integration
+
+This service supports the standard Model Context Protocol (MCP) and can integrate with various AI clients that support MCP.
+
+\### 2.1. Quick Start
+
+\#### Start MCP Service
+
+\`\`\`bash
+\# Start service (default headless mode)
+go run .
+
+\# Or with interface mode
+go run . -headless=false
+\`\`\`
+
+Service will run at: \`http://localhost:18060/mcp\`
+
+\#### Verify Service Status
+
+\`\`\`bash
+\# Test MCP connection
+curl -X POST http://localhost:18060/mcp \
+ -H "Content-Type: application/json" \
+ -d '{"jsonrpc":"2.0","method":"initialize","params":{},"id":1}'
+\`\`\`
+
+\#### Claude Code CLI Integration
+
+\`\`\`bash
+\# Add HTTP MCP server
+claude mcp add --transport http xiaohongshu-mcp http://localhost:18060/mcp
+
+\# Check if MCP was added successfully (ensure MCP is already started before running this command)
+claude mcp list
+\`\`\`
+
+\### 2.2. Supported Clients
+
+**Claude Code CLI**
+
+Official command line tool, already shown in the quick start section above:
+
+\`\`\`bash
+\# Add HTTP MCP server
+claude mcp add --transport http xiaohongshu-mcp http://localhost:18060/mcp
+
+\# Check if MCP was added successfully (ensure MCP is already started before running this command)
+claude mcp list
+\`\`\`
+
+**Cursor**
+
+\#### Configuration File Method
+
+Create or edit MCP configuration file:
+
+\*\*Project-level configuration\*\* (recommended):
+Create \`.cursor/mcp.json\` in project root directory:
+
+\`\`\`json
+{
+ "mcpServers": {
+ "xiaohongshu-mcp": {
+ "url": "http://localhost:18060/mcp",
+ "description": "RedNote content publishing service - MCP Streamable HTTP"
+ }
+ }
+}
+\`\`\`
+
+\*\*Global configuration\*\*:
+Create \`~/.cursor/mcp.json\` in user directory (same content).
+
+\#### Usage Steps
+
+1\. Ensure RedNote MCP service is running
+2\. Save configuration file and restart Cursor
+3\. In Cursor chat, tools should be automatically available
+4\. You can view connected MCP tools through "Available Tools" in the chat interface
+
+\*\*Demo\*\*
+
+Plugin MCP integration:
+
+!\[cursor\_mcp\_settings\](./assets/cursor\_mcp\_settings.png)
+
+Call MCP tools: (using check login status as example)
+
+!\[cursor\_mcp\_check\_login\](./assets/cursor\_mcp\_check\_login.png)
+
+**VSCode**
+
+\#### Method 1: Configure using Command Palette
+
+1\. Press \`Ctrl/Cmd + Shift + P\` to open command palette
+2\. Run \`MCP: Add Server\` command
+3\. Select \`HTTP\` method.
+4\. Enter address: \`http://localhost:18060/mcp\`, or modify to corresponding Server address.
+5\. Enter MCP name: \`xiaohongshu-mcp\`.
+
+\#### Method 2: Direct Configuration File Edit
+
+\*\*Workspace configuration\*\* (recommended):
+Create \`.vscode/mcp.json\` in project root directory:
+
+\`\`\`json
+{
+ "servers": {
+ "xiaohongshu-mcp": {
+ "url": "http://localhost:18060/mcp",
+ "type": "http"
+ }
+ },
+ "inputs": \[\]
+}
+\`\`\`
+
+\*\*View Configuration\*\*:
+
+!\[vscode\_config\](./assets/vscode\_mcp\_config.png)
+
+1\. Confirm running status.
+2\. Check if \`tools\` are correctly detected.
+
+\*\*Demo\*\*
+
+Using search post content as example:
+
+!\[vscode\_mcp\_search\](./assets/vscode\_search\_demo.png)
+
+**Google Gemini CLI**
+
+Configure in \`~/.gemini/settings.json\` or project directory \`.gemini/settings.json\`:
+
+\`\`\`json
+{
+ "mcpServers": {
+ "xiaohongshu": {
+ "httpUrl": "http://localhost:18060/mcp",
+ "timeout": 30000
+ }
+ }
+}
+\`\`\`
+
+For more information, please refer to \[Gemini CLI MCP Documentation\](https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html)
+
+**MCP Inspector**
+
+Debug tool for testing MCP connections:
+
+\`\`\`bash
+\# Start MCP Inspector
+npx @modelcontextprotocol/inspector
+
+\# Connect in browser to: http://localhost:18060/mcp
+\`\`\`
+
+Usage steps:
+
+\- Use MCP Inspector to test connection
+\- Test Ping Server functionality to verify connection
+\- Check if List Tools returns 13 tools
+
+**Cline**
+
+Cline is a powerful AI programming assistant that supports MCP protocol integration.
+
+\#### Configuration Method
+
+Add the following configuration to Cline's MCP settings:
+
+\`\`\`json
+{
+ "xiaohongshu-mcp": {
+ "url": "http://localhost:18060/mcp",
+ "type": "streamableHttp",
+ "autoApprove": \[\],
+ "disabled": false
+ }
+}
+\`\`\`
+
+\#### Usage Steps
+
+1\. Ensure RedNote MCP service is running (\`http://localhost:18060/mcp\`)
+2\. Open MCP settings in Cline
+3\. Add the above configuration to the MCP server list
+4\. Save configuration and restart Cline
+5\. You can directly use RedNote-related features in conversations
+
+\#### Configuration Explanation
+
+\- \`url\`: MCP service address
+\- \`type\`: Use \`streamableHttp\` type for better performance
+\- \`autoApprove\`: Configurable auto-approve tool list (empty means manual approval)
+\- \`disabled\`: Set to \`false\` to enable this MCP service
+
+\#### Usage Examples
+
+After configuration, you can use natural language to operate RedNote directly in Cline:
+
+\`\`\`
+Help me check RedNote login status
+\`\`\`
+
+\`\`\`
+Help me publish a spring-themed image-text post to RedNote, using this image: /path/to/spring.jpg
+\`\`\`
+
+\`\`\`
+Search for content about "food" on RedNote
+\`\`\`
+
+**Other HTTP MCP Supporting Clients**
+
+Any client supporting HTTP MCP protocol can connect to: \`http://localhost:18060/mcp\`
+
+Basic configuration template:
+
+\`\`\`json
+{
+ "name": "xiaohongshu-mcp",
+ "url": "http://localhost:18060/mcp",
+ "type": "http"
+}
+\`\`\`
+
+\### 2.3. Available MCP Tools
+
+After successful connection, you can use the following MCP tools:
+
+\- \`check\_login\_status\` - Check RedNote login status (no parameters)
+\- \`get\_login\_qrcode\` - Get login QR code, returns Base64 image and timeout (no parameters)
+\- \`delete\_cookies\` - Delete cookies file, reset login status, requires re-login after deletion (no parameters)
+\- \`publish\_content\` - Publish image-text content to RedNote (required: title, content, images)
+ \- \`images\`: Image path list (minimum 1), supports HTTP links or local absolute paths, local paths recommended
+ \- \`tags\`: Topic tags list (optional), e.g. \`\["food", "travel", "lifestyle"\]\`
+ \- \`schedule\_at\`: Scheduled publish time (optional), ISO8601 format, supports 1 hour to 14 days ahead
+ \- \`is\_original\`: Declare as original content (optional), default is not declared
+ \- \`visibility\`: Visibility scope (optional), supports \`public\` (default), \`self-only\`, \`friends-only\`
+\- \`publish\_with\_video\` - Publish video content to RedNote (required: title, content, video)
+ \- \`video\`: Local video file absolute path (single file only)
+ \- \`tags\`: Topic tags list (optional), e.g. \`\["food", "travel", "lifestyle"\]\`
+ \- \`schedule\_at\`: Scheduled publish time (optional), ISO8601 format, supports 1 hour to 14 days ahead
+ \- \`visibility\`: Visibility scope (optional), supports \`public\` (default), \`self-only\`, \`friends-only\`
+\- \`list\_feeds\` - Get RedNote homepage recommendation list (no parameters)
+\- \`search\_feeds\` - Search RedNote content (required: keyword)
+ \- \`filters\`: Filter options (optional)
+ \- \`sort\_by\`: Sort by - \`comprehensive\` (default) \| \`latest\` \| \`most liked\` \| \`most comments\` \| \`most saved\`
+ \- \`note\_type\`: Note type - \`unlimited\` (default) \| \`video\` \| \`image-text\`
+ \- \`publish\_time\`: Publish time - \`unlimited\` (default) \| \`last day\` \| \`last week\` \| \`last 6 months\`
+ \- \`search\_scope\`: Search scope - \`unlimited\` (default) \| \`viewed\` \| \`not viewed\` \| \`followed\`
+ \- \`location\`: Location - \`unlimited\` (default) \| \`same city\` \| \`nearby\`
+\- \`get\_feed\_detail\` - Get post details including interaction data and comments (required: feed\_id, xsec\_token)
+ \- \`load\_all\_comments\`: Whether to load all comments (optional), default false returns only first 10 top-level comments
+ \- \`limit\`: Limit number of top-level comments to load (optional), only effective when load\_all\_comments=true, default 20
+ \- \`click\_more\_replies\`: Whether to expand nested replies (optional), only effective when load\_all\_comments=true, default false
+ \- \`reply\_limit\`: Skip comments with too many replies (optional), only effective when click\_more\_replies=true, default 10
+ \- \`scroll\_speed\`: Scroll speed (optional), \`slow\` \| \`normal\` \| \`fast\`, only effective when load\_all\_comments=true
+\- \`post\_comment\_to\_feed\` - Post comments to RedNote posts (required: feed\_id, xsec\_token, content)
+\- \`reply\_comment\_in\_feed\` - Reply to a specific comment under a note (required: feed\_id, xsec\_token, content, and at least one of comment\_id or user\_id)
+\- \`like\_feed\` - Like / unlike a note (required: feed\_id, xsec\_token)
+ \- \`unlike\`: Whether to unlike (optional), true to unlike, default is like
+\- \`favorite\_feed\` - Favorite / unfavorite a note (required: feed\_id, xsec\_token)
+ \- \`unfavorite\`: Whether to unfavorite (optional), true to unfavorite, default is favorite
+\- \`user\_profile\` - Get user profile information (required: user\_id, xsec\_token)
+
+\### 2.4. Usage Examples
+
+Using Claude Code to publish content to RedNote:
+
+\*\*Example 1: Using HTTP Image Links\*\*
+
+\`\`\`
+Help me write a post to publish on RedNote,
+with image: https://cn.bing.com/th?id=OHR.MaoriRock\_EN-US6499689741\_UHD.jpg&w=3840
+The image is: "Maori rock carving at Ngātoroirangi Mine Bay, Lake Taupo, New Zealand (© Joppi/Getty Images)"
+
+Use xiaohongshu-mcp for publishing.
+\`\`\`
+
+\*\*Example 2: Using Local Image Paths (Recommended)\*\*
+
+\`\`\`
+Help me write a post about spring to publish on RedNote,
+using these local images:
+\- /Users/username/Pictures/spring\_flowers.jpg
+\- /Users/username/Pictures/cherry\_blossom.jpg
+
+Use xiaohongshu-mcp for publishing.
+\`\`\`
+
+\*\*Example 3: Publishing Video Content\*\*
+
+\`\`\`
+Help me write a video post about cooking tutorials to publish on RedNote,
+using this local video file:
+\- /Users/username/Videos/cooking\_tutorial.mp4
+
+Use xiaohongshu-mcp's video publishing feature.
+\`\`\`
+
+!\[claude-cli publishing\](./assets/claude\_push.gif)
+
+\*\*Publishing Result:\*\*
+
+![xiaohongshu-mcp publishing result](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/assets/publish_result.jpeg)
+
+\### 2.5. MCP FAQ
+
+\-\-\-
+
+\*\*Q:\*\* Why does the check login username display \`xiaghgngshu-mcp\`?
+\*\*A:\*\* The username is hardcoded.
+
+\-\-\-
+
+\*\*Q:\*\* It shows publish success but the post doesn't actually appear?
+\*\*A:\*\* Troubleshooting steps:
+
+1\. Re-publish using \*\*non-headless mode\*\*.
+2\. Try publishing with \*\*different content\*\*.
+3\. Login to RedNote web version and check if the account has been \*\*restricted from web publishing due to risk control\*\*.
+4\. Check if the \*\*image size\*\* is too large.
+5\. Make sure there are \*\*no Chinese characters in the image path\*\*.
+6\. If using network image URLs, confirm the \*\*image links are accessible\*\*.
+
+\-\-\-
+
+\*\*Q:\*\* The MCP program crashes on my device, how to resolve?
+\*\*A:\*\*
+
+1\. It is recommended to \*\*build from source\*\*.
+2\. Or use \*\*Docker to install xiaohongshu-mcp\*\*, refer to:
+ \- \[Install xiaohongshu-mcp with Docker\](https://github.com/xpzouying/xiaohongshu-mcp#:~:text=%E6%96%B9%E5%BC%8F%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8%20Docker%20%E5%AE%B9%E5%99%A8%EF%BC%88%E6%9C%80%E7%AE%80%E5%8D%95%EF%BC%89)
+ \- \[X-MCP Project Page\](https://github.com/xpzouying/x-mcp/)
+
+\-\-\-
+
+\*\*Q:\*\* When verifying MCP with \`http://localhost:18060/mcp\`, it shows connection error?
+\*\*A:\*\*
+
+\- In a \*\*Docker environment\*\*, please use
+ \[http://host.docker.internal:18060/mcp\](http://host.docker.internal:18060/mcp)
+\- In a \*\*non-Docker environment\*\*, please use your \*\*local IPv4 address\*\* to access.
+
+\-\-\-
+
+\## 3\. 🌟 Community Showcases
+
+\> 💡 \*\*Highly Recommended\*\*: These are real-world use cases from community contributors, featuring detailed configuration steps and practical experiences!
+
+\### 📚 Complete Tutorial List
+
+1\. \*\*\[n8n Complete Integration Tutorial\](./examples/n8n/README.md)\*\* - Workflow automation platform integration
+2\. \*\*\[Cherry Studio Complete Configuration Tutorial\](./examples/cherrystudio/README.md)\*\* - Perfect AI client integration
+3\. \*\*\[Claude Code + Kimi K2 Integration Tutorial\](./examples/claude-code/claude-code-kimi-k2.md)\*\* - If Claude Code's barrier is too high, then integrate with Kimi domestic LLM!
+4\. \*\*\[AnythingLLM Complete Guide\](./examples/anythingLLM/readme.md)\*\* - AnythingLLM is an all-in-one multimodal AI client that supports workflow definition, multiple LLMs, and plugin extensions.
+
+\> 🎯 \*\*Tip\*\*: Click the links above to view detailed step-by-step tutorials for quick setup of various integration solutions!
+>
+\> 📢 \*\*Contributions Welcome\*\*: If you have new integration cases, feel free to submit a PR to share with the community!
+
+\## 4\. RedNote MCP Community Group
+
+\*\*Important: Before asking questions in the group, please make sure to read the README documentation thoroughly and check Issues first.\*\*
+
+\### WeChat Group
+
+\| WeChat Group 17 \| WeChat Group 18 \|
+\| :------------------------------------------------------------------------------------------------: \| :------------------------------------------------------------------------------------------------: \|
+\| ![WechatIMG119](https://github.com/user-attachments/assets/2317229c-311e-4339-b659-2a2467aa8c17) \| ![WechatIMG119](https://github.com/user-attachments/assets/78f8c7a2-98ab-477b-bbb2-7b08551ffc99) \|
+
+\### Feishu (Lark) Groups
+
+\| Feishu Group 1 \| Feishu Group 2 \| Feishu Group 3 \| Feishu Group 4 \|
+\| :-----------------------------------------------------------------------------------------------------------------------: \| :-----------------------------------------------------------------------------------------------------------------------: \| :-----------------------------------------------------------------------------------------------------------------------: \| :-----------------------------------------------------------------------------------------------------------------------: \|
+\| ![qr-feishu01](https://github.com/user-attachments/assets/65579771-3543-4661-9b48-def48eed609b) \| ![qr-feishu02](https://github.com/user-attachments/assets/4983ea42-ce5b-4e26-a8c0-33889093b579) \| ![qr-feishu03](https://github.com/user-attachments/assets/c77b45da-6028-4d3a-b421-ccc6c7210695) \| ![qr-feishu04](https://github.com/user-attachments/assets/c42f5595-71cd-4d9b-b7f8-0c333bd25e2b) \|
+
+\> \*\*Note:\*\*
+>
+\> 1\. WeChat group QR codes have a time limit. Sometimes I forget to update them — please wait for an update or submit an Issue to remind me.
+\> 2\. If a Feishu group is full, try scanning another group's QR code — there's always a spot somewhere.
+
+\## 🙏 Thanks to Contributors ✨
+
+Thanks to all friends who have contributed to this project! (In no particular order)
+
+|     |     |     |     |     |     |     |
+| --- | --- | --- | --- | --- | --- | --- |
+| [![zy](https://avatars.githubusercontent.com/u/3946563?v=4?s=100)\<br>\<br>**zy**](https://haha.ai/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=xpzouying "Code") [🤔](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/README_EN.md#ideas-xpzouying "Ideas, Planning, & Feedback") [📖](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=xpzouying "Documentation") [🎨](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/README_EN.md#design-xpzouying "Design") [🚧](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/README_EN.md#maintenance-xpzouying "Maintenance") [🚇](https://raw.githubusercontent.com/xpzouying/xiaohongshu-mcp/main/README_EN.md#infra-xpzouying "Infrastructure (Hosting, Build-Tools, etc)") [👀](https://github.com/xpzouying/xiaohongshu-mcp/pulls?q=is%3Apr+reviewed-by%3Axpzouying "Reviewed Pull Requests") | [![clearwater](https://avatars.githubusercontent.com/u/1271815?v=4?s=100)\<br>\<br>**clearwater**](http://www.hwbuluo.com/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=esperyong "Code") | [![Zhongpeng](https://avatars.githubusercontent.com/u/47939471?v=4?s=100)\<br>\<br>**Zhongpeng**](https://github.com/laryzhong)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=laryzhong "Code") | [![Duong Tran](https://avatars.githubusercontent.com/u/105262836?v=4?s=100)\<br>\<br>**Duong Tran**](https://github.com/DTDucas)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=DTDucas "Code") | [![Angiin](https://avatars.githubusercontent.com/u/17389304?v=4?s=100)\<br>\<br>**Angiin**](https://github.com/Angiin)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=Angiin "Code") | [![Henan Mu](https://avatars.githubusercontent.com/u/43441941?v=4?s=100)\<br>\<br>**Henan Mu**](https://github.com/muhenan)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=muhenan "Code") | [![Journey](https://avatars.githubusercontent.com/u/52627267?v=4?s=100)\<br>\<br>**Journey**](https://github.com/chengazhen)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=chengazhen "Code") |
+| [![Eve Yu](https://avatars.githubusercontent.com/u/69026872?v=4?s=100)\<br>\<br>**Eve Yu**](https://github.com/eveyuyi)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=eveyuyi "Code") | [![CooperGuo](https://avatars.githubusercontent.com/u/183056602?v=4?s=100)\<br>\<br>**CooperGuo**](https://github.com/CooperGuo)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=CooperGuo "Code") | [![Banghao Chi](https://avatars.githubusercontent.com/u/125724218?v=4?s=100)\<br>\<br>**Banghao Chi**](https://biboyqg.github.io/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=BiboyQG "Code") | [![varz1](https://avatars.githubusercontent.com/u/60377372?v=4?s=100)\<br>\<br>**varz1**](https://github.com/varz1)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=varz1 "Code") | [![Melo Y Guan](https://avatars.githubusercontent.com/u/62586556?v=4?s=100)\<br>\<br>**Melo Y Guan**](https://google.meloguan.site/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=Meloyg "Code") | [![lmxdawn](https://avatars.githubusercontent.com/u/21293193?v=4?s=100)\<br>\<br>**lmxdawn**](https://github.com/lmxdawn)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=lmxdawn "Code") | [![haikow](https://avatars.githubusercontent.com/u/22428382?v=4?s=100)\<br>\<br>**haikow**](https://github.com/haikow)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=haikow "Code") |
+| [![Carlo](https://avatars.githubusercontent.com/u/18513362?v=4?s=100)\<br>\<br>**Carlo**](https://carlo-blog.aiju.fun/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=a67793581 "Code") | [![hrz](https://avatars.githubusercontent.com/u/28583005?v=4?s=100)\<br>\<br>**hrz**](https://github.com/hrz394943230)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=hrz394943230 "Code") | [![Ctrlz](https://avatars.githubusercontent.com/u/143257420?v=4?s=100)\<br>\<br>**Ctrlz**](https://github.com/ctrlz526)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=ctrlz526 "Code") | [![flippancy](https://avatars.githubusercontent.com/u/6467703?v=4?s=100)\<br>\<br>**flippancy**](https://github.com/flippancy)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=flippancy "Code") | [![Yuhang Lu](https://avatars.githubusercontent.com/u/103165980?v=4?s=100)\<br>\<br>**Yuhang Lu**](https://github.com/Infinityay)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=Infinityay "Code") | [![Bryan Thompson](https://avatars.githubusercontent.com/u/199543909?v=4?s=100)\<br>\<br>**Bryan Thompson**](https://triepod.ai/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=triepod-ai "Code") | [![tan jun](https://avatars.githubusercontent.com/u/7806992?v=4?s=100)\<br>\<br>**tan jun**](http://www.megvii.com/)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=tanxxjun321 "Code") |
+| [![coldmountain](https://avatars.githubusercontent.com/u/95873096?v=4?s=100)\<br>\<br>**coldmountain**](https://github.com/coldmountein)<br>[💻](https://github.com/xpzouying/xiaohongshu-mcp/commits?author=coldmountein "Code") |
+
+\### ✨ Special Thanks
+
+|     |     |     |
+| --- | --- | --- |
+| [![wanpengxie](https://avatars.githubusercontent.com/wanpengxie)\<br>\<br>**@wanpengxie**](https://github.com/wanpengxie) | [![tanxxjun321](https://avatars.githubusercontent.com/u/7806992?v=4)\<br>\<br>**@tanxxjun321**](https://github.com/tanxxjun321) | [![Angiin](https://avatars.githubusercontent.com/u/17389304?v=4)\<br>\<br>**@Angiin**](https://github.com/Angiin) |
+
+This project follows the \[all-contributors\](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

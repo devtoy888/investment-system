@@ -1,0 +1,25 @@
+{
+  "rule_ids": [
+    "threat_osv_vulnerable"
+  ],
+  "severity": "HIGH",
+  "command_redacted": "cd /opt/data/dashboard && npm install echarts@^6.0.0 lucide-react@^0.460.0 react...",
+  "findings": [
+    {
+      "rule_id": "threat_osv_vulnerable",
+      "severity": "HIGH",
+      "title": "Package has live OSV advisory data: echarts@^6.0.0",
+      "description": "Package 'echarts' in npm version '^6.0.0' matched 1 OSV advisory record(s): GHSA-fgmj-fm8m-jvvx.",
+      "evidence": [
+        {
+          "type": "threat_intel",
+          "source": "OSV.dev",
+          "threat_type": "vulnerable_package",
+          "confidence": "confirmed",
+          "reference": "https://nvd.nist.gov/vuln/detail/CVE-2026-45249"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-07-21T14:41:16.391917829+00:00"
+}
