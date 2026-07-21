@@ -115,14 +115,14 @@ export default function Dashboard() {
         axisTick: { show: false },
         splitLine: { length: 8, lineStyle: { width: 2, color: '#4b5563' } },
         axisLabel: { color: '#9ca3af', fontSize: 9, distance: 15 },
-        pointer: { length: '60%', width: 4, itemStyle: { color: '#f43f5e' } },
+        pointer: { length: '50%', width: 3, itemStyle: { color: '#f43f5e' } },
         detail: {
           valueAnimation: true,
-          formatter: `{value}%`, color: '#f43f5e', fontSize: 18,
-          fontFamily: 'monospace', offsetCenter: [0, '60%'],
+          formatter: `{value}%`, color: '#f43f5e', fontSize: 14,
+          fontFamily: 'monospace', offsetCenter: [0, '65%'],
         },
-        data: [{ value: dev, name: '科技偏离度' }],
-        title: { offsetCenter: [0, '85%'], fontSize: 10, color: '#9ca3af' },
+        data: [{ value: dev, name: '' }],
+        title: { show: false },
       }],
     });
     return () => chart.dispose();
@@ -190,8 +190,11 @@ export default function Dashboard() {
           <GlassCard className="sm:col-span-2">
             <div ref={flowChartRef} style={{ height: 160 }} />
           </GlassCard>
-          <GlassCard>
-            <div ref={gaugeRef} style={{ height: 160 }} />
+          <GlassCard className="flex flex-col items-center">
+            <div ref={gaugeRef} style={{ height: 120, width: '100%' }} className="pointer-events-none" />
+            <p className="text-[10px] text-gray-500 text-center mt-1 px-2 leading-relaxed">
+              科技板块市值占比偏离基准配置的比例<br/>正值=超配 负值=低配
+            </p>
           </GlassCard>
         </div>
       </section>
@@ -217,8 +220,9 @@ export default function Dashboard() {
           <h3 className="text-xs font-semibold text-gray-400 mb-2">最新分析</h3>
           <div className="space-y-2">
             {data.latest_analysis?.map((a, i) => (
-              <div key={i}
-                   className="text-xs border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
+              <button key={i}
+                   type="button"
+                   className="w-full text-left text-xs border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
                    onClick={() => openDetail({
                      title: `${typeLabel[a.type] || a.type} · ${a.date}`,
                      url: a.detail_url, date: a.date
@@ -230,7 +234,7 @@ export default function Dashboard() {
                 {a.summary && (
                   <p className="text-gray-400 mt-1 leading-relaxed">{a.summary}</p>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </GlassCard>
@@ -240,8 +244,9 @@ export default function Dashboard() {
           <h3 className="text-xs font-semibold text-gray-400 mb-2">最近操作</h3>
           <div className="space-y-2">
             {data.operations?.map((op, i) => (
-              <div key={i}
-                   className="text-sm border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
+              <button key={i}
+                   type="button"
+                   className="w-full text-left text-sm border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
                    onClick={() => openDetail({
                      title: op.title || `操作 ${op.date}`,
                      url: op.detail_url, date: op.date
@@ -255,7 +260,7 @@ export default function Dashboard() {
                 {op.summary && (
                   <p className="text-xs text-gray-400 mt-1 line-clamp-2">{op.summary}</p>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </GlassCard>
