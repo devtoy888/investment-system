@@ -2,7 +2,7 @@ import type { NavHistory, AnalysisReport, DashboardData } from '../types';
 
 const DASHBOARD_URL = '/api/dashboard';
 const HISTORY_URL = '/api/history';
-const ANALYSIS_URL = '/api/analysis/latest';
+const ANALYSIS_URL = '/api/analysis';
 
 async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   const resp = await fetch(url, { signal });
