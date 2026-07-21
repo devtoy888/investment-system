@@ -182,22 +182,106 @@ def collect_market():
 
 
 def collect_analysis():
+    """读JSONL → 生成含实际数据的摘要（字段summary为空，从quotes/market_overview/sectors生成）"""
     reports = []
-    for path, rtype in [(MORNING_PATH, 'morning'), (NOON_PATH, 'noon'), (CLOSING_PATH, 'closing')]:
-        for item in load_jsonl(path, 1):
-            reports.append({'type': rtype, 'date': item.get('date',''),
-                            'summary': (item.get('summary') or item.get('market_condition') or '')[:200]})
+    
+    def _load(path):
+        if not os.path.exists(path):
+            return []
+        with open(path) as f:
+            return [l for l in f.readlines() if l.strip()]
+    
+    # 晨报
+    lines = _load(MORNING_PATH)
+    if lines:
+        try:
+            last = json.loads(lines[-1])
+            quotes = last.get('quotes', {}) or {}
+            mv = last.get('market_overview', {}) or {}
+            sectors = last.get('sectors', {}) or {}
+            parts = []
+            movers = []
+            for name in ['上证指数', '沪深300', '科创50', '创业板指']:
+                q = quotes.get(name, {}) or {}
+                pct = float(q.get('change_pct', 0))
+                if pct != 0:
+                    movers.append(f"{'🔴' if pct>0 else '🟢'}{name}{q.get('price','?')}({pct:+.2f}%)")
+            if movers: parts.append(' '.join(movers[:3]))
+            if mv: parts.append(f"涨{mv.get('rise_count','?')}/{mv.get('fall_count','?')}停{mv.get('limit_up','?')}/{mv.get('limit_down','?')}")
+            sc_pcts = {}
+            for n, s in (sectors.items() if isinstance(sectors, dict) else []):
+                try: sc_pcts[n] = float((s or {}).get('change_pct', 0))
+                except: pass
+            if sc_pcts:
+                sorted_sc = sorted(sc_pcts.items(), key=lambda x: x[1], reverse=True)
+                parts.append('📈' + ' '.join(f"{n}({p:+.1f}%)" for n,p in sorted_sc[:3]))
+                parts.append('📉' + ' '.join(f"{n}({p:+.1f}%)" for n,p in sorted_sc[-3:]))
+            reports.append({'type': 'morning', 'date': last.get('date',''), 'summary': ' | '.join(parts)})
+        except: pass
+    
+    # 午报
+    lines = _load(NOON_PATH)
+    if lines:
+        try:
+            last = json.loads(lines[-1])
+            quotes = last.get('quotes', {}) or {}
+            mv = last.get('market_overview', {}) or {}
+            parts = []
+            for name in ['上证指数', '沪深300', '科创50', '创业板指']:
+                q = quotes.get(name, {}) or {}
+                pct = float(q.get('change_pct', 0))
+                if pct != 0:
+                    parts.append(f"{name}{pct:+.2f}%")
+            if mv: parts.append(f"涨{mv.get('rise_count','?')}/{mv.get('fall_count','?')}")
+            reports.append({'type': 'noon', 'date': last.get('date',''), 'summary': '午盘: ' + ' | '.join(parts)})
+        except: pass
+    
+    # 收盘
+    lines = _load(CLOSING_PATH)
+    if lines:
+        try:
+            last = json.loads(lines[-1])
+            acc = last.get('market_accuracy_pct', '')
+            parts = [f"准确率{acc}%"] if acc else []
+            quotes = last.get('quotes', {}) or {}
+            for name in ['上证指数', '沪深300', '科创50', '创业板指']:
+                q = quotes.get(name, {}) or {}
+                pct = float(q.get('change_pct', 0))
+                if pct != 0: parts.append(f"{name}{pct:+.2f}%")
+            reports.append({'type': 'closing', 'date': last.get('date',''), 'summary': '收盘: ' + ' | '.join(parts)})
+        except: pass
+    
     return reports
 
 
 def collect_operations():
+    """读操作markdown文件 → 含标题和摘要"""
     ops = []
-    if os.path.isdir(OPERATIONS_DIR):
-        files = sorted([f for f in os.listdir(OPERATIONS_DIR) if f.endswith('.md') and f != 'README.md'], reverse=True)[:5]
-        import re
-        for fn in files:
-            m = re.match(r'operation_(\d{4}-\d{2}-\d{2})', fn)
-            if m: ops.append({'date': m.group(1), 'file': fn})
+    if not os.path.isdir(OPERATIONS_DIR):
+        return ops
+    files = sorted([f for f in os.listdir(OPERATIONS_DIR) if f.endswith('.md') and f != 'README.md'], reverse=True)[:5]
+    import re
+    for fn in files:
+        m = re.match(r'operation_(\d{4}-\d{2}-\d{2})', fn)
+        if not m:
+            continue
+        date_str = m.group(1)
+        title = f'操作 {date_str}'
+        summary = ''
+        try:
+            fp = os.path.join(OPERATIONS_DIR, fn)
+            with open(fp) as f:
+                content_lines = f.readlines()
+            for line in content_lines:
+                ls = line.strip()
+                if ls.startswith('# '):
+                    title = ls.lstrip('# ').strip()
+                    break
+            body = [l.strip() for l in content_lines if l.strip() and not l.startswith('#')][:2]
+            summary = ' '.join(body)[:120]
+        except:
+            pass
+        ops.append({'date': date_str, 'file': fn, 'title': title, 'summary': summary})
     return ops
 
 

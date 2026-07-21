@@ -1980,3 +1980,13 @@
 {"_ts": "2026-07-21T23:35:22.755142", "_date": "2026-07-21", "source": "sector_fund_flow", "success": true, "detail": "50个行业"}
 {"_ts": "2026-07-21T23:35:24.042375", "_date": "2026-07-21", "source": "market_breadth", "success": true, "detail": "东财p2d涨6809/跌179 涨停0"}
 {"_ts": "2026-07-21T23:35:24.390530", "_date": "2026-07-21", "source": "total_turnover", "success": true, "detail": "合计29562亿"}
+{"_ts": "2026-07-22T00:05:09.248166", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "科创50:1903.16"}
+{"_ts": "2026-07-22T00:05:09.255031", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "沪深300:4739.23"}
+{"_ts": "2026-07-22T00:05:09.255193", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "创业板指:3685.97"}
+{"_ts": "2026-07-22T00:05:09.255251", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "上证指数:3864.37"}
+{"_ts": "2026-07-22T00:05:09.423771", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "上证50:2973.81"}
+{"_ts": "2026-07-22T00:05:09.426977", "_date": "2026-07-22", "source": "tencent_quotes", "success": true, "detail": "黄金ETF市场价:8.845"}
+{"_ts": "2026-07-22T00:05:15.178898", "_date": "2026-07-22", "source": "sector_rankings", "success": true, "detail": "50行业"}
+{"_ts": "2026-07-22T00:05:16.388266", "_date": "2026-07-22", "source": "sector_fund_flow", "success": true, "detail": "50个行业"}
+{"_ts": "2026-07-22T00:05:17.636391", "_date": "2026-07-22", "source": "market_breadth", "success": true, "detail": "东财p2d涨6809/跌179 涨停0"}
+{"_ts": "2026-07-22T00:05:17.982388", "_date": "2026-07-22", "source": "total_turnover", "success": true, "detail": "合计29562亿"}

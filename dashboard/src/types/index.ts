@@ -68,6 +68,8 @@ export interface AnalysisReport {
 export interface OperationRecord {
   date: string;
   file: string;
+  title: string;
+  summary: string;
 }
 
 export interface DashboardData {

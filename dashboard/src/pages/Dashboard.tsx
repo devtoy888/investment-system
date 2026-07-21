@@ -253,11 +253,18 @@ export default function Dashboard() {
       {data.operations?.length > 0 && (
         <GlassCard>
           <h3 className="text-xs font-semibold text-gray-400 mb-2">最近操作</h3>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {data.operations.map((op: any) => (
-              <div key={op.date} className="flex items-center gap-2 text-xs">
-                <span className="text-gray-500">{op.date}</span>
-                <span className="text-gray-300">📝 操作记录</span>
+              <div key={op.date} className="text-sm border-b border-white/5 pb-2 last:border-0">
+                <div className="flex justify-between items-start">
+                  <span className="font-medium text-gray-200 text-xs">
+                    {op.title || '📝 操作记录'}
+                  </span>
+                  <span className="text-xs text-gray-500 ml-2 shrink-0">{op.date}</span>
+                </div>
+                {op.summary && (
+                  <p className="text-xs text-gray-400 mt-1 line-clamp-2">{op.summary}</p>
+                )}
               </div>
             ))}
           </div>
