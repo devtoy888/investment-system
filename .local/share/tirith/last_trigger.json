@@ -1,25 +1,35 @@
 {
   "rule_ids": [
-    "threat_osv_vulnerable"
+    "lookalike_tld",
+    "lookalike_tld"
   ],
-  "severity": "HIGH",
-  "command_redacted": "cd /opt/data/dashboard && npm install echarts@^6.0.0 lucide-react@^0.460.0 react...",
+  "severity": "MEDIUM",
+  "command_redacted": "# Wait for Pages build, then verify\nsleep 15 && curl -sI https://investment-syst...",
   "findings": [
     {
-      "rule_id": "threat_osv_vulnerable",
-      "severity": "HIGH",
-      "title": "Package has live OSV advisory data: echarts@^6.0.0",
-      "description": "Package 'echarts' in npm version '^6.0.0' matched 1 OSV advisory record(s): GHSA-fgmj-fm8m-jvvx.",
+      "rule_id": "lookalike_tld",
+      "severity": "MEDIUM",
+      "title": "Lookalike TLD detected",
+      "description": "Domain uses '.dev' TLD which can be confused with file extensions",
       "evidence": [
         {
-          "type": "threat_intel",
-          "source": "OSV.dev",
-          "threat_type": "vulnerable_package",
-          "confidence": "confirmed",
-          "reference": "https://nvd.nist.gov/vuln/detail/CVE-2026-45249"
+          "type": "url",
+          "raw": "investment-system-dashboard.pages.dev"
+        }
+      ]
+    },
+    {
+      "rule_id": "lookalike_tld",
+      "severity": "MEDIUM",
+      "title": "Lookalike TLD detected",
+      "description": "Domain uses '.dev' TLD which can be confused with file extensions",
+      "evidence": [
+        {
+          "type": "url",
+          "raw": "investment-system-dashboard.pages.dev"
         }
       ]
     }
   ],
-  "timestamp": "2026-07-21T14:41:16.391917829+00:00"
+  "timestamp": "2026-07-21T15:07:43.448170959+00:00"
 }

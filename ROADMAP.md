@@ -99,7 +99,8 @@
 | v13 | 07-15 | **VT-2 AKShare备援**: fund_source_akshare.py | `evolution/EVOLUTION_LOG.md` |
 | v14 | 07-15 | **VT-3 基准对比**: check_benchmark.py | `evolution/EVOLUTION_LOG.md` |
 | v16 | 07-15 | **VT-7/8 KOL验证+诊断闭环** | `evolution/EVOLUTION_LOG.md` |
-| **v17** | **07-21** | **报告系统全面修复**: AKShare主数据源/板块代理估值/深套约束/超配约束/报告日期目录/中文标签/QQ纯文本链接/预测验证修复/自动修复建议/报告索引页 | `evolution/EVOLUTION_LOG.md` |
+| **v17** | **07-21** | **报告系统全面修复** | `evolution/EVOLUTION_LOG.md` |
+| **v0.1.0** | **07-21** | **投资看板管线就绪**: Git/GitHub仓库 / D1+Schema / Pages自动部署 / React 19+Vite+Tailwind+ECharts脚手架 / SPA路由 | — |
 
 ---
 
@@ -138,7 +139,32 @@
 
 ---
 
-## 七、待办 & 待优化
+## 七、看板系统 (Dashboard v0.x)
+
+| # | 模块 | 版本 | 状态 | 说明 |
+|:-:|:----|:----:|:----:|:------|
+| DB-0 | 管线就绪 | v0.1.0 | ✅ 2026-07-21 | GitHub仓库 + D1(6表) + Pages自动部署 + React 19+Vite+TS+Tailwind+ECharts |
+| DB-1 | 总览页MVP | v0.2.0 | 🔴 待开始 | 大盘指数卡片 + 组合速览 + 板块资金流TOP5 + 涨跌家数 + cron分析摘要 |
+| DB-2 | 持仓页 | v0.3.0 | 🔴 待开始 | 14基金盈亏表 + 偏离度仪表Gauge + 行业饼图 + 建仓进度 |
+| DB-3 | 板块分析 | v0.3.0 | 🔴 待开始 | 行业涨跌排名 + 资金流柱状图 + 板块轮动热力图 |
+| DB-4 | 行情总览 | v0.4.0 | 🔴 待开始 | 指数卡片 + 外盘 + 估值分位 + 行业研报 |
+| DB-5 | 资讯雷达 | v0.4.0 | 🔴 待开始 | KOL时间线 + 博主画像 + RSS新闻 + AI提炼 |
+| DB-6 | 历史趋势 | v0.5.0 | 🔴 待开始 | 净值曲线(ECharts) + 基金相关性矩阵 |
+| DB-7 | 操作记录 | v0.5.0 | 🔴 待开始 | 操作时间线 + 类型统计 |
+| DB-8 | 信号系统 | v0.5.0 | 🔴 待开始 | 引擎状态 + KOL验证 + 准确性追踪 |
+| DB-9 | 交互式LLM | v0.6.0 | 🔴 待开始 | POST /api/ask (Worker→DeepSeek) + SSE流式 |
+
+### 部署管道
+
+```
+本地: git push → GitHub → Pages自动构建(~30s)
+线上: https://investment-system-dashboard.pages.dev
+D1:  investment-system-db (a14f5ae92b9406c186b0f7f796fb7c50)
+```
+
+---
+
+## 八、待办 & 待优化
 
 ### P0 — 核心缺失（影响使用体验）
 
@@ -147,7 +173,7 @@
 | TODO-1 | **持仓盈亏计算** | ✅ 已完成 | 07-15 | 12支基金数据已入库，含成本/份额/盈亏 |
 | TODO-2 | **偏离度调仓提醒** | ✅ 已完成 | 07-15 | `check_allocation.py` |
 | TODO-3 | **风险预警系统** | ✅ 已完成 | 07-15 | `risk_warning.py` |
-| TODO-4 | **自适应网站** | 🟡 设计待定 | — | 非SPA移动端，待明确需求 |
+| TODO-4 | **投资看板系统** | ✅ v0.1.0 管线就绪 | 07-21 | React 19+Vite+TS+Tailwind+ECharts, Pages部署, 见章节七 |
 
 ### P1 — 决策增强
 
