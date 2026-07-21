@@ -1,3 +1,4 @@
+// deployed 2026-07-21 v0.2.0
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
