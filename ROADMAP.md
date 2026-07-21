@@ -144,7 +144,17 @@
 | # | 模块 | 版本 | 状态 | 说明 |
 |:-:|:----|:----:|:----:|:------|
 | DB-0 | 管线就绪 | v0.1.0 | ✅ 2026-07-21 | GitHub仓库 + D1(6表) + Pages自动部署 + React 19+Vite+TS+Tailwind+ECharts |
-| DB-1 | 总览页MVP | v0.2.0 | 🔴 待开始 | 大盘指数卡片 + 组合速览 + 板块资金流TOP5 + 涨跌家数 + cron分析摘要 |
+| DB-1 | 总览页MVP | v0.2.0 | ✅ 2026-07-21 | 大盘指数卡片 + 组合速览 + 板块资金流(ECharts柱状图) + 偏离度仪表(Gauge) + 涨跌家数 + 建仓进度 + cron分析摘要 |
+
+### 线上部署
+
+```
+Pages:       https://investment-system-dashboard.pages.dev
+API:         /api/dashboard /api/analysis /api/history (Pages Functions)
+数据管道:    generate_dashboard_json.py → R2 dashboard.json
+数据更新:    手动运行或cron每4h
+DevOps:      git push → Pages自动构建(~30s)
+```
 | DB-2 | 持仓页 | v0.3.0 | 🔴 待开始 | 14基金盈亏表 + 偏离度仪表Gauge + 行业饼图 + 建仓进度 |
 | DB-3 | 板块分析 | v0.3.0 | 🔴 待开始 | 行业涨跌排名 + 资金流柱状图 + 板块轮动热力图 |
 | DB-4 | 行情总览 | v0.4.0 | 🔴 待开始 | 指数卡片 + 外盘 + 估值分位 + 行业研报 |
