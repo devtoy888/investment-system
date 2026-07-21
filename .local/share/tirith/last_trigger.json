@@ -1,35 +1,25 @@
 {
   "rule_ids": [
-    "lookalike_tld",
-    "lookalike_tld"
+    "threat_osv_vulnerable"
   ],
-  "severity": "MEDIUM",
-  "command_redacted": "# Wait for Pages build, then verify\nsleep 15 && curl -sI https://investment-syst...",
+  "severity": "HIGH",
+  "command_redacted": "cd /opt/data/dashboard && npm install --save-dev vitest@^3.0.0 @testing-library/...",
   "findings": [
     {
-      "rule_id": "lookalike_tld",
-      "severity": "MEDIUM",
-      "title": "Lookalike TLD detected",
-      "description": "Domain uses '.dev' TLD which can be confused with file extensions",
+      "rule_id": "threat_osv_vulnerable",
+      "severity": "HIGH",
+      "title": "Package has live OSV advisory data: vitest@^3.0.0",
+      "description": "Package 'vitest' in npm version '^3.0.0' matched 2 OSV advisory record(s): GHSA-5xrq-8626-4rwp, GHSA-9crc-q9x8-hgqq.",
       "evidence": [
         {
-          "type": "url",
-          "raw": "investment-system-dashboard.pages.dev"
-        }
-      ]
-    },
-    {
-      "rule_id": "lookalike_tld",
-      "severity": "MEDIUM",
-      "title": "Lookalike TLD detected",
-      "description": "Domain uses '.dev' TLD which can be confused with file extensions",
-      "evidence": [
-        {
-          "type": "url",
-          "raw": "investment-system-dashboard.pages.dev"
+          "type": "threat_intel",
+          "source": "OSV.dev",
+          "threat_type": "vulnerable_package",
+          "confidence": "confirmed",
+          "reference": "https://github.com/vitest-dev/vitest/security/advisories/GHSA-5xrq-8626-4rwp"
         }
       ]
     }
   ],
-  "timestamp": "2026-07-21T15:07:43.448170959+00:00"
+  "timestamp": "2026-07-21T15:42:53.200921019+00:00"
 }
