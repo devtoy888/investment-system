@@ -1,6 +1,0 @@
-# API: handled by Pages Functions, skip redirect
-/api/*
-# Assets: redirect to dist/ subdirectory
-/assets/* /dist/assets/:splat 200
-/ /dist/index.html 200
-/* /dist/index.html 200
