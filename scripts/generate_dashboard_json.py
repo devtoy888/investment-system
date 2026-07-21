@@ -244,11 +244,22 @@ def generate_dashboard():
                 if line.startswith('R2_') and '=' in line:
                     k, v = line.split('=', 1)
                     if k not in env: env[k] = v
-    result = subprocess.run(
-        [sys.executable, os.path.join(HERMES_HOME, 'r2_uploader.py'),
-         local_path, 'fund-system/dashboard.json', 'application/json; charset=utf-8'],
-        capture_output=True, text=True, timeout=30, env=env)
-    print(f'   {"✅" if result.returncode == 0 else "❌"} {result.stdout.strip()[:200] if result.returncode == 0 else result.stderr[:200]}')
+
+    def _r2_upload(local, key, ctype):
+        r = subprocess.run([sys.executable, os.path.join(HERMES_HOME, 'r2_uploader.py'),
+                           local, key, ctype], capture_output=True, text=True, timeout=30, env=env)
+        return r.returncode == 0, r.stdout.strip()[:200] if r.returncode == 0 else r.stderr[:200]
+
+    ok, msg = _r2_upload(local_path, 'fund-system/dashboard.json', 'application/json; charset=utf-8')
+    print(f'   {"✅" if ok else "❌"} dashboard.json — {msg}')
+
+    # 也上传 analysis-latest.json
+    analysis_path = os.path.join(HERMES_HOME, 'fund_system_data', 'analysis-latest.json')
+    with open(analysis_path, 'w', encoding='utf-8') as f:
+        json.dump(dashboard['latest_analysis'], f, ensure_ascii=False)
+    ok2, msg2 = _r2_upload(analysis_path, 'fund-system/analysis-latest.json', 'application/json; charset=utf-8')
+    print(f'   {"✅" if ok2 else "❌"} analysis-latest.json — {msg2}')
+    os.remove(analysis_path)
 
     print(f'\n✅ 完成')
     return dashboard
