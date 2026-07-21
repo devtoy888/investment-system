@@ -8,10 +8,8 @@ import type { DashboardData } from '../types';
 vi.mock('echarts', () => {
   const mockChart = {
     setOption: vi.fn(),
-    dispose: vi.fn(),
+    dispose: vi.fn().mockReturnValue(undefined),
   };
-  const mockInstance = () => mockChart;
-  mockChart.dispose.mockReturnValue(undefined);
   return {
     default: {
       init: vi.fn(() => mockChart),
