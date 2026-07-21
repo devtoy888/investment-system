@@ -145,3 +145,5 @@ Thumbs.db
 
 # Build cache (Tirith, etc.)
 .local/
+
+dashboard/assets/
