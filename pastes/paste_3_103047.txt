@@ -1,6 +1,0 @@
-我当前运行使用的模型是 DeepSeek v4 Flash，通过 DeepSeek 的 Provider 提供。                                                                                            
-                                                                                                                                                                          
-    另外根据记忆中的配置，你的主模型已设置为 Google Gemini 2.0 Flash（免费），回退模型是 DeepSeek v4 Flash。辅助任务（如视觉分析等）则通过 OpenRouter                     
-    的免费模型来处理。                                                                                                                                                    
-                                                                                                                                                                          
-    所以你现在和我对话时，实际用的是 DeepSeek v4 Flash。

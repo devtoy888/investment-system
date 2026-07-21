@@ -1,14 +1,14 @@
-# === 只追踪投资系统相关文件 ===
-# 其余所有Hermes系统文件、缓存、依赖都排除
-
-# 要追踪的路径白名单模式
-# scripts/        ← 数据采集脚本
-# fund_system_data/ ← 数据仓库
-# dashboard/      ← 前端SPA (待创建)
-# schema.sql      ← D1表结构 (待创建)
-# README.md       ← 已创建
-# .gitignore      ← 本文件
-# .hermes/plans/  ← 开发计划存档
+# === 投资系统 Git 追踪策略 ===
+# 白名单方式：只追踪以下路径
+#   scripts/               → 数据采集脚本
+#   fund_system_data/     → 数据仓库（含策略文档）
+#   dashboard/            → 前端SPA（待创建）
+#   schema.sql            → D1表结构（待创建）
+#   README.md / ROADMAP.md → 项目文档
+#   .gitignore            → 本文件
+#   .hermes/plans/        → 开发计划存档
+#
+# 其余所有Hermes系统文件、缓存、日志、依赖全部排除
 
 # === Python ===
 __pycache__/
@@ -24,8 +24,6 @@ venv/
 # === Node ===
 node_modules/
 .npm/
-.cache/
-.cache/
 
 # === IDE ===
 .vscode/
@@ -34,78 +32,28 @@ node_modules/
 *.swo
 *~
 
-# === Hermes System (全部排除) ===
-.config/
-.local/
-.ssh/
-.hermes_history
-.skills_prompt_snapshot.json
-models_dev_cache.json
-channel_directory.json
-gateway_state.json
-gateway.lock
-gateway.pid
-state.db
-state.db-shm
-state.db-wal
-config.yaml
-_config.yaml.bak
+# === 安全敏感 ===
+.env
+.env.*
 auth.json
 auth.lock
-feishu_seen_message_ids.json
-find_session*.py
-_r2_url.txt
-_fix*.py
-_patch*.py
-_revert*.py
-_verify*.py
-_gen_index.py
-_*.py
-_*.js
-upload_r2.py
-r2_uploader.py
-test_*.py
-test_*.js
+weibo_cookies.json
+weibo_uid.txt
+.ssh/
+*.pem
 
-# === Temp / Generated ===
-*.bak
-*.tmp
-daily-card*.png
-gen_daily_card*.py
-*.tar.gz
-
-# === Cron ===
-cron/
-
-# === Gateway ===
-gateway/
-
-# === OS ===
-.DS_Store
-Thumbs.db
-
-# === Hermes profiles ===
+# === Hermes 系统文件 ===
+SOUL.md
+.tasks/
+.update_check
+config/
+config.yaml
+_config.yaml.bak
+file
+pastes/
+shared/
+.paste*
 profiles/
-
-# === Project deps ===
-akshare-deps/
-mootdx-deps/
-pip-deps/
-lazy-packages/
-.feishu-deps/
-.cache/
-
-# === Media ===
-audio_cache/
-image_cache/
-
-# === Vibe Research (external references, not part of the project) ===
-Vibe-Research/
-Vibe-Trading/
-Vibe-Research-analysis.md
-vibe-trading-data-source-analysis.md
-
-# === Hermes home ===
 home/
 weixin/
 whatsapp/
@@ -120,20 +68,77 @@ plugins/
 hooks/
 sessions/
 logs/
-past es/
 workspace/
 docs/
 analysis/
 llm-wiki/
 skins/
-plan s/
 bin/
 skills/
 backups/
-cache/
-.paste*
+gateway/
+cron/
+.skills_prompt_snapshot.json
+models_dev_cache.json
+channel_directory.json
+gateway_state.json
+gateway.lock
+gateway.pid
+state.db
+state.db-shm
+state.db-wal
+.hermes_history
+feishu_seen_message_ids.json
+find_session*.py
+
+# === 依赖目录 ===
+akshare-deps/
+mootdx-deps/
+pip-deps/
+lazy-packages/
+.feishu-deps/
+.cache/
+.cache/
+
+# === 媒体缓存 ===
+audio_cache/
+image_cache/
+
+# === 外部引用（非项目代码） ===
+Vibe-Research/
+Vibe-Trading/
+Vibe-Research-analysis.md
+vibe-trading-data-source-analysis.md
+
+# === 临时/生成文件 ===
+*.bak
+*.tmp
+daily-card*.png
+gen_daily_card*.py
+*.tar.gz
+*.log
+qr-whatsapp.html
+_r2_url.txt
+_*.py
+_*.js
+upload_r2.py
+r2_uploader.py
+test_*.py
+test_*.js
+
+# === 系统缓存目录（fund_system_data内） ===
+fund_system_data/cache/
+fund_system_data/llm_analysis_cache/
+fund_system_data/closing-reviews.jsonl.bak
+fund_system_data/morning-briefs.jsonl.bak
+fund_system_data/noon-briefs.jsonl.bak
+fund_system_data/signals-resolved.jsonl.bak
+fund_system_data/cron_push_log.txt
+
+# === OS ===
+.DS_Store
+Thumbs.db
 
 # === Temp ===
-tmp
 /tmp/
 /tmp/*
