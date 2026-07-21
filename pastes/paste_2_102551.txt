@@ -1,0 +1,14 @@
+你现在使用什么模型                                                                                                                                                     
+                                                                                                                                                                          
+ └─ ▾ Thinking  ~44 tokens                                                                                                                                                
+   └─ The user is asking what model I'm currently using. I can see from the conversation metadata at the top:                                                             
+      Model: deepseek-v4-flash                                                                                                                                            
+      Provider: deepseek                                                                                                                                                  
+      I should answer directly.                                                                                                                                           
+                                                                                                                                                                          
+ ┊  我当前使用的是 DeepSeek v4 Flash，通过 DeepSeek 提供商运行。                                                                                                          
+                                                                                                                                                                          
+    这是你的配置里的回退/备用模型。不过根据之前的记忆记录，你的主模型是 Google Gemini 2.0 Flash（免费），当前会话可能是被配置为优先使用这个 DeepSeek                      
+    模型，或者是在某些条件下自动切换过来的。                                                                                                                              
+                                                                                                                                                                          
+    如果你希望切换回主模型或其他模型，随时告诉我！

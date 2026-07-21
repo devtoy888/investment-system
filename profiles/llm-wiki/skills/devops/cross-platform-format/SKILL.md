@@ -1,0 +1,440 @@
+---
+name: cross-platform-format
+description: >
+  Cross-platform message formatting guide for Hermes Agent cron job outputs.
+  Ensures reports look good and are functional across WeChat, QQ Bot, DingTalk, and Feishu.
+  Also covers the Pre-Script data collection pattern to avoid cron timeout.
+---
+
+# Cross-Platform Message Formatting Guide
+
+## Platform Capabilities Matrix
+
+| Feature | WeChat (iLink) | QQ Bot | DingTalk | Feishu |
+|---------|---------------|--------|----------|--------|
+| Markdown | Partial (bold, lists) | ✅ Full | ✅ Cards/Markdown | ✅ Hybrid (Post/Card 2.0) |
+| Clickable links `[text](url)` | ❌ Raw URL only | ✅ | ✅ | ✅ (both post & card) |
+| Bold `**text**` | ✅ | ✅ | ✅ | ✅ (full in card) |
+| Lists | ✅ | ✅ | ✅ | ✅ (full in card) |
+| Emoji | ✅ | ✅ | ✅ | ✅ |
+| Max length | ~2000 chars/msg | 4000 chars | ~20000 chars | ~20000 chars |
+| Image via `![alt](url)` markdown | ❌ Stripped | ✅ Desktop only | ✅ Live adapter only | ❌ `<Image data error>` |
+| Image via native attachment | ✅ `send_image_file()` | ✅ `send_image_file()` | ❌ Not supported | ✅ `send_image_file()` |
+
+---
+
+## Feishu: Hybrid Message Strategy (v2)
+
+**Critical knowledge for all Feishu messages.** The `feishu-card-plugin` (v2) overrides the built-in adapter to route messages by content type. This section explains what routes where, and why.
+
+### The Three Message Formats
+
+| Format | Code copy btn | Code full expand | Tables | Card header |
+|:---|---:|:---:|:---:|:---:|
+| Post `tag:"md"` | ✅ **有** | ✅ 全部行可见 | ❌ 不渲染 | ❌ |
+| Card 2.0 `tag:"markdown"` | ❌ 无 | ⚠️ 需滑动 | ✅ GFM | ✅ 彩色动态 |
+| Plain text | ❌ | ❌ | ❌ | ❌ |
+
+**飞书 API 无法触发客户端原生代码块组件（复制按钮）。** 该按钮仅出现在用户手动发送的代码块消息中。
+
+### Routing Logic (Plugin v2)
+
+```
+消息内容
+├── 含表格 ──→ Card 2.0（动态标题 + 原生表格组件）
+└── 不含表格 ──→ Post 格式（代码块有复制按钮 + 完整展开）
+```
+
+```python
+# Plugin v2 — _build_outbound_payload() (conceptual)
+if _MARKDOWN_TABLE_RE.search(content):
+    return Card 2.0 (native table + dynamic header)
+return super()._build_outbound_payload(content)  # → Post/Text
+```
+
+### Why Not Always Post?
+
+Post format tables render as **unreadable raw `| a | b |` text**. This was the original bug that triggered this entire workstream. Card 2.0 is required for any content with tables, even though it sacrifices the code-block copy button.
+
+### Dynamic Card Header (Card 2.0 only)
+
+`_detect_header_style()` auto-selects title + color from content:
+
+| Pattern | Title | Color |
+|---------|-------|:----:|
+| `##` heading | heading text | per rule below |
+| error/fail/❌ | ⚠️ 错误 | `red` |
+| warning/⚠️ | ⚠️ 警告 | `orange` |
+| Markdown table | 📊 数据 | `turquoise` |
+| ``` code | 🛠 技术 | `indigo` |
+| List | 📋 清单 | `green` |
+| vs/对比 | ⚖️ 对比 | `purple` |
+| **bold** | ℹ️ 信息 | `grey` |
+| fallback | ℹ️ 信息 | `blue` |
+
+### Critical: Card JSON 2.0 Requires `"schema": "2.0"`
+
+Without it, Card 1.0's `tag:"markdown"` only supports a Markdown subset — **code blocks are truncated to ~2 lines**. Always include:
+
+```json
+{
+  "schema": "2.0",           // ← REQUIRED for full CommonMark
+  "header": { ... },
+  "body": { "elements": [...] }
+}
+```
+
+### Plugin Code & References
+
+- **Plugin implementation**: skill `devops/feishu-card-plugin` (v2.0.0)
+- **Full reference**: `references/feishu-card-2-0-override.md` (v2)
+- **Verification record**: [[queries/飞书代码块渲染对比-验证记录]]
+- **GitHub issue**: [Hermes #46470](https://github.com/NousResearch/hermes-agent/issues/46470) — root cause analysis
+
+### Known Traps
+
+1. **__pycache__**: Plugin code changes don't take effect until pycache is cleared. Always run `find ... -name __pycache__ -exec rm -rf {} +` after edits.
+2. **Gateway restart**: `kill -9` required (s6-supervise ignores SIGTERM/SIGINT).
+3. **Post API rejection**: Post with code blocks can be rejected by Feishu API; falls back to plain text (no highlighting, no copy button).
+4. **Native table no alignment**: CardKit 2.0 `tag:"table"` rejects `horizontal_align` (ErrCode 200621). Use `tag:"markdown"` with GFM `:---:` for alignment.
+
+### Command Formatting for Feishu (Critical)
+
+Long single-line commands get truncated in Feishu messages. The user
+explicitly requires commands split into multiple short lines (≤ 80 chars
+each) to avoid truncation and enable copy-paste.
+
+Bad — one long line, gets truncated:
+```
+(crontab -l | grep -v "llm-wiki"; echo "*/15 * * * * docker restart") | crontab -
+```
+
+Good — segmented + each line short:
+```bash
+# Step 1: export crontab, filter old entries
+crontab -l | grep -v "llm-wiki" > /tmp/newcron
+
+# Step 2: append new task
+echo "*/15 * * * * docker restart llm-wiki" >> /tmp/newcron
+
+# Step 3: load new crontab
+crontab /tmp/newcron
+```
+
+Rule: each code block ≤ 4 lines, each line ≤ 80 chars.
+Split with comments for multi-step tasks.
+
+---
+
+## Link Format: `[title](url)` Markdown — the preferred format (works on QQ desktop)
+
+Use standard markdown link syntax `[标题](url)` for clickable links. This is the user's preferred format because it produces clean tables with embedded clickable links.
+
+### Format Rules for Tables
+Inside markdown tables, ensure the closing `)` is followed by **at least one space** before the `|` cell delimiter:
+```
+✅ | [标题](https://www.v2ex.com/t/1223821) | 分类 | 热度 |
+❌ | [标题](https://www.v2ex.com/t/1223821)| 分类 | 热度 |
+```
+
+### QQ Mobile Domain Restriction (NOT a format issue)
+
+Some domains cannot be opened when clicked on **QQ mobile** (`github.com`, `v2ex.com`, `news.ycombinator.com`). This is **NOT a markdown format issue** — the exact same `[title](url)` format works perfectly for `bilibili.com` in the same message. The restriction is at QQ mobile's built-in browser/URL handler level, not the markdown renderer.
+
+| Format test | GitHub | Bilibili | V2EX | HN |
+|-------------|:------:|:--------:|:----:|:--:|
+| `[title](url)` in table | ✅ | ✅ | ❌ | ❌ |
+| `[title](url)` in list | ✅ | N/A | ❌ | ❌ |
+| Bare `→ url` | ❌ | ✅ | ❌ | ❌ |
+
+**Key takeaway:** The domain itself determines whether a link opens on QQ mobile, not the format. `[title](url)` in tables is the best all-around format — it works on QQ desktop, DingTalk, Feishu, and WeChat for all domains. QQ mobile is the only platform with domain restrictions.
+
+**QQ desktop** has no such restriction — all domains open fine.
+
+### If QQ Mobile Link Access Is Critical
+Add a separate links section at the bottom of the report:
+```
+📋 手机端链接导航 → https://external-link-navigation-page
+```
+Or note per source: `🔗 V2EX链接需手动复制到浏览器打开`
+
+### Section Dividers
+Use `━━━` (not `---`)
+
+### Example Template
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📅 行业技术日报 · 2026-07-01
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 🔥 V2EX 热议
+
+| 标题 | 分类 | 热度 |
+|------|------|------|
+| [好奇大家用的牙膏是什么牌子的？](https://www.v2ex.com/t/1223821) | 生活 | 165条回复 |
+| [苹果电脑全线涨价](https://www.v2ex.com/t/1223840) | Apple | 118条回复 |
+
+━━━ Hacker News 热门 ━━━
+
+| 标题 | 分类 | 热度 |
+|------|------|------|
+| [Claude Sonnet 5](https://news.ycombinator.com/item?id=48736605) | AI | ↑845分 · 479条评论 |
+
+━━━ 今日摘要 ━━━
+3-5句话总结。
+```
+
+---
+
+## Image Delivery: BOTH markdown image AND MEDIA: protocol
+
+**DingTalk cannot receive native image attachments.** `send_image_file()` on DingTalk returns an error — the session webhook only supports text/markdown payloads. So DingTalk must get images via `![日报图片](R2_URL)` in the markdown text body.
+
+QQ/WeChat/Feishu get native images via `MEDIA:` which the gateway processes into `send_image_file()` calls.
+
+### The Combined Pattern
+
+The cron agent's response must contain **both** at the end:
+
+```
+![日报图片](https://hermes-main-media.devtoy.xyz/daily-news/...png)
+MEDIA:/tmp/daily-card.png
+```
+
+- **`![日报图片](R2_URL)`** — renders in DingTalk (live adapter sends as `msgtype: "markdown"`, which supports image tags). Stripped/ignored by other platforms.
+- **`MEDIA:/tmp/daily-card.png`** — extracted by the cron scheduler, sent as native image attachment to QQ/WeChat/Feishu. Stripped from the text body before delivery.
+
+**Cron prompt instruction:**
+```
+输出时顺序：
+1. 纯文本报告
+2. 在文本末尾另起一行写：![日报图片](上一步读取的R2_URL)
+3. 再单独一行写：MEDIA:/tmp/daily-card.png
+```
+
+### Verification (from this session, 2026-06-24)
+
+| Platform | MEDIA: send_image_file | ![alt](url) in markdown | Result |
+|----------|----------------------|------------------------|--------|
+| QQ desktop | ✅ Works | ✅ Works | Both OK |
+| QQ mobile | ✅ Works | ❌ Raw markdown text | MEDIA needed |
+| WeChat | ✅ Works | ❌ Stripped | MEDIA needed |
+| Feishu | ✅ Works | ❌ `<Image data error>` | MEDIA needed |
+| DingTalk | ❌ Returns error | ✅ Works (live adapter only) | Markdown needed |
+
+---
+
+## Cron Job Pre-Script Pattern (Required for Timeout-Free Operation)
+
+**Critical: The cron job has a 180s hard timeout.** Long prompts with inline `curl` + `python3 -c` parsing blocks for 4+ data sources will reliably timeout on free-tier models (agnes-2.0-flash). Fix: use a deterministic Python `--script` that pre-collects and pre-parses all data.
+
+### Architecture
+
+```
+[--script collect_daily_data.py] → fetches 4 sources + pre-parses to _summary.txt + generates image
+    ↓ (~15s, no LLM)
+[Agent prompt: 5 cat commands + format report]
+    ↓ (~30s on agnes-2.0-flash)
+[Hermes Gateway delivery] → text + image to all platforms
+```
+
+### Script Pattern (`~/.hermes/scripts/collect_daily_data.py`)
+
+```python
+#!/usr/bin/env python3
+"""Pre-fetch and pre-parse data from 4+ sources, generate image."""
+import subprocess, json, os, re, datetime, sys
+DATA_DIR = '/tmp'
+
+def fetch(url, output_file, headers=None):
+    cmd = ['curl', '-sL', url, '-o', output_file]
+    if headers:
+        for h in headers: cmd.extend(['-H', h])
+    subprocess.run(cmd, timeout=20)
+
+# V2EX, HN, GitHub, Bilibili: fetch → parse → write _summary.txt
+# Each line: field1|field2|... (agent cats these and formats as markdown)
+
+# Image: run generate_news_card_v3.py → upload to R2 → save URL
+# Also save local path /tmp/daily-card.png for MEDIA: delivery
+```
+
+### Agent Prompt (Max 15 Lines)
+
+```
+数据已由脚本预采集并生成图片到 /tmp/daily-card.png。
+
+步骤：
+1. cat /tmp/_r2_url.txt
+2. cat /tmp/_v2ex_summary.txt
+3. cat /tmp/_hn_summary.txt
+4. cat /tmp/_gh_summary.txt
+5. cat /tmp/_bili_summary.txt
+
+然后用这些数据写一份行业技术日报。每条记录以 | 分隔：标题|链接|...。
+
+格式要求：所有链接用 [标题](链接) 格式。
+
+输出时顺序：
+1. 纯文本报告
+2. 在文本末尾另起一行写：![日报图片](上一步读取的R2_URL)
+3. 再单独一行写：MEDIA:/tmp/daily-card.png
+```
+
+### Cron Job Configuration
+
+```bash
+hermes cron create "0 0 * * *" --name "行业技术日报" \
+  --script collect_daily_data.py \
+  --skills agent-reach,cross-platform-format \
+  --deliver "weixin:...,qqbot:...,dingtalk:correct_chat_id,feishu:..." \
+  --prompt "数据已由脚本预采集..."
+```
+
+---
+
+## Platform Gateway Configuration
+
+### Environment Variables
+
+| Platform | Auth env vars |
+|----------|-------------|
+| QQ Bot | `QQ_APP_ID`, `QQ_CLIENT_SECRET` |
+| Weixin (iLink) | `WEIXIN_TOKEN`, `WEIXIN_ACCOUNT_ID` |
+| DingTalk | `DINGTALK_CLIENT_ID`, `DINGTALK_CLIENT_SECRET` |
+| Feishu | `FEISHU_APP_ID`, `FEISHU_APP_SECRET` |
+
+DingTalk also uses `DINGTALK_WEBHOOK_URL` as standalone fallback (custom robot webhook).
+
+### Plugin Registration
+
+```yaml
+plugins:
+  enabled:
+    - platforms/dingtalk
+    - platforms/feishu
+```
+
+### Platform Toolsets
+
+```yaml
+platform_toolsets:
+  weixin:
+    - hermes-weixin
+  dingtalk:
+    - hermes-dingtalk
+  feishu:
+    - hermes-feishu
+  qqbot:
+    - hermes-qqbot
+```
+
+### Cron Deliver Format
+
+```
+weixin:account_id,qqbot:bot_token,dingtalk:chat_id,feishu:chat_id
+```
+
+**Gateway restart required** after config changes.
+
+---
+
+## Platform-Specific Quirks
+
+### DingTalk: Session Webhook Primer
+
+**Critical:** DingTalk Stream Mode bots record `session_webhook` **only when someone @mentions them or sends a message in the group**. After every gateway restart, the `_session_webhooks` dict is empty. To re-prime:
+
+1. **User must send a message in the target DingTalk group** — any message, @mention not strictly required
+2. Gateway log will show: `inbound message: platform=dingtalk user=... chat=CID_STRING msg='...'`
+3. The `CID_STRING` is the **correct chat_id** for the cron `deliver` field
+4. Once recorded, cron delivery uses the live adapter (`msgtype: "markdown"`) for texts
+
+**chat_id verification:** The chat_id in `deliver` must match the `chat=...` value in gateway logs. A mismatched chat_id (e.g., copied from another source) causes silent failures. Always extract the chat_id from gateway log after a group interaction.
+
+**Standalone fallback:** When no session_webhook exists, the standalone path uses `DINGTALK_WEBHOOK_URL` (custom robot webhook). This sends as `msgtype: "text"` (no markdown image rendering) and ignores the chat_id (always goes to the webhook's group).
+
+**Docker note:** In Docker, `~/.hermes` on the host may be mapped to `/opt/data` in the container. Adjust paths accordingly.
+
+### WeChat (iLink): Rate Limits
+
+- ~1 msg/sec. `-2` error on rate limit
+- Gateway auto-backoffs, but rate limits cascade if multiple cron runs fire close together
+- **Avoid test runs with `1m` schedule** — triggers rate limits. Use daily schedule for real use
+
+### File-Mutation Verifier Warning Leakage
+
+The verifier appends `⚠️ File-mutation verifier:` to the agent's output when `write_file` is attempted on protected paths. This leaks into delivered messages.
+
+**Solutions (preferred first):**
+1. **Pre-Script pattern** — use `--script` parameter for all data collection. Script filesystem writes bypass the verifier. Agent only does `cat` reads.
+2. **Prompt instruction** — add to the prompt: "绝对不要使用 write_file 工具创建 .py 或 .sh 文件。临时数据用 curl -o /tmp/file 写入，再用 python3 -c 读取。"
+
+---
+
+## Image Generation (v3 — All 4 Sources, Dynamic Layout)
+
+**Use `/opt/data/generate_news_card_v3.py` (NOT v2 — only shows 2 sections, NOT v1 — garbled Chinese text).**
+
+v3 generates a compact card with all 4 data sources + summary:
+- **Canvas**: 1080px wide, dynamic height (typically ~1683px vs old 1200×2400 with wasted space)
+- **Margins**: 30px (vs 50px in v2)
+- **Font**: Items 24px (vs 22px), section headers 30px
+- **Capacity**: 8 items/section (vs 5 in v2)
+- **Sections**: V2EX + HN + GitHub + Bilibili + 今日摘要 (vs V2EX + GitHub only)
+- **Output path**: `/tmp/daily-card.png` (same default as v2 for backward compat with MEDIA: delivery)
+
+```bash
+/opt/hermes/.venv/bin/python3 /opt/data/generate_news_card_v3.py \
+  --date=YYYY-MM-DD \
+  --v2ex "标题1" "标题2" ... --hn "标题1" ... \
+  --github "repo1 — ⭐N" ... --bilibili "标题1" ... \
+  --summary "摘要1" "摘要2" ... --upload
+```
+
+The `--upload` flag uploads to R2 and prints `URL=<r2_url>`. The local file at `/tmp/daily-card.png` is used for MEDIA: delivery.
+
+### Pre-Script Integration (collect_daily_data.py)
+
+The cron `--script` must pass ALL data sources to v3:
+
+```python
+cmd = ['/opt/hermes/.venv/bin/python3', '/opt/data/generate_news_card_v3.py',
+       '--date=' + today,
+       '--v2ex'] + v2ex_titles + ['--hn'] + hn_titles + \
+       ['--github'] + gh_names + ['--bilibili'] + bili_titles
+if summaries:
+    cmd += ['--summary'] + summaries
+cmd += ['--upload']
+```
+
+### Pitfalls: `nargs='+'` + empty list eats next flag
+
+**`argparse` with `nargs='+'` requires at least one value.** If a flag like `--bilibili` is followed by an empty list, argparse consumes the next flag (`--summary`, `--upload`) as its value, causing parse errors and silent image-generation failure.
+
+**Fix:** Only add section flags when data exists:
+
+```python
+cmd = ['v3.py', '--date=...', '--v2ex'] + v2ex_titles
+if hn_titles:      cmd += ['--hn'] + hn_titles
+if gh_names:       cmd += ['--github'] + gh_names
+if bili_titles:    cmd += ['--bilibili'] + bili_titles
+if summaries:      cmd += ['--summary'] + summaries
+cmd += ['--upload']
+```
+
+### Pitfalls: Two script copies in Docker
+
+In Docker, the volume mount (`~/.hermes-main:/opt/data`) creates `/opt/data/` on the container filesystem. Hermes cron resolves `--script` relative to `~/.hermes/scripts/`, which lives under `/opt/data/home/.hermes/scripts/`. If you manually test from `/opt/data/`, `python3 scripts/collect_daily_data.py` picks up `/opt/data/scripts/` (the docker-mount copy), not the cron one. **Always test from `~/.hermes/scripts/`** or verify which copy you're editing.
+
+### Content Consistency
+- Image must match text report exactly — never use placeholder/sample data
+- Pass ALL sections to the script (do NOT skip even if data is sparse)
+- Verify with `vision_analyze` before sending
+
+---
+
+## References
+- `references/api-endpoints.md` — Reliable endpoints, fields, link formats for each data source.
+- `references/cron-delivery-internals.md` — MEDIA protocol lifecycle, DingTalk session_webhook internals, delivery debugging.

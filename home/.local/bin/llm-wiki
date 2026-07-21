@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/data/.local/bin/hermes -p llm-wiki "$@"

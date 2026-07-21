@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>持仓评估+调仓+减持+选基+操作完整方案(数据修正版v3)</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--txt:#c9d1d9;--accent:#58a6ff;--red:#f85149;--green:#3fb950;--muted:#8b949e;--yellow:#d29922}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75;padding:18px;max-width:860px;margin:0 auto;font-size:15px}
+h1{font-size:23px;color:var(--accent);margin-bottom:6px;font-weight:700}
+h2{font-size:19px;color:var(--accent);margin:30px 0 12px;border-left:4px solid var(--accent);padding-left:11px}
+h3{font-size:16px;color:#e6edf3;margin:18px 0 8px}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12.8px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+thead th{background:#1c2128;color:var(--accent);font-weight:600;text-align:right;padding:9px 10px;border-bottom:2px solid var(--border)}
+thead th:first-child{text-align:left}
+tbody td{background:var(--card);padding:8px 10px;border-bottom:1px solid var(--border);text-align:right}
+tbody td:first-child{text-align:left;color:#e6edf3;font-weight:500}
+tbody tr:nth-child(even) td{background:#11161d}
+tbody tr:hover td{background:#1b2230}
+.pos{color:var(--red)!important;font-weight:600}.neg{color:var(--green)!important}
+code{background:#1c2128;color:#e3b341;padding:2px 6px;border-radius:5px;font-size:13px}
+pre{background:#1c2128;padding:13px;border-radius:9px;overflow-x:auto;border:1px solid var(--border)}
+hr{border:none;border-top:1px solid var(--border);margin:22px 0}
+blockquote{background:#161b22;border-left:3px solid var(--yellow);padding:10px 14px;margin:10px 0;border-radius:7px}
+@media(max-width:600px){body{padding:12px}table{font-size:11px}thead th,tbody td{padding:5px 3px}}
+</style></head>
+<body>
+<div id="content">加载中…</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+function c(){document.querySelectorAll('tbody td').forEach(td=>{const t=td.textContent.trim();if(/^\+/.test(t))td.classList.add('pos');else if(/^-/.test(t))td.classList.add('neg')})}
+fetch('evaluation_full_2026-07-20.md').then(r=>r.text()).then(t=>{document.getElementById('content').innerHTML=marked.parse(t);c()}).catch(e=>{document.getElementById('content').innerHTML='<p style=color:var(--red)>加载失败</p>'})
+</script>
+</body>
+</html>

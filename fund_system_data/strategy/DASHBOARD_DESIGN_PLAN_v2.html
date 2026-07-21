@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>投资实用看板 · v2完整方案</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:#0a0e1a;color:#f3f4f6;line-height:1.8}
+.header{background:linear-gradient(135deg,#0a0e1a,#1a1040);padding:24px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06)}
+.header h1{font-size:20px;color:#f59e0b;margin-bottom:4px}
+.header .sub{font-size:12px;color:#9ca3af}
+.header .badge-v2{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#22c55e;color:#0a0e1a;margin-left:8px}
+.container{max-width:720px;margin:0 auto;padding:12px}
+h2{font-size:16px;color:#f59e0b;margin:20px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06)}
+h3{font-size:14px;color:#e5e7eb;margin:14px 0 8px}
+h4{font-size:13px;color:#9ca3af;margin:10px 0 6px}
+p,li{font-size:13px;color:#d1d5db;margin:6px 0}
+ul,ol{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+.card{background:rgba(17,24,39,0.8);border-radius:12px;padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,0.06)}
+.card-green{border-left:3px solid #22c55e}
+.card-red{border-left:3px solid #ef4444}
+.card-yellow{border-left:3px solid #f59e0b}
+code{background:rgba(245,158,11,0.1);color:#f59e0b;padding:1px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono','Fira Code',monospace}
+pre{background:#111827;border-radius:8px;padding:10px;overflow-x:auto;font-size:12px;line-height:1.5;margin:8px 0;border:1px solid rgba(255,255,255,0.06);white-space:pre-wrap}
+pre code{background:none;padding:0;color:#e5e7eb}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin:2px 3px}
+.tag-p0{background:rgba(239,68,68,0.2);color:#ef4444}
+.tag-p1{background:rgba(245,158,11,0.2);color:#f59e0b}
+.tag-p2{background:rgba(107,114,128,0.2);color:#9ca3af}
+.badge{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px}
+.badge-green{background:rgba(34,197,94,0.15);color:#22c55e}
+.badge-red{background:rgba(239,68,68,0.15);color:#ef4444}
+.badge-yellow{background:rgba(245,158,11,0.15);color:#f59e0b}
+.badge-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+.badge-new{background:rgba(139,92,246,0.2);color:#a78bfa}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{text-align:left;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-weight:500}
+td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.04);color:#d1d5db}
+.toc{background:rgba(17,24,39,0.5);border-radius:12px;padding:12px 16px;margin:10px 0;border:1px solid rgba(255,255,255,0.06)}
+.toc a{color:#9ca3af;text-decoration:none;font-size:12px;line-height:2}
+.toc a:hover{color:#f59e0b}
+.mermaid{background:#111827;border-radius:8px;padding:12px;margin:8px 0;font-family:monospace;font-size:12px;line-height:1.6;white-space:pre;overflow-x:auto;color:#e5e7eb}
+.footer{text-align:center;padding:20px;color:#6b7280;font-size:11px}
+@media(max-width:430px){.container{padding:8px}h2{font-size:15px}}
+.hl{color:#22c55e;font-weight:600}
+.hl-red{color:#ef4444;font-weight:600}
+.hl-amber{color:#f59e0b;font-weight:600}
+.v1-box{background:rgba(239,68,68,0.08);border-radius:8px;padding:10px;margin:6px 0;border-left:3px solid #ef4444;font-size:12px}
+.v2-box{background:rgba(34,197,94,0.08);border-radius:8px;padding:10px;margin:6px 0;border-left:3px solid #22c55e;font-size:12px}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 投资实用看板 · 完整设计方案 <span class="badge-v2">v2</span></h1>
+<div class="sub">评估日期 2026-07-21 · 从"静态今日看板"升级为"全栈持续优化平台"</div>
+</div>
+<div class="container">
+
+<div class="toc">
+<strong style="color:#f59e0b;font-size:13px">目录</strong><br>
+<a href="#s1">1. v1方案的4个盲区</a><br>
+<a href="#s2">2. 全新架构总览</a><br>
+<a href="#s3">3. Cloudflare D1 — 历史数据的基石</a><br>
+<a href="#s4">4. Git版本控制 + 部署策略</a><br>
+<a href="#s5">5. 页面体系（完整规格）</a><br>
+<a href="#s6">6. 时间维度设计</a><br>
+<a href="#s7">7. 实施路线</a><br>
+<a href="#s8">8. 变更清单</a><br>
+<a href="#s9">9. 开发计划</a>
+</div>
+
+<h2 id="s1">1. v1方案的4个盲区</h2>
+
+<div class="card card-red">
+<table>
+<tr><th>#</th><th>盲区</th><th>v1</th><th>v2改进</th></tr>
+<tr><td>1️⃣</td><td><strong>历史数据</strong></td><td>只看当日</td><td>日期导航+趋势对比</td></tr>
+<tr><td>2️⃣</td><td><strong>数据存储</strong></td><td>纯JSON在R2</td><td>D1结构化数据库+R2并存</td></tr>
+<tr><td>3️⃣</td><td><strong>版本控制</strong></td><td>没提git</td><td>全量入库+Pages自动部署</td></tr>
+<tr><td>4️⃣</td><td><strong>部署平台</strong></td><td>R2静态</td><td>Cloudflare Pages+Workers API</td></tr>
+</table>
+<p style="margin-top:10px"><strong>核心认知修正</strong>：这不是"做一个页面"，这是<strong>一个持续2年+的投资工具平台</strong>。数据会积累、策略会迭代、脚本会更改——必须从一开始就用正轨架构。</p>
+</div>
+
+<h2 id="s2">2. 全新架构总览</h2>
+
+<div class="mermaid">
+┌─────────────────────────────────────────────────────────┐
+│              Oracle ARM Server（你的服务器）              │
+│  /opt/data/scripts/  ← 155个Python采集脚本               │
+│  ├── fund_tools.py         行情采集                       │
+│  ├── portfolio_snapshot.py 持仓快照                       │
+│  ├── signal_engine.py      信号引擎                       │
+│  └── 152个其他脚本                                        │
+│  └── git push → GitHub/Gitee                              │
+└────────────────────────────┬────────────────────────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              ▼                              ▼
+    ┌──────────────────┐       ┌──────────────────────────┐
+    │  R2 (对象存储)     │       │  Cloudflare Ecosystem    │
+    │  reports/         │       │                          │
+    │  data/            │       │  D1 (免费SQLite数据库)    │
+    │  evolution/       │       │  6张表·5GB免费·用1000年   │
+    │  strategy/        │       │                          │
+    │  dashboard.json   │       │  Pages (前端SPA)          │
+    └──────────────────┘       │  auto-deploy from git     │
+                               │                          │
+                               │  Workers (API层)          │
+                               │  /api/dashboard           │
+                               │  /api/history/:days       │
+                               └──────────────────────────┘
+</div>
+
+<h3>数据流的两种路径</h3>
+<div class="card">
+<p><span class="hl">路径A（实时展示）：</span> cron采集 → fund_tools.py → dashboard.json → R2 → 前端fetch → 渲染</p>
+<p><span class="hl">路径B（历史查询）：</span> cron采集 → sync_to_d1.py → D1 → Worker SQL → JSON → 前端渲染</p>
+<p><span class="hl">路径C（静态文件）：</span> cron生成 → md/html → R2 → 直接访问</p>
+</div>
+
+<h2 id="s3">3. Cloudflare D1 — 历史数据的基石</h2>
+
+<h3>3.1 为什么需要D1</h3>
+
+<div class="card">
+<table>
+<tr><th>方案</th><th>查询历史趋势</th><th>随数据增长</th></tr>
+<tr><td>❌ 纯JSONL</td><td>全量读到内存</td><td>越来越慢</td></tr>
+<tr><td>❌ 纯R2 JSON</td><td>每次下载整个文件</td><td>流量浪费</td></tr>
+<tr><td>❌ Python脚本</td><td>每次触发服务器</td><td>服务器有状态</td></tr>
+<tr><td><span class="hl">✅ D1</span></td><td>SQL索引查询</td><td>毫秒级始终</td></tr>
+</table>
+<p style="margin-top:8px;color:#9ca3af">D1 = Cloudflare的Serverless SQLite。免费5GB，当前系统1年约2MB，可用1000年。</p>
+</div>
+
+<h3>3.2 D1 Schema（6张表）</h3>
+
+<pre>-- 1. 持仓快照表（每日一条）
+CREATE TABLE portfolio_snapshots (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT NOT NULL,
+  total_cost REAL, total_value REAL,
+  total_profit REAL, profit_pct REAL,
+  tech_ratio REAL, building_progress REAL,
+  details TEXT  -- JSON: 各基金明细
+);
+CREATE INDEX idx_portfolio_date ON portfolio_snapshots(date);
+
+-- 2. 基金净值历史表
+CREATE TABLE fund_values (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT NOT NULL, date TEXT NOT NULL,
+  estimated_nav REAL, confirmed_nav REAL,
+  change_pct REAL,
+  UNIQUE(code, date)
+);
+
+-- 3. KOL信号表
+CREATE TABLE kol_signals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  source TEXT NOT NULL,
+  weibo_id TEXT UNIQUE,
+  created_at TEXT NOT NULL,
+  content TEXT, direction TEXT,
+  topics TEXT, parsed_fund_code TEXT
+);
+
+-- 4. 操作记录表
+CREATE TABLE operations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT NOT NULL, fund_code TEXT NOT NULL,
+  fund_name TEXT, action TEXT NOT NULL,
+  amount REAL, reason TEXT,
+  linked_signal_id INTEGER,
+  result_pct REAL
+);
+
+-- 5. 数据源可用率表
+CREATE TABLE source_availability (...);
+
+-- 6. 预测准确率表
+CREATE TABLE prediction_accuracy (...);</pre>
+
+<h3>3.3 同步策略：批量回写</h3>
+
+<div class="mermaid">
+步骤1：服务器cron采集 → 写入本地JSONL/CSV（现有流程不变）
+步骤2：交易日16:20 → sync_to_d1.py 运行
+步骤3：读取本地JSONL → 解析 → 批量INSERT到D1
+步骤4：D1 API通过Worker暴露 → 前端查询
+</div>
+
+<div class="card card-yellow">
+<p><strong>为什么不是实时写D1？</strong></p>
+<p>✅ 当前系统（JSONL/CSV）已经稳定运行</p>
+<p>✅ 服务器不一定每次都能访问D1（网络波动）</p>
+<p>✅ 本地文件是真相源，D1是查询副本</p>
+<p>✅ 批量写入比逐条快100倍</p>
+</div>
+
+<h2 id="s4">4. Git版本控制 + 部署策略</h2>
+
+<h3>4.1 仓库结构</h3>
+
+<pre>fund-dashboard/                    ← GitHub/Gitee
+├── scripts/                       ← 采集脚本（155个）
+│   ├── fund_tools.py
+│   ├── sync_to_d1.py             ← 🆕 D1同步
+│   └── ...
+├── dashboard/                     ← 前端SPA (Cloudflare Pages)
+│   ├── public/
+│   │   ├── index.html
+│   │   └── js/
+│   └── _worker.js                ← API层
+├── schema.sql                    ← D1表结构
+├── wrangler.toml                 ← CF配置
+└── README.md</pre>
+
+<h3>4.2 为什么需要Git</h3>
+
+<div class="card">
+<table>
+<tr><th>场景</th><th>没Git</th><th>有Git</th></tr>
+<tr><td>改坏了脚本</td><td>❌ 手动备份回退</td><td>✅ git revert</td></tr>
+<tr><td>想看看之前的版本</td><td>❌ 靠记忆</td><td>✅ git log</td></tr>
+<tr><td>多设备同步</td><td>❌ scp</td><td>✅ git push/pull</td></tr>
+<tr><td>追溯修改原因</td><td>❌ ？？</td><td>✅ commit message</td></tr>
+</table>
+</div>
+
+<h3>4.3 部署流程</h3>
+
+<div class="mermaid">
+Git push → GitHub → Cloudflare Pages自动检测
+  │
+  ▼
+自动构建（~30秒）
+  │
+  ▼
+部署到Pages（CDN + HTTPS）
+  │
+  ├── https://fund-dashboard.pages.dev
+  └── https://your-domain.com
+</div>
+
+<pre># wrangler.toml
+name = "fund-dashboard"
+compatibility_date = "2026-07-21"
+pages_build_output_dir = "dashboard"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "fund-system-db"
+database_id = "xxx-xxx"</pre>
+
+<h2 id="s5">5. 页面体系</h2>
+
+<h3>5.1 页面地图（v2新增日期维度）</h3>
+
+<div class="mermaid">
+📊 投资实用看板 ── [日期选择器] 🆕
+│
+├── 🏠 总览 Dashboard（默认页）
+│   ├── 大盘天气（6大指数实时）
+│   ├── 组合速览 + 趋势卡片 🆕
+│   ├── 推送摘要 + 操作时间线 + 板块热度 + 风险
+│
+├── 💼 持仓详情 (#portfolio?date=...) 🆕 日期参数
+│   ├── 14基金完整盈亏表
+│   ├── 偏离度仪表 + 建仓进度 + 饼图
+│   ├── 历史盈亏曲线（7/30/90天）🆕
+│   └── 单基金深度（点击展开历史）🆕
+│
+├── 📅 历史趋势 (#history) 🆕 新增页面
+│   ├── 组合净值曲线（1月/3月/半年/全部）
+│   ├── 各基金涨跌贡献排行
+│   └── 可对比不同时间区间
+│
+├── 📈 板块轮动 (#sectors?range=30d) 🆕 时间范围
+│   ├── 日涨跌排行 + N日迷你线图
+│   └── 日历热力图 🆕
+│
+├── 📜 操作记录 (#operations?from=...)
+│   ├── 时间线 + 操作后N日验证 🆕
+│
+├── 🤖 信号系统 (#signals?days=30)
+│   ├── KOL信号时间线（可筛选日期）
+│   └── 信号-操作关联
+│
+└── 📊 系统状态 (#system)
+</div>
+
+<h3>5.2 历史趋势页设计（v2最重要新增）</h3>
+
+<div class="card">
+<pre>
+┌──────────────────────────────────────┐
+│ 📅 组合历史趋势                      │
+│ [7天] [30天] [90天] [全部] ← 时间切换 │
+├──────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ │
+│ │    组合净值曲线 (SVG Area Chart)  │ │
+│ │  ┌────┐                          │ │
+│ │  │    │       ┌──┐               │ │
+│ │  │    │  ┌────┘  │               │ │
+│ │  │    └──┘       └──┐            │ │
+│ │  └───────────────────┴──          │ │
+│ │  07-01   07-10    07-20          │ │
+│ └──────────────────────────────────┘ │
+│                                      │
+│ 区间收益: -5.2%　最大回撤: -8.3%      │
+│ 日均波动: 1.2%　  同期沪深300: -3.1% │
+│                                      │
+│ 单基金贡献排行:                        │
+│ 🥇 011613 华夏科创50C   -¥32.5 📉     │
+│ 🥈 024418 华夏半导体C   -¥28.1 📉     │
+└──────────────────────────────────────┘
+</pre>
+<p>数据来源：D1 portfolio_snapshots + fund_values</p>
+</div>
+
+<h2 id="s6">6. 时间维度设计</h2>
+
+<h3>6.1 数据估算（1年后）</h3>
+
+<div class="card">
+<table>
+<tr><th>表</th><th>日增量</th><th>年数据</th><th>D1占用</th></tr>
+<tr><td>portfolio_snapshots</td><td>1行</td><td>~250行</td><td>~50KB</td></tr>
+<tr><td>fund_values</td><td>14行</td><td>~3,500行</td><td>~500KB</td></tr>
+<tr><td>kol_signals</td><td>~10行</td><td>~2,500行</td><td>~1MB</td></tr>
+<tr><td>operations</td><td>~1行</td><td>~250行</td><td>~100KB</td></tr>
+<tr><td><strong>总计</strong></td><td></td><td></td><td><span class="hl">~2MB / 5GB免费</span></td></tr>
+</table>
+</div>
+
+<h2 id="s7">7. 实施路线</h2>
+
+<h3>阶段一：基础设施搭建（2-3天）</h3>
+<div class="card">
+<table>
+<tr><th>任务</th><th>产出</th></tr>
+<tr><td>1.1 创建GitHub仓库</td><td>fund-dashboard仓库</td></tr>
+<tr><td>1.2 服务器git init</td><td>155个脚本纳入版本控制</td></tr>
+<tr><td>1.3 注册Cloudflare D1</td><td>fund-system-db创建</td></tr>
+<tr><td>1.4 执行schema.sql</td><td>6张表创建完成</td></tr>
+<tr><td>1.5 编写sync_to_d1.py</td><td>JSONL/CSV → D1批量写入</td></tr>
+<tr><td>1.6 首次全量同步</td><td>D1拥有全部历史数据</td></tr>
+</table>
+</div>
+
+<h3>阶段二：Worker API层（1-2天）</h3>
+<div class="card">
+<table>
+<tr><th>端点</th><th>功能</th></tr>
+<tr><td>/api/dashboard</td><td>今日聚合数据</td></tr>
+<tr><td>/api/history?days=30</td><td>组合趋势</td></tr>
+<tr><td>/api/portfolio?date=</td><td>单日持仓</td></tr>
+<tr><td>/api/fund/:code?days=</td><td>单基金历史</td></tr>
+<tr><td>/api/sectors?range=</td><td>板块趋势</td></tr>
+</table>
+</div>
+
+<h3>阶段三：前端SPA开发（3-4天）</h3>
+<div class="card">
+<table>
+<tr><th>优先</th><th>页面</th></tr>
+<tr><td><span class="tag tag-p0">P0</span></td><td>总览 + 持仓 + 历史趋势</td></tr>
+<tr><td><span class="tag tag-p1">P1</span></td><td>操作记录 + 板块轮动 + 信号系统</td></tr>
+<tr><td><span class="tag tag-p2">P2</span></td><td>系统状态</td></tr>
+</table>
+</div>
+
+<h3>阶段四：自动化与打磨（2天）</h3>
+<div class="card">
+<table>
+<tr><th>任务</th><th>说明</th></tr>
+<tr><td>cron自动同步D1</td><td>交易日16:20</td></tr>
+<tr><td>cron自动git push</td><td>每日04:00</td></tr>
+<tr><td>Pages自动部署</td><td>git push触发</td></tr>
+<tr><td>手机优化+离线缓存</td><td>Service Worker可选</td></tr>
+</table>
+</div>
+
+<p style="text-align:center;margin:16px 0"><span class="hl" style="font-size:16px">总计：8-11天，分3轮迭代</span></p>
+
+<h3>迭代策略</h3>
+<div class="card">
+<p><span class="hl">迭代1（2-3天）：</span> Git仓库 → D1创建 → schema → sync_to_d1.py → Worker基础</p>
+<p><span class="hl">迭代2（3-4天）：</span> SPA骨架 → 总览页 → 持仓页 → 历史趋势页 → Pages部署</p>
+<p><span class="hl">迭代3（3-4天）：</span> 操作记录页 → 板块轮动页 → 信号系统页 → 自动化 → 打磨</p>
+<p style="color:#9ca3af;margin-top:8px">每轮都是可独立交付的版本，不是"全部做完才能用"。</p>
+</div>
+
+<h2 id="s8">8. 变更清单</h2>
+
+<h3>新增文件</h3>
+<div class="card">
+<table>
+<tr><th>文件</th><th>说明</th></tr>
+<tr><td>scripts/sync_to_d1.py</td><td>JSONL/CSV → D1 同步脚本</td></tr>
+<tr><td>schema.sql</td><td>D1 6张表定义</td></tr>
+<tr><td>wrangler.toml</td><td>Cloudflare Pages配置</td></tr>
+<tr><td>dashboard/ (10+文件)</td><td>前端SPA（纯HTML/CSS/JS）</td></tr>
+<tr><td>_worker.js</td><td>Workers API层</td></tr>
+</table>
+</div>
+
+<h3>修改现有脚本</h3>
+<div class="card">
+<table>
+<tr><th>脚本</th><th>修改</th></tr>
+<tr><td>run_closing.py</td><td>末尾调用sync_to_d1.py → D1同步</td></tr>
+<tr><td>portfolio_snapshot.py</td><td>增加JSON格式输出</td></tr>
+<tr><td>r2_upload_and_verify.py</td><td>增加dashboard目录同步</td></tr>
+</table>
+</div>
+
+<h2 id="s9">9. 开发计划</h2>
+
+<h3>9.1 先做什么</h3>
+
+<div class="card card-green">
+<p><strong>建议第一轮启动顺序</strong>：</p>
+<ol>
+<li>建GitHub仓库 + git init服务器脚本 ✅ 半天</li>
+<li>注册D1 + 跑schema ✅ 半小时</li>
+<li>写sync_to_d1.py → 全量同步历史数据 ✅ 半天</li>
+<li>写Worker API（查询D1）✅ 半天</li>
+<li>写SPA总览页 ✅ 1天</li>
+</ol>
+<p style="margin-top:8px"><span class="hl">第一天结束时就有：</span> Git仓库、D1有历史数据、一个能用的手机看板</p>
+</div>
+
+<h3>9.2 风险与应对</h3>
+
+<div class="card">
+<table>
+<tr><th>风险</th><th>概率</th><th>应对</th></tr>
+<tr><td>D1配置不顺利</td><td>低</td><td>JSON→R2保底</td></tr>
+<tr><td>sync_to_d1网络不通</td><td>中</td><td>重试队列+次日补推</td></tr>
+<tr><td>Pages域名访问慢</td><td>低</td><td>R2直连备用入口</td></tr>
+</table>
+</div>
+
+<h3>9.3 v1→v2变化一览</h3>
+
+<div class="card" style="background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(245,158,11,0.08))">
+<p><span style="text-decoration:line-through;color:#6b7280">v1: 静态今日看板 + R2纯JSON</span></p>
+<p><span class="hl">v2: 全栈持续优化平台 + Git + D1 + Pages + Workers</span></p>
+<p style="margin-top:8px">🆕 日期间导航（所有页面可查历史）</p>
+<p>🆕 Cloudflare D1（可SQL查询的历史数据库，5GB免费）</p>
+<p>🆕 Git版本控制（可回滚、可追溯）</p>
+<p>🆕 Cloudflare Pages（自动构建、CDN分发）</p>
+<p>🆕 Workers API（数据查询层，零服务器）</p>
+</div>
+
+</div>
+
+<div class="footer">
+本方案由「投资助手」全量评估后生成 · 对比v1方案的4个盲区，给出完整改进<br>
+评估日期 2026-07-21 · 参考 Vibe-Research(UI) + Vibe-Trading(Strategy)
+</div>
+
+<script>
+if(window.matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.style.colorScheme="dark";
+</script>
+</body>
+</html>

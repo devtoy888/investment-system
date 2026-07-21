@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>📋 定时任务全量评估报告</title><style>
+:root{--bg:#0d1117;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#58a6ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:0}
+.header{background:linear-gradient(135deg,#1a2332 0%,#0d1117 100%);border-bottom:1px solid var(--border);padding:32px 16px 24px;text-align:center}
+.header h1{font-size:1.5em;color:#fff;margin-bottom:6px}
+.header .subtitle{color:var(--text-muted);font-size:.9em}
+#content{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+#md-content h2{font-size:1.3em;margin:28px 0 12px}
+#md-content h3{font-size:1.1em;margin:24px 0 10px;color:var(--accent)}
+#md-content p{margin:12px 0}
+#md-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.85em;overflow-x:auto;display:block}
+#md-content th,#md-content td{padding:6px 10px;border:1px solid var(--border);text-align:left}
+#md-content th{background:#1c2333;font-weight:600;color:var(--text-muted)}
+#md-content code{background:#1c2333;padding:2px 6px;border-radius:4px;font-size:.85em;color:#ffa657}
+#md-content pre{background:#161b22;border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto}
+#md-content li{margin:4px 0}
+.table-wrap{overflow-x:auto}
+</style></head>
+<body>
+<div class="header">
+<h1>📋 定时任务全量评估报告</h1>
+<div class="subtitle">2026-07-18 · 18个脚本审查</div>
+</div>
+<div id="content"><div id="md-content"><h1>📋 定时任务全量评估报告</h1>
+
+<blockquote><p>日期: 2026-07-18 | 审查范围: 15个定时任务 + 18个执行脚本</p></blockquote>
+
+<hr>
+
+<h2>1. 审查结论 — 总体良好</h2>
+
+<p>核心发现：<strong>所有脚本的数据源修复是自动继承的</strong>。因为数据层的修复在<code>fund_tools.py</code>中，而所有脚本都通过调用<code>fund_tools.*</code>函数获取数据，所以<code>push2→push2delay</code>、<code>_stale</code>标记、<code>AKShare备援</code>等修复对定时任务<strong>自动生效</strong>。</p>
+
+<p>具体的代码设计中，主要分为两类：</p>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>类型</th>
+    <th>代表脚本</th>
+    <th>数量</th>
+    <th>数据流</th>
+  </tr>
+  <tr>
+    <td><strong>no_agent数据采集</strong></td>
+    <td><code>collect_morning_data.py</code>等</td>
+    <td>6个</td>
+    <td>直接调fund_tools → 写文件 → feishu卡片</td>
+  </tr>
+  <tr>
+    <td><strong>thin wrapper</strong></td>
+    <td><code>run_morning.py</code>等</td>
+    <td>12个</td>
+    <td>仅调用子进程，无数据逻辑</td>
+  </tr>
+</table></div>
+
+
+<hr>
+
+<h2>2. 数据源利用评估</h2>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>修复项</th>
+    <th>是否被定时任务利用</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td><strong>push2→push2delay</strong></td>
+    <td>✅ <strong>自动继承</strong></td>
+    <td>所有调用<code>get_market_overview()</code>的脚本自动使用新域名</td>
+  </tr>
+  <tr>
+    <td><strong>Yahoo _stale标记</strong></td>
+    <td>⚠️ <strong>未被利用</strong></td>
+    <td>外盘数据有<code>_stale</code>字段，但脚本只取了<code>price/change_pct</code>，丢弃了<code>_stale</code></td>
+  </tr>
+  <tr>
+    <td><strong>北向AKShare备援</strong></td>
+    <td>✅ <strong>自动继承</strong></td>
+    <td>调用<code>get_northbound_flow()</code>自动使用新降级链</td>
+  </tr>
+  <tr>
+    <td><strong>新浪多正则</strong></td>
+    <td>✅ <strong>自动继承</strong></td>
+    <td>在<code>fund_tools.py</code>内部，脚本不需要改动</td>
+  </tr>
+  <tr>
+    <td><strong>track_source</strong></td>
+    <td>✅ <strong>自动继承</strong></td>
+    <td>在<code>fund_tools.py</code>内部，脚本不需要改动</td>
+  </tr>
+  <tr>
+    <td><strong>\_stale基金新鲜度</strong></td>
+    <td>⚠️ <strong>部分覆盖</strong></td>
+    <td>基金有自实现的stale逻辑，未使用新的<code>_fresh</code>标记体系</td>
+  </tr>
+</table></div>
+
+
+<hr>
+
+<h2>3. 发现的具体问题（非严重）</h2>
+
+<h3>3.1 ⚠️ 外盘 _stale 未传递到推送</h3>
+
+<p><strong>文件</strong>: <code>collect_morning_data.py</code> L35-L38</p>
+
+<pre><code># 当前：只取了price/change_pct，丢弃了_stale
+for name, q in overnight.items():
+    if q:
+        overnight_lines.append(f"{name}|{q['price']}|{q['change_pct']:+.2f}%")</code></pre>
+
+<p><strong>影响</strong>: 非交易日美股数据不会标注"⚠️ 非交易日"，用户看到"道琼斯涨X%"不知道是几天前的。</p>
+<p><strong>修复</strong>: 在生成表格时检查<code>_stale</code>并添加标注。</p>
+
+<h3>3.2 ⚠️ 基金stale使用自实现逻辑</h3>
+
+<p><strong>文件</strong>: <code>collect_morning_data.py</code> L190-203</p>
+
+<pre><code># 当前：自实现stale判断
+if not fd.get('stale') or fd.get('nav_date', '') &gt;= today:
+    continue</code></pre>
+
+<p><strong>影响</strong>: 代码功能正常，但与新的<code>_fresh</code>标记体系不统一。新增的<code>_tag_freshness</code>（含<code>_fetch_time/_is_trading_day</code>）未被利用。</p>
+<p><strong>建议</strong>: 统一使用<code>_fresh</code>标记替代自实现逻辑。</p>
+
+<h3>3.3 ✅ <code>update_operation_nav.py</code>的硬编码</h3>
+
+<p><strong>文件</strong>: <code>update_operation_nav.py</code> L97-98</p>
+
+<pre><code>yesterday = date(2026, 7, 16)
+yesterday_str = "2026-07-16"</code></pre>
+
+<p><strong>结论</strong>: <strong>这是正常的业务需求</strong>，该脚本是一次性的（确认2026-07-16特定操作），硬编码日期对应实际操作日期，不是Bug。</p>
+
+<hr>
+
+<h2>4. 架构合理性评估</h2>
+
+<h3>4.1 ✅ 做得好的</h3>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>设计</th>
+    <th>评价</th>
+  </tr>
+  <tr>
+    <td><strong>数据采集→卡片发送两层分离</strong></td>
+    <td>采集失败不影响卡片框架，卡片发送失败不影响数据落盘</td>
+  </tr>
+  <tr>
+    <td><strong>中间文件机制</strong></td>
+    <td>写 <code>/tmp/fund_data/</code> 中间文件，采集崩了也有部分数据</td>
+  </tr>
+  <tr>
+    <td><strong>交易日自检</strong></td>
+    <td><code>collect_morning_data.py</code> 开盘前检查<code>is_trading_day()</code>，非交易日跳过</td>
+  </tr>
+  <tr>
+    <td><strong>收盘快照复用</strong></td>
+    <td>利用收盘快照避免9:00再拉取一遍昨收数据，减少请求</td>
+  </tr>
+  <tr>
+    <td><strong>信号提取归因</strong></td>
+    <td><code>extract_signals_from_kols</code> + <code>store_signals</code> 分离提取与存储</td>
+  </tr>
+</table></div>
+
+
+<h3>4.2 ⚠️ 可改进的</h3>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>设计</th>
+    <th>问题</th>
+    <th>建议</th>
+  </tr>
+  <tr>
+    <td><strong>feishu卡片发送</strong></td>
+    <td>依赖<code>.feishu-deps</code> + <code>send_*_cards.py</code>，feishu在香港不可达</td>
+    <td>改用HTTP API直接推送</td>
+  </tr>
+  <tr>
+    <td><strong>timeout 180s</strong></td>
+    <td>部分脚本设180s，实际采集~25s，遇到微博采集超时可能不够</td>
+    <td>稳定后降到120s</td>
+  </tr>
+  <tr>
+    <td><strong>标签/赛道关键词硬编码</strong></td>
+    <td>KOL分析关键词（AI/算力/芯片等）硬编码在collect_morning_data.py</td>
+    <td>提取到配置文件</td>
+  </tr>
+  <tr>
+    <td><strong>KOL UID硬编码</strong></td>
+    <td>博主UID和名字写在代码里</td>
+    <td>提取到YAML配置</td>
+  </tr>
+</table></div>
+
+
+<hr>
+
+<h2>5. 结论</h2>
+
+<blockquote><p><strong>系统整体稳健，无阻断性Bug。</strong> 数据源修复自动继承到所有定时任务。</p></blockquote>
+<blockquote><p>待优化的是：外盘_stale利用（优先级低，不影响系统稳定性）。</p></blockquote>
+</div></div>
+</body></html>

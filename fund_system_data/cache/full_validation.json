@@ -1,0 +1,25 @@
+{
+  "date": "2026-07-15",
+  "total_value": 5995.780000000001,
+  "group_structure": {
+    "科技/AI": {
+      "total": 5201.05,
+      "count": 7
+    },
+    "资源/周期": {
+      "total": 341.55,
+      "count": 2
+    },
+    "新能源": {
+      "total": 13.84,
+      "count": 2
+    },
+    "黄金": {
+      "total": 439.34,
+      "count": 1
+    }
+  },
+  "index_metrics_6m": {},
+  "tech_overlap_count": 0,
+  "tech_fund_count": 7
+}

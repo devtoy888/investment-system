@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小红书服务器自动化采集方案评估</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#171a23; --panel2:#1e2230; --txt:#e6e9ef; --mut:#97a0b0;
+    --acc:#5b8cff; --ok:#36d399; --warn:#fbbf24; --bad:#f87171; --border:#262b38;
+    --code:#0b0d13;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px;}
+  header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:28px}
+  h1{font-size:28px;margin:0 0 8px}
+  .sub{color:var(--mut);font-size:14px}
+  h2{font-size:21px;margin:38px 0 14px;padding-left:10px;border-left:4px solid var(--acc)}
+  h3{font-size:17px;margin:24px 0 10px;color:#cfe0ff}
+  p,li{font-size:15px;color:#d7dce6}
+  code{background:var(--code);padding:2px 6px;border-radius:5px;font-family:"SF Mono",Consolas,Menlo,monospace;font-size:13px;color:#9fe6c4}
+  pre{background:var(--code);border:1px solid var(--border);border-radius:10px;padding:16px;overflow:auto;font-size:13px;line-height:1.55}
+  pre code{background:none;padding:0;color:#d7dce6}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  th,td{border:1px solid var(--border);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:var(--panel2);color:#cfe0ff;font-weight:600}
+  tr:nth-child(even){background:var(--panel)}
+  blockquote{margin:14px 0;padding:12px 16px;background:var(--panel);border-left:4px solid var(--warn);border-radius:8px;color:#e9d9a8}
+  .ok{color:var(--ok);font-weight:600}
+  .warn{color:var(--warn);font-weight:600}
+  .bad{color:var(--bad);font-weight:600}
+  .tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:12px;font-weight:600;margin-right:2px}
+  .t-ok{background:rgba(54,211,153,.15);color:var(--ok)}
+  .t-yel{background:rgba(251,191,36,.15);color:var(--warn)}
+  .t-red{background:rgba(248,113,113,.15);color:var(--bad)}
+  .t-pay{background:rgba(91,140,255,.15);color:var(--acc)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .card .big{font-size:26px;font-weight:700}
+  .card .lbl{color:var(--mut);font-size:13px;margin-top:4px}
+  details{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin:12px 0}
+  summary{cursor:pointer;font-weight:600;color:#cfe0ff}
+  .toc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:18px 0}
+  .toc a{color:var(--acc);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .foot{margin-top:48px;padding-top:18px;border-top:1px solid var(--border);color:var(--mut);font-size:13px}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:12px;color:var(--mut);margin:2px 4px 2px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>小红书（RedNote）服务器自动化采集方案评估</h1>
+  <div class="sub">目标环境：Oracle ARM64 服务器（无桌面 / 无 Chrome） · 调研日：2026-07-19 · 结论均来自实测 + 源码核对</div>
+</header>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#c0">一句话结论</a></li>
+    <li><a href="#c1">核心约束与破局点</a></li>
+    <li><a href="#c2">全量方案评估矩阵</a></li>
+    <li><a href="#c3">推荐方案落地（xiaohongshu-cli + Cookie 复用）</a></li>
+    <li><a href="#c4">付费托管替代</a></li>
+    <li><a href="#c5">自动化与监控</a></li>
+    <li><a href="#c6">实测证据清单</a></li>
+    <li><a href="#c7">风险与合规</a></li>
+    <li><a href="#c8">下一步行动</a></li>
+  </ol>
+</div>
+
+<div class="grid">
+  <div class="card"><div class="big ok">✅</div><div class="lbl">服务器采集可行性</div></div>
+  <div class="card"><div class="big">7天</div><div class="lbl">Cookie 有效期</div></div>
+  <div class="card"><div class="big">0</div><div class="lbl">采集中途浏览器依赖</div></div>
+  <div class="card"><div class="big">1次</div><div class="lbl">桌面登录频率</div></div>
+</div>
+
+<h2 id="c0">0. 一句话结论</h2>
+<p><span class="ok">✅ 可行，且已有现成工具。</span> 推荐用 <code>xiaohongshu-cli</code>（jackwener，逆向 Web API 方案），
+它在<b>数据采集中途完全不依赖浏览器</b>（已用源码确认：<code>search/read/feed/comments</code> 走纯 HTTP 签名 API，不 import 任何浏览器库）。
+唯一的浏览器依赖在 <b>登录环节</b>——而登录可以<b>在桌面完成一次、导出 cookie、上传到服务器长期复用</b>（约 7 天有效期，到期重导一次即可）。</p>
+<blockquote>
+⚠️ 这与本机 <code>agent-reach</code> skill 的 <code>server-setup.md</code> 旧结论（"ARM64 无头服务器小红书不可能"）<b>矛盾</b>。
+旧结论针对 <code>xiaohongshu-mcp</code>（go-rod + Chromium 方案），<b>不适用于</b>逆向 API 方案。旧结论已过时，本文以实测为准。
+</blockquote>
+
+<h2 id="c1">1. 核心约束与破局点</h2>
+<table>
+<tr><th>约束</th><th>影响</th><th>破局点</th></tr>
+<tr><td>服务器无桌面、无 Chrome</td><td>浏览器自动化方案（OpenCLI / xiaohongshu-mcp / camoufox）跑不通</td><td>改用<b>逆向 API 方案</b>，<code>search/read</code> 不碰浏览器</td></tr>
+<tr><td>ARM64 无头</td><td><code>xiaohongshu-mcp</code> 的 Chromium 静默下载失败</td><td>选纯 Python 的 <code>xiaohongshu-cli</code>，无原生浏览器依赖</td></tr>
+<tr><td>小红书无官方 API</td><td>必须逆向或借浏览器</td><td><code>xiaohongshu-cli</code> 已实现 <code>x-s</code>/<code>x-s-common</code> 签名</td></tr>
+<tr><td>登录需浏览器/扫码</td><td><code>xhs login --qrcode</code> 在服务器实测报错（camoufox headless=False）</td><td><b>登录在桌面做</b>，导出 <code>cookies.json</code> 到服务器</td></tr>
+<tr><td>Cookie 7 天过期</td><td>服务器无法自助续期</td><td>cron 监控 + 桌面每 7 天重导一次</td></tr>
+</table>
+
+<h2 id="c2">2. 全量方案评估矩阵</h2>
+<p>按"服务器可行性"分四档：<span class="tag t-ok">✅ 直接可用</span> <span class="tag t-yel">🟡 需桌面协助(一次)</span> <span class="tag t-red">🔴 服务器不可用</span> <span class="tag t-pay">💰 付费托管</span></p>
+<table>
+<tr><th>#</th><th>方案</th><th>类型</th><th>服务器可行性</th><th>维护成本</th><th>风控风险</th><th>备注</th></tr>
+<tr><td>1</td><td><b>xiaohongshu-cli</b>（jackwener，逆向 API）</td><td>纯 API</td><td><span class="tag t-yel">🟡 登录需桌面协助一次</span></td><td>低</td><td>中</td><td><b>★ 主推荐</b></td></tr>
+<tr><td>2</td><td>xiaohongshu-mcp（xpzouying，go-rod+Chromium）</td><td>浏览器 MCP</td><td><span class="tag t-red">🔴 ARM64 无头不可用</span></td><td>—</td><td>低</td><td>桌面可用；服务器 Chromium 下载失败</td></tr>
+<tr><td>3</td><td>xhs-cli（jackwener，camoufox 浏览器）</td><td>浏览器</td><td><span class="tag t-red">🔴 登录即崩(实测)</span></td><td>—</td><td>低</td><td>camoufox 在无头服务器起不来</td></tr>
+<tr><td>4</td><td>OpenCLI（jackwener，浏览器桥接）</td><td>浏览器扩展</td><td><span class="tag t-red">🔴 需桌面+Chrome</span></td><td>—</td><td>低</td><td>Agent Reach v1.5.0 首选后端，但服务器跳过</td></tr>
+<tr><td>5</td><td>Spider_XHS（cv-cat，逆向+发布）</td><td>逆向+服务</td><td><span class="tag t-yel">🟡 类方案1，偏运营</span></td><td>中</td><td>中</td><td>多账号/创作者向，重</td></tr>
+<tr><td>6</td><td>Apify / Tikhub 等托管 API</td><td>付费 SaaS</td><td><span class="tag t-pay">✅ 服务器直接调</span></td><td>低</td><td>低</td><td>💰 ~$0.01/请求 或 $15/月</td></tr>
+<tr><td>7</td><td>自建移动端 API 逆向</td><td>硬核逆向</td><td><span class="tag t-yel">🟡 可行但极高门槛</span></td><td>极高</td><td>高</td><td>签名随版本变，需常跟</td></tr>
+</table>
+<p><b>评估结论</b>：对"服务器 + 自动化 + 低成本 + 可接受 7 天续期"的场景，<b>方案 1（xiaohongshu-cli + 桌面导 cookie）</b> 是最优解。纯不想碰账号/代码、能付费则<b>方案 6</b>。</p>
+
+<h2 id="c3">3. 推荐方案落地（xiaohongshu-cli + Cookie 复用）</h2>
+
+<h3>3.1 架构</h3>
+<pre><code>┌─────────────┐        导出 cookies.json         ┌──────────────────────┐
+│  桌面(你电脑) │  ───────────────────────────▶   │  Oracle ARM64 服务器   │
+│ Chrome登录XHS │   (每7天一次, 或由cron提醒)      │  ~/.xiaohongshu-cli/  │
+│ xhs login    │                                  │   cookies.json        │
+└─────────────┘                                  │        │             │
+                                                  │   xhs search/read ... │
+                                                  │   (纯HTTP签名,无浏览器)│
+                                                  │        │             │
+                                                  │  采集结果→Hermes/文件 │
+                                                  └──────────────────────┘</code></pre>
+
+<h3>3.2 服务器端安装（已实测可装）</h3>
+<pre><code># 架构确认
+uname -m        # → aarch64（ARM64，无需浏览器）
+
+# 安装（uv，已验证 xiaohongshu-cli==0.6.4 在 ARM64 正常装）
+export PATH="$HOME/.local/bin:$PATH"   # uv 工具默认不进 PATH，务必先 export
+uv tool install xiaohongshu-cli
+
+xhs --version   # → xhs, version 0.6.4</code></pre>
+
+<h3>3.3 登录：在桌面完成，导出 cookie 到服务器</h3>
+<p><b>桌面侧（你的 Mac/Windows，有 Chrome）：</b></p>
+<pre><code>uv tool install xiaohongshu-cli
+# 方式A：自动从本机 Chrome 提取 cookie（需先在 Chrome 登录小红书网页版）
+xhs login
+# 方式B：二维码扫码（用小红书 App 扫终端二维码）
+xhs login --qrcode
+# 登录成功后 cookie 存于 ~/.xiaohongshu-cli/cookies.json
+cat ~/.xiaohongshu-cli/cookies.json</code></pre>
+<p><b>服务器侧（把 cookie 放进去）：</b></p>
+<pre><code>mkdir -p ~/.xiaohongshu-cli
+# 把桌面生成的 cookies.json 内容写入（明文 JSON，含 a1/web_session/webId 等键）
+cat > ~/.xiaohongshu-cli/cookies.json &lt;&lt;'EOF'
+{ "a1": "...", "web_session": "...", "webId": "...", "web_session_sec": "...", "saved_at": 0 }
+EOF
+chmod 600 ~/.xiaohongshu-cli/cookies.json</code></pre>
+<blockquote>🔑 <b>cookie 格式要点（已核对源码 <code>cookies.py</code>）</b>：
+<ul>
+<li>文件为<b>明文 JSON dict</b>，<code>load_saved_cookies()</code> 只校验存在 <code>a1</code> 键即视为有效</li>
+<li>关键字段：<code>a1</code>（必填）、<code>web_session</code>、<code>web_session_sec</code>、<code>webId</code></li>
+<li>自动续期会"尝试从浏览器刷新"，<b>但服务器无浏览器会失败并告警</b> → 靠人工/桌面重导</li>
+</ul></blockquote>
+
+<h3>3.4 采集（纯 API，零浏览器——已用源码确认）</h3>
+<pre><code>xhs search "AI副业" --json | jq '.[0].id'
+xhs search "咖啡" --sort popular        # general | popular | latest
+xhs search "穿搭" --type video          # all | video | image
+
+xhs search "黑丝"
+xhs read 1                              # 读上一次列表第 1 条
+xhs comments 1 --all --json             # 全部评论（自动翻页）
+
+xhs user &lt;user_id&gt;
+xhs user-posts &lt;user_id&gt; --cursor X
+xhs feed                                # 推荐流
+xhs hot -c travel                       # 热门(分类: fashion/food/travel/...)
+
+xhs status                              # 非 TTY 默认输出 YAML，失败 ≠ 0</code></pre>
+
+<h3>3.5 与 Hermes / agent-reach 集成</h3>
+<pre><code># agent-reach v1.5.0 中小红书首选 OpenCLI(桌面)，服务器需显式降级到 CLI 路径
+agent-reach doctor --json | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print(d.get('xiaohongshu',{}).get('active_backend','n/a'))
+"
+# 实际调用时直接用 xhs 子命令即可，不必强依赖 agent-reach 的路由</code></pre>
+
+<h2 id="c4">4. 付费托管替代（方案 6，零运维）</h2>
+<table>
+<tr><th>服务</th><th>计费</th><th>说明</th></tr>
+<tr><td>Tikhub RedNote API</td><td>~$0.01/请求</td><td>红书 Notes/Users/Search 端点</td></tr>
+<tr><td>Apify all-in-one-rednote</td><td>$15/月 + 用量</td><td>托管爬虫，输出结构化</td></tr>
+</table>
+<p><b>取舍</b>：付费方案省去 7 天续期的人工操作，但有成本、且把账号/数据交给第三方。自用低频采集仍推荐<b>方案 1</b>。</p>
+
+<h2 id="c5">5. 自动化与监控（cron 示例）</h2>
+<pre><code># /opt/data/scripts/xhs_collect.sh —— 每日采集 + cookie 健康巡检
+#!/usr/bin/env bash
+export PATH="$HOME/.local/bin:$PATH"
+if ! xhs status >/dev/null 2>&1; then
+  echo "⚠️ 小红书 cookie 已失效，请桌面重导 cookies.json" | \
+    /opt/data/scripts/send_qq_bot.py "【XHS采集告警】cookie 失效，需重导"
+  exit 1
+fi
+xhs search "AI副业" --json > /opt/data/data/xhs/ai_sidehustle_$(date +%F).json</code></pre>
+<pre><code># crontab（主 profile cron 按 UTC，北京时间 09:00 = 01:00 UTC）
+0 1 * * * /opt/data/scripts/xhs_collect.sh >> /opt/data/logs/xhs_collect.log 2>&1</code></pre>
+<blockquote>⚠️ 时区铁律（来自记忆）：cron 默认按 <b>UTC</b>。北京 09:00 需写 <code>0 1 * * *</code>。investment profile 的 cron 按 +08。</blockquote>
+
+<h2 id="c6">6. 实测证据清单</h2>
+<table>
+<tr><th>假设</th><th>验证方式</th><th>结果</th></tr>
+<tr><td>服务器架构</td><td><code>uname -m</code></td><td class="ok">aarch64（ARM64）</td></tr>
+<tr><td>xiaohongshu-cli 能在 ARM64 安装</td><td><code>uv tool install xiaohongshu-cli</code></td><td class="ok">✅ 成功，v0.6.4</td></tr>
+<tr><td><code>xhs login --qrcode</code> 服务器可用？</td><td>实跑 20s</td><td class="bad">🔴 崩：Camoufox(headless=False) 需浏览器</td></tr>
+<tr><td><code>search/read</code> 是否依赖浏览器？</td><td>grep camoufox/playwright in search.py+client.py</td><td class="ok">✅ 不 import 浏览器，走 XhsClient 纯 HTTP</td></tr>
+<tr><td>cookie 能否跨机器复用？</td><td>读 cookies.py</td><td class="ok">✅ 明文 JSON，只校验 a1</td></tr>
+<tr><td>旧 skill 结论是否仍成立？</td><td>对比 server-setup.md 与实测</td><td class="bad">❌ 已过时（针对 go-rod）</td></tr>
+<tr><td>R2 上传器接口</td><td>读 /opt/data/r2_uploader.py</td><td class="ok">R2Uploader().upload_file(path,key,ct)</td></tr>
+</table>
+
+<h2 id="c7">7. 风险与合规</h2>
+<ol>
+<li><b>账号风控</b>：逆向 API 触发风控可能限流/封号。建议单账号低频、加随机延迟（该 CLI 已内置高斯抖动 + 指数退避）。</li>
+<li><b>多端互踢</b>：小红书<b>不允许同账号多 Web 端同时登录</b>。服务器用 cookie 期间，桌面网页版会掉线；反之亦然。错峰使用。</li>
+<li><b>Cookie 7 天有效</b>：务必 cron 监控 <code>xhs status</code>，失效即告警重导。</li>
+<li><b>合规第一</b>：仅采集公开内容、仅自用/学习。勿批量抓取他人隐私、勿商用爬取。遵守平台 ToS。</li>
+<li><b>密钥保护</b>：<code>cookies.json</code> 含会话凭证，<code>chmod 600</code>，勿入 git、勿进 .env（.env 由你自管，Agent 不写）。</li>
+</ol>
+
+<h2 id="c8">8. 下一步行动（可选）</h2>
+<ul>
+<li class="pill">桌面执行 xhs login / --qrcode，导出 cookies.json</li>
+<li class="pill">传到服务器 ~/.xiaohongshu-cli/</li>
+<li class="pill">服务器跑 xhs search "测试" --json 验证</li>
+<li class="pill">配置 cron 每日采集 + 失效告警</li>
+<li class="pill">（可选）迁 Tikhub/Apify 付费 API</li>
+</ul>
+
+<div class="foot">
+本文结论均基于 2026-07-19 当日工具版本与实测，工具更新后请重跑 §6 验证清单。
+<br>生成：Hermes Agent · 同源 MD：<code>xiaohongshu-server-collection.md</code>
+</div>
+</div>
+</body>
+</html>

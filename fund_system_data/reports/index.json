@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "generated": "2026-07-21T17:30:00",
+    "description": "投资系统报告索引"
+  },
+  "reports": {
+    "morning": {
+      "type": "晨报",
+      "url": "https://hermes-main-media.devtoy.xyz/fund-system/reports/morning_2026-07-21.md"
+    },
+    "noon": {
+      "type": "午报",
+      "url": "https://hermes-main-media.devtoy.xyz/fund-system/reports/noon_2026-07-21.md"
+    },
+    "decision": {
+      "type": "决策",
+      "url": "https://hermes-main-media.devtoy.xyz/fund-system/reports/decision_2026-07-21.md"
+    },
+    "closing": {
+      "type": "收盘",
+      "url": "https://hermes-main-media.devtoy.xyz/fund-system/reports/closing_2026-07-21.md"
+    }
+  },
+  "dashboard": "https://hermes-main-media.devtoy.xyz/fund-system/reports/dashboard.html",
+  "archive": {
+    "html": "https://hermes-main-media.devtoy.xyz/fund-system/reports/index.html"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "_comment": "投资赛道 RSS 新闻源 — 从 Vibe-Research news_sources.json 精选与持仓相关的赛道",
+  "fetch": {
+    "per_source": 3,
+    "timeout": 10,
+    "recent_days": 3
+  },
+  "industries": [
+    {"key": "ai_semi", "name": "AI / 半导体/芯片"},
+    {"key": "energy", "name": "能源 / 新能源"},
+    {"key": "macro", "name": "财经 / 宏观"},
+    {"key": "gold", "name": "黄金 / 贵金属"}
+  ],
+  "sources": [
+    {"name": "量子位", "hint": "ai_semi", "type": "rss", "url": "https://www.qbitai.com/feed"},
+    {"name": "机器之心", "hint": "ai_semi", "type": "rss", "url": "https://jiqizhixin.com/rss"},
+    {"name": "OpenAI", "hint": "ai_semi", "type": "rss", "url": "https://openai.com/news/rss.xml"},
+    {"name": "Google AI", "hint": "ai_semi", "type": "rss", "url": "https://blog.google/technology/ai/rss/"},
+    {"name": "TechCrunch AI", "hint": "ai_semi", "type": "rss", "url": "https://techcrunch.com/category/artificial-intelligence/feed/"},
+    {"name": "The Verge AI", "hint": "ai_semi", "type": "rss", "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"},
+    {"name": "Hugging Face", "hint": "ai_semi", "type": "rss", "url": "https://huggingface.co/blog/feed.xml"},
+    {"name": "半导体行业观察", "hint": "ai_semi", "type": "rss", "url": "https://www.semiinsights.com/feed"},
+    {"name": "EETimes", "hint": "ai_semi", "type": "rss", "url": "https://www.eetimes.com/feed"},
+    {"name": "Anthropic", "hint": "ai_semi", "type": "rss", "url": "https://www.anthropic.com/feed.xml"},
+    {"name": "36氪 AI", "hint": "ai_semi", "type": "rss", "url": "https://36kr.com/feed/ai"},
+    {"name": "光伏头条", "hint": "energy", "type": "rss", "url": "https://guangfu.bjx.com.cn/rss.aspx"},
+    {"name": "北极星储能", "hint": "energy", "type": "rss", "url": "https://chuneng.bjx.com.cn/rss.aspx"},
+    {"name": "新能源汽车新闻", "hint": "energy", "type": "rss", "url": "https://www.evpartner.com/rss/"},
+    {"name": "OFweek太阳能", "hint": "energy", "type": "rss", "url": "https://solar.ofweek.com/rss.xml"},
+    {"name": "PV Magazine", "hint": "energy", "type": "rss", "url": "https://www.pv-magazine.com/feed"},
+    {"name": "Reuters Energy", "hint": "energy", "type": "rss", "url": "https://www.reuters.com/arenergy/arc/outboundfeeds/rss/"},
+    {"name": "Bloomberg NEF", "hint": "energy", "type": "rss", "url": "https://about.bnef.com/feed"},
+    {"name": "华尔街见闻", "hint": "macro", "type": "rss", "url": "https://wallstreetcn.com/rss"},
+    {"name": "财新网", "hint": "macro", "type": "rss", "url": "https://www.caixin.com/rss/"},
+    {"name": "Reuters Markets", "hint": "macro", "type": "rss", "url": "https://www.reuters.com/markets/arc/outboundfeeds/rss/"},
+    {"name": "FT中文网", "hint": "macro", "type": "rss", "url": "https://www.ftchinese.com/rss/feed"},
+    {"name": "Bloomberg Markets", "hint": "macro", "type": "rss", "url": "https://feeds.bloomberg.com/markets/news.rss"},
+    {"name": "WSJ Markets", "hint": "macro", "type": "rss", "url": "https://feeds.a.dj.com/rss/RSSMarketsMain.xml"},
+    {"name": "中国人民银行", "hint": "macro", "type": "rss", "url": "https://www.pbc.gov.cn/rss/"},
+    {"name": "Kitco 黄金", "hint": "gold", "type": "rss", "url": "https://www.kitco.com/news/rss"},
+    {"name": "Gold.org", "hint": "gold", "type": "rss", "url": "https://www.gold.org/rss/news/"},
+    {"name": "Mining.com Gold", "hint": "gold", "type": "rss", "url": "https://www.mining.com/category/gold/feed/"},
+    {"name": "Reuters Commodities", "hint": "gold", "type": "rss", "url": "https://www.reuters.com/markets/commodities/arc/outboundfeeds/rss/"},
+    {"name": "黄金网", "hint": "gold", "type": "rss", "url": "https://www.gold678.com/rss"}
+  ]
+}

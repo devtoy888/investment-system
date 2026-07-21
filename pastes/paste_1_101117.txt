@@ -1,0 +1,73 @@
+你现在使用什么模型，能做什么                                                                                                                                           
+                                                                                                                                                                          
+ ┊  我是运行在 Hermes Agent（由 Nous Research 构建）上的 AI 助手。                                                                                                        
+                                                                                                                                                                          
+    当前使用的模型                                                                                                                                                        
+                                                                                                                                                                          
+    这个会话的启动模型是 DeepSeek v4 Flash（来自 DeepSeek 提供商）。根据你的配置记录，你的主模型已设为 Google Gemini 2.0 Flash，DeepSeek v4 Flash                         
+    作为回退模型。所以当前是基于你设定好的模型链在运行。                                                                                                                  
+                                                                                                                                                                          
+    我能做什么                                                                                                                                                            
+                                                                                                                                                                          
+    我拥有丰富的工具集，可以帮你做很多事，包括但不限于：                                                                                                                  
+                                                                                                                                                                          
+    🛠 系统与终端                                                                                                                                                          
+                                                                                                                                                                          
+      Actually, the conversation header shows the model that started this conversation. The memory says the user configured Gemini 2.0 Flash as main model. Since         
+      conversations start with whatever model is configured at that time, and the header shows deepseek-v4-flash, it's possible the model was switched since then or      
+      this is a new conversation after configuration changes.                                                                                                             
+      Let me just be straightforward - I'm running on Hermes Agent, currently using DeepSeek v4 Flash (as shown in the conversation header), and I have access to all     
+      the tools listed. I'll explain what I can do in Chinese since the user communicates primarily in Chinese.                                                           
+                                                                                                                                                                          
+ ┊  我是运行在 Hermes Agent（由 Nous Research 构建）上的 AI 助手。                                                                                                        
+                                                                                                                                                                          
+    当前使用的模型                                                                                                                                                        
+                                                                                                                                                                          
+    这个会话的启动模型是 DeepSeek v4 Flash（来自 DeepSeek 提供商）。根据你的配置记录，你的主模型已设为 Google Gemini 2.0 Flash，DeepSeek v4 Flash                         
+    作为回退模型。所以当前是基于你设定好的模型链在运行。                                                                                                                  
+                                                                                                                                                                          
+    我能做什么                                                                                                                                                            
+                                                                                                                                                                          
+    我拥有丰富的工具集，可以帮你做很多事，包括但不限于：                                                                                                                  
+                                                                                                                                                                          
+    🛠 系统与终端                                                                                                                                                          
+                                                                                                                                                                          
+    • 执行 Shell 命令、运行脚本、管理进程                                                                                                                                 
+    • 读写文件、搜索文件内容、做精确的文本替换编辑                                                                                                                        
+                                                                                                                                                                          
+    🌐 网络与浏览器                                                                                                                                                       
+                                                                                                                                                                          
+    • 浏览网页、点击元素、填写表单、截图分析                                                                                                                              
+    • 搜索网络信息                                                                                                                                                        
+                                                                                                                                                                          
+    💬 消息平台集成                                                                                                                                                       
+                                                                                                                                                                          
+    • 配置 Feishu、QQBot、微信、DingTalk、WhatsApp、Telegram 等                                                                                                           
+    • 管理 Hermes Gateway 平台适配器                                                                                                                                      
+                                                                                                                                                                          
+    🤖 Hermes 配置与管理                                                                                                                                                  
+                                                                                                                                                                          
+    • 配置模型、Provider、环境变量                                                                                                                                        
+    • 管理技能（Skills）、插件（Plugins）、定时任务（Cron）                                                                                                               
+    • 管理持久化记忆（Memory）                                                                                                                                            
+                                                                                                                                                                          
+    📝 开发辅助                                                                                                                                                           
+                                                                                                                                                                          
+    • 代码审查、调试（Python/Node.js）                                                                                                                                    
+    • TDD 工作流、系统化 Debug                                                                                                                                            
+    • Git/GitHub 操作（PR、Issue、CI）                                                                                                                                    
+                                                                                                                                                                          
+    📊 数据与文档                                                                                                                                                         
+                                                                                                                                                                          
+    • Jupyter Notebook 交互式分析                                                                                                                                         
+    • 文本转语音                                                                                                                                                          
+    • OCR 文档提取                                                                                                                                                        
+    • 创建演示文稿、电子表格                                                                                                                                              
+                                                                                                                                                                          
+    🎨 创意与媒体                                                                                                                                                         
+                                                                                                                                                                          
+    • ASCII 艺术、架构图、手绘风格图表                                                                                                                                    
+    • p5.js 创意编程、Manim 动画                                                                                                                                          
+    • 音乐生成（Suno/MusicGen）                                                                                                                                           
+                                                                                                                                                                          
+    你想让我帮你做什么？😊      

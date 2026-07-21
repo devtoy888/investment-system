@@ -1,0 +1,138 @@
+# 🔔 持仓加仓信号规则
+# 每交易日收盘后由 signal_engine.py 加载并评估
+# 添加新信号 → 在此文件新增一条规则，无需修改代码
+
+rules:
+  # ── 大摩数字经济C (017103) ──
+  - id: "017103-independent-strength"
+    name: "独立走强"
+    fund_code: "017103"
+    benchmark_code: "sz159813"      # 半导体ETF
+    description: "翻红且半导体没有大涨，资金回流信号"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 0.5
+      - type: "benchmark_change"
+        operator: "<"
+        value: 1.0
+    message: "📊 大摩数字经济C: 净值{nav}→{enav} ({ec:+.2f}%)\n✅ 独立走强（半导体仅{bk:+.2f}%），资金回流的信号"
+
+  - id: "017103-stabilize"
+    name: "短期企稳"
+    fund_code: "017103"
+    description: "翻红，短期企稳信号（未达独立走强阈值时触发）"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 0.3
+      - type: "estimated_change"
+        operator: "<="
+        value: 0.5
+    message: "📊 大摩数字经济C: 净值{nav}→{enav} ({ec:+.2f}%)\n📈 今日翻红，短期企稳信号"
+
+  # ── 天弘光伏C (011103) ──
+  - id: "011103-stop-loss"
+    name: "止损线预警"
+    fund_code: "011103"
+    benchmark_code: "sz159857"      # 光伏ETF
+    description: "光伏ETF跌至0.75止损线"
+    conditions:
+      - type: "benchmark_price"
+        operator: "<="
+        value: 0.75
+    message: "⚠️ 光伏ETF跌至{bk_price}（触及0.75止损线）！建议减仓一半。"
+
+  - id: "011103-volume-surge"
+    name: "放量反弹"
+    fund_code: "011103"
+    benchmark_code: "sz159857"
+    description: "涨>2%且振幅>3%"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 2.0
+      - type: "benchmark_amplitude"
+        operator: ">"
+        value: 3.0
+    message: "📊 天弘光伏C: 净值{nav}→{enav} ({ec:+.2f}%) ETF={bk_price}\n🔥 放量反弹（振幅{bk_amp:.1f}%）！加仓时机信号"
+
+  - id: "011103-turn-green"
+    name: "翻红"
+    fund_code: "011103"
+    benchmark_code: "sz159857"
+    description: "单日>+0.5%"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 0.5
+    message: "📊 天弘光伏C: 净值{nav}→{enav} ({ec:+.2f}%)\n📈 今日翻红，短期企稳信号"
+
+  # ── 天弘新能源增强C (012329) ──
+  - id: "012329-volume-surge"
+    name: "放量反弹"
+    fund_code: "012329"
+    benchmark_code: "sz159752"      # 新能源ETF
+    description: "涨>1.5%且振幅>2%"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 1.5
+      - type: "benchmark_amplitude"
+        operator: ">"
+        value: 2.0
+    message: "📊 天弘新能源增强C: 净值{nav}→{enav} ({ec:+.2f}%)\n🔥 放量反弹（振幅{bk_amp:.1f}%），可关注加仓"
+
+  - id: "012329-turn-green"
+    name: "翻红"
+    fund_code: "012329"
+    benchmark_code: "sz159752"
+    description: "单日>+0.5%"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 0.5
+    message: "📊 天弘新能源增强C: 净值{nav}→{enav} ({ec:+.2f}%)\n📈 今日翻红"
+
+  # ── 电网设备联接C (025857) ──
+  - id: "025857-contract-stabilize"
+    name: "缩量止跌"
+    fund_code: "025857"
+    benchmark_code: "sz159326"      # 电网设备ETF
+    description: "振幅<2%且微涨/微跌"
+    conditions:
+      - type: "benchmark_amplitude"
+        operator: "<"
+        value: 2.0
+      - type: "estimated_change"
+        operator: ">="
+        value: -0.3
+      - type: "estimated_change"
+        operator: "<="
+        value: 1.0
+    message: "📊 电网设备联接C: 净值{nav}→{enav} ({ec:+.2f}%) ETF={bk_price} 振幅{bk_amp:.1f}%\n✅ 缩量止跌（振幅{bk_amp:.1f}%），回调企稳信号，可关注加仓"
+
+  - id: "025857-volume-surge"
+    name: "放量上涨"
+    fund_code: "025857"
+    benchmark_code: "sz159326"
+    description: "涨>2%"
+    conditions:
+      - type: "estimated_change"
+        operator: ">"
+        value: 2.0
+    message: "📊 电网设备联接C: 净值{nav}→{enav} ({ec:+.2f}%)\n🔥 放量上涨！加仓时机"
+
+  - id: "025857-hold-above"
+    name: "企稳回升"
+    fund_code: "025857"
+    benchmark_code: "sz159326"
+    description: "ETF在1.95以上且翻红"
+    conditions:
+      - type: "benchmark_price"
+        operator: ">"
+        value: 1.95
+      - type: "estimated_change"
+        operator: ">"
+        value: 0
+    message: "📊 电网设备联接C: 净值{nav}→{enav} ({ec:+.2f}%) ETF={bk_price}\n📈 在{bk_price}企稳回升，关注加仓"

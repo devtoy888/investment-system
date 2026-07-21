@@ -1,0 +1,1 @@
+/opt/data/scripts/collect_weekend_data.py

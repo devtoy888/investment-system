@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>持仓 · 投资系统</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.7;
+    padding: 16px; font-size: 15px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    background: linear-gradient(135deg, #1a2332, #161b22);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; background: linear-gradient(135deg,var(--accent),#bc8cff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header .sub { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+  .header .links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .header .links a { color: var(--accent); text-decoration: none; font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; }
+  .header .links a:hover { background: var(--accent); color: var(--bg); }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .summary-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+  .summary-card .num { font-size: 22px; font-weight: 700; }
+  .summary-card .label { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  .group-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+  .group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .group-name { font-weight: 600; font-size: 15px; }
+  .group-total { font-size: 13px; }
+  .fund-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(48,54,61,0.3); font-size: 13px; }
+  .fund-row:last-child { border-bottom: none; }
+  .fund-name { flex: 1; }
+  .fund-code { color: var(--text-dim); font-size: 11px; }
+  .fund-value { font-weight: 600; text-align: right; min-width: 70px; }
+  .fund-pnl { text-align: right; min-width: 60px; font-weight: 600; }
+  .fund-pnl.pos { color: var(--green); }
+  .fund-pnl.neg { color: var(--red); }
+
+  .section-title { font-size: 16px; font-weight: 600; margin: 20px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+  .cleared-list { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .cleared-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid rgba(48,54,61,0.2); }
+  .cleared-item:last-child { border-bottom: none; }
+  .cleared-code { color: var(--text-dim); }
+
+  .warn-box { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 13px; color: var(--red); }
+  .warn-box .title { font-weight: 600; margin-bottom: 4px; }
+
+  .loading { text-align: center; padding: 60px; color: var(--text-dim); }
+  .loading .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .progress-bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .progress-bar .fill { height: 100%; border-radius: 4px; }
+
+  @media (max-width: 600px) {
+    body { padding: 10px; font-size: 14px; }
+    .header { padding: 14px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .fund-row { font-size: 12px; flex-wrap: wrap; }
+    .fund-pnl { min-width: 50px; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div>加载持仓数据中...</div>
+  </div>
+</div>
+<script>
+const MD_URL = 'https://hermes-main-media.devtoy.xyz/fund-system/data/portfolio/portfolio-2026-07-15.md';
+
+// 持仓数据直接嵌入（免请求，确保稳定）
+const PORTFOLIO = {
+  date: '2026-07-15',
+  groups: [
+    { name: '科技/AI', color: '#58a6ff', pct: 86.5, funds: [
+      { code: '011613', name: '华夏科创50ETF联接C', value: 1307.17, pnl: 5.19, pnlPct: 0.40 },
+      { code: '024418', name: '华夏上证科创板半导体材料设备ETF联接C', value: 1143.60, pnl: 18.23, pnlPct: 1.62 },
+      { code: '011712', name: '大摩万众创新混合C', value: 517.73, pnl: -0.24, pnlPct: -0.05 },
+      { code: '026449', name: '大摩沪港深科技混合C', value: 277.23, pnl: 24.40, pnlPct: 9.65 },
+      { code: '017103', name: '大摩数字经济混合C', value: 485.78, pnl: -99.39, pnlPct: -16.99 },
+      { code: '020233', name: '大摩景气智选混合C', value: 517.00, pnl: 17.32, pnlPct: 3.47 },
+      { code: '014871', name: '大摩科技领先混合C', value: 610.95, pnl: -7.10, pnlPct: -1.15 },
+    ]},
+    { name: '黄金', color: '#d29922', pct: 7.4, funds: [
+      { code: '009478', name: '中银上海金ETF联接C', value: 418.57, pnl: -20.77, pnlPct: -4.73 },
+    ]},
+    { name: '资源/周期', color: '#bc8cff', pct: 5.9, funds: [
+      { code: '025857', name: '华夏中证电网设备ETF联接C', value: 121.49, pnl: -5.60, pnlPct: -4.41 },
+      { code: '163302', name: '大摩资源优选混合(LOF)', value: 208.63, pnl: -5.83, pnlPct: -2.72 },
+    ]},
+    { name: '新能源', color: '#3fb950', pct: 0.2, funds: [
+      { code: '012329', name: '天弘中证新能源指数增强C', value: 4.16, pnl: -0.93, pnlPct: -18.27 },
+      { code: '011103', name: '天弘中证光伏C', value: 7.08, pnl: -1.67, pnlPct: -19.09 },
+    ]},
+  ],
+  cleared: [
+    { code: '002963', name: '易方达黄金ETF联接C', group: '黄金' },
+    { code: '026421', name: '大摩ESG量化混合C', group: '科技/AI' },
+    { code: '026200', name: '大摩港股通多元成长混合C', group: '科技/AI' },
+    { code: '013403', name: '华夏恒生科技ETF联接(QDII)C', group: '科技/AI' },
+    { code: '024329', name: '易方达恒生港股通创新药ETF联接C', group: '医药' },
+    { code: '024913', name: '华夏国证通用航空产业ETF联接C', group: '通航' },
+  ],
+  totalValue: 5619.39,
+  totalCost: 5695.78,
+  totalPnl: -76.39,
+  totalPnlPct: -1.34,
+};
+
+function render() {
+  const p = PORTFOLIO;
+  const groupsHtml = p.groups.map(g => {
+    const gValue = g.funds.reduce((s, f) => s + f.value, 0);
+    const gPnl = g.funds.reduce((s, f) => s + f.pnl, 0);
+    return `
+      <div class="group-card">
+        <div class="group-header">
+          <span class="group-name" style="color:${g.color}">${g.name}</span>
+          <span class="group-total" style="color:${gPnl >= 0 ? 'var(--green)' : 'var(--red)'}">
+            ${g.funds.length}支 · ${gValue.toFixed(2)}元 · ${gPnl >= 0 ? '📈' : '📉'}${gPnl.toFixed(2)} (${g.pct}%)
+          </span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill" style="width:${g.pct}%;background:${g.color}"></div>
+        </div>
+        ${g.funds.map(f => `
+          <div class="fund-row">
+            <div>
+              <span class="fund-name">${f.name}</span>
+              <span class="fund-code">${f.code}</span>
+            </div>
+            <div class="fund-value">${f.value.toFixed(2)}</div>
+            <div class="fund-pnl ${f.pnl >= 0 ? 'pos' : 'neg'}">${f.pnl >= 0 ? '+' : ''}${f.pnl.toFixed(2)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <h1>📊 持仓明细</h1>
+      <div class="sub">${p.date} · 共12支基金 · 4个分组</div>
+      <div class="links">
+        <a href="${MD_URL}" target="_blank">📄 原始文档</a>
+        <a href="https://hermes-main-media.devtoy.xyz/fund-system/data/portfolio/portfolio-${p.date}.csv" target="_blank">📥 下载CSV</a>
+        <a href="https://hermes-main-media.devtoy.xyz/fund-system/evolution/ROADMAP.md" target="_blank">🗺 系统ROADMAP</a>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="num" style="color:var(--accent)">${p.totalValue.toFixed(2)}</div>
+        <div class="label">总市值(元)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" style="color:var(--text)">${p.totalCost.toFixed(2)}</div>
+        <div class="label">总成本(元)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" style="color:${p.totalPnl >= 0 ? 'var(--green)' : 'var(--red)'}">${p.totalPnl >= 0 ? '+' : ''}${p.totalPnl.toFixed(2)}</div>
+        <div class="label">总盈亏(元)</div>
+      </div>
+      <div class="summary-card">
+        <div class="num" style="color:${p.totalPnl >= 0 ? 'var(--green)' : 'var(--red)'}">${p.totalPnlPct >= 0 ? '+' : ''}${p.totalPnlPct}%</div>
+        <div class="label">总盈亏率</div>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="title">⚠️ 偏离度预警</div>
+      科技/AI占比 <strong>86.5%</strong>，远超系统设定阈值45%！建议择机减仓分散风险。
+    </div>
+
+    <div class="section-title">📦 持仓分组</div>
+    ${groupsHtml}
+
+    <div class="section-title">🗑 已清仓基金</div>
+    <div class="cleared-list">
+      ${p.cleared.map(c => `<div class="cleared-item"><span>${c.name}</span><span class="cleared-code">${c.code} · ${c.group}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+render();
+</script>
+</body>
+</html>

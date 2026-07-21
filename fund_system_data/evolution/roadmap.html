@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fund System · 投资系统仪表盘 · Roadmap</title>
+<style>
+  :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--txt:#c9d1d9;--accent:#58a6ff;--green:#3fb950;--red:#f85149;--yellow:#d29922;--muted:#8b949e}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.75;padding:18px;max-width:920px;margin:0 auto;font-size:15px}
+  h1{font-size:24px;color:var(--accent);margin-bottom:8px}
+  h2{font-size:19px;color:var(--accent);margin:28px 0 12px;border-left:4px solid var(--accent);padding-left:11px}
+  h3{font-size:16px;color:#e6edf3;margin:18px 0 8px}
+  .meta{font-size:13px;color:var(--muted);margin-bottom:16px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12.5px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  thead th{background:#1c2128;color:var(--accent);font-weight:600;text-align:center;padding:9px 8px;border-bottom:2px solid var(--border)}
+  tbody td{background:var(--card);padding:8px;border-bottom:1px solid var(--border);text-align:center;font-size:12px}
+  tbody td:first-child{text-align:left;color:#e6edf3;font-weight:500}
+  tbody tr:nth-child(even) td{background:#11161d}
+  tbody tr:hover td{background:#1b2230}
+  code{background:#1c2128;color:#e3b341;padding:2px 5px;border-radius:4px;font-size:12px}
+  pre{background:#1c2128;padding:13px;border-radius:9px;overflow-x:auto;border:1px solid var(--border);font-size:12.5px}
+  pre code{background:none;color:#c9d1d9;padding:0}
+  hr{border:none;border-top:1px solid var(--border);margin:22px 0}
+  blockquote{background:#161b22;border-left:3px solid var(--yellow);padding:10px 14px;margin:10px 0;border-radius:7px;font-size:14px}
+  ul,ol{padding-left:22px;margin:8px 0}
+  li{margin:4px 0}
+  strong{color:#e6edf3}
+  .warn{color:var(--yellow)} .err{color:var(--red)} .ok{color:var(--green)}
+  @media(max-width:600px){body{padding:12px}table{font-size:11px}thead th,tbody td{padding:5px 3px}}
+</style>
+</head>
+<body>
+<div id="content">⏳ 加载中…</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+fetch('ROADMAP.md?v=' + Date.now())
+  .then(r=>r.text())
+  .then(t=>{
+    document.getElementById('content').innerHTML=marked.parse(t);
+    document.querySelectorAll('tbody td').forEach(td=>{
+      const x=td.textContent.trim();
+      if(/^\+/.test(x)) td.style.color='var(--red)';
+      else if(/^-/.test(x)) td.style.color='var(--green)';
+      else if(x.includes('✅')) td.style.color='var(--green)';
+      else if(x.includes('🔴')||x.includes('❌')) td.style.color='var(--red)';
+      else if(x.includes('⏳')||x.includes('🟡')) td.style.color='var(--yellow)';
+    });
+  })
+  .catch(e=>{document.getElementById('content').innerHTML='<p style="color:var(--red)">加载失败: '+e+'</p>'});
+</script>
+</body>
+</html>

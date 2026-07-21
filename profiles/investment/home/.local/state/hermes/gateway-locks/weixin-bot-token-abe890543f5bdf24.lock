@@ -1,0 +1,1 @@
+{"pid": 19409, "kind": "hermes-gateway", "argv": ["/opt/hermes/.venv/bin/hermes", "gateway", "run", "--replace"], "start_time": 119086835, "scope": "weixin-bot-token", "identity_hash": "abe890543f5bdf24", "metadata": {"platform": "weixin"}, "updated_at": "2026-07-13T04:32:21.814746+00:00"}

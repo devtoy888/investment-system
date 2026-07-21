@@ -1,0 +1,8 @@
+plugins:
+  enabled:
+    - feishu-platform
+    - feishu-card
+qqbot:
+  dm_policy: open
+  group_policy: open
+  markdown_support: true

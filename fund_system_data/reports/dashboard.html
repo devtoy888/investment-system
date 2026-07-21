@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>投资系统复盘看板 · 2026-07-21</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6}
+.header{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:white;padding:30px 20px;text-align:center}
+.header h1{font-size:24px;margin-bottom:6px}
+.header .sub{font-size:13px;opacity:0.8}
+.container{max-width:960px;margin:0 auto;padding:16px}
+
+/* Summary cards */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.summary-card{background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.summary-card .num{font-size:32px;font-weight:700;color:#4a6cf7}
+.summary-card .num.green{color:#27ae60}
+.summary-card .num.red{color:#e74c3c}
+.summary-card .label{font-size:12px;color:#888;margin-top:4px}
+
+/* Report cards */
+.report-card{background:white;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rc-type{font-weight:600;font-size:16px;text-transform:capitalize}
+.rc-status{font-size:20px}
+.rc-meta{font-size:13px;color:#666}
+.rc-body ul{list-style:none;padding:0;margin:8px 0}
+.issue{color:#e74c3c;font-size:13px;padding:2px 0}
+.pass{color:#27ae60;font-size:13px;font-weight:500}
+
+/* Chart */
+.chart table{width:100%;border-collapse:collapse}
+.chart td{padding:4px 8px;font-size:12px}
+.bar{height:20px;border-radius:4px;color:white;padding:0 8px;line-height:20px;font-size:11px;min-width:40px;text-align:right}
+
+/* Accuracy card */
+.acc-detail{margin-top:10px}
+.acc-detail .stat{display:inline-block;background:#f8f9fa;padding:6px 14px;border-radius:8px;margin:4px;font-size:13px}
+
+/* Operations */
+.op-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.op-item{text-align:center;padding:10px;border-radius:8px;font-size:14px;font-weight:600}
+.op-buy{background:#e8f5e9;color:#2e7d32}
+.op-sell{background:#ffebee;color:#c62828}
+.op-hold{background:#fff3e0;color:#e65100}
+
+/* Navigation */
+.nav{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.nav a{background:white;padding:8px 16px;border-radius:8px;text-decoration:none;color:#4a6cf7;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.nav a:hover{background:#4a6cf7;color:white}
+
+@media(max-width:600px){.summary{grid-template-columns:repeat(2,1fr)}.op-grid{grid-template-columns:1fr}}
+/* Dark mode */
+body.dk{background:#1a1a2e;color:#e0e0e0}
+body.dk .summary-card,body.dk .report-card,body.dk .nav a{background:#16213e;color:#e0e0e0;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+body.dk .nav a:hover{background:#4a6cf7}
+body.dk .rc-meta,body.dk .footer{color:#888}
+body.dk .stat{background:#0f3460;color:#e0e0e0}
+body.dk .op-buy{background:#1b4332;color:#52b788}
+body.dk .op-sell{background:#4a1a1a;color:#ef5350}
+body.dk .op-hold{background:#4a3a1a;color:#ffb74d}
+body.dk .header{background:linear-gradient(135deg,#0f0c29,#1a1a3e,#16213e)}
+/* Fix suggestions */
+.fix-section{margin:16px 0}
+.fix-item{background:#fff5f5;border-left:3px solid #e74c3c;padding:8px 12px;margin:6px 0;border-radius:0 6px 6px 0;font-size:13px}
+body.dk .fix-item{background:#2d1a1a;border-left-color:#ef5350}
+.fix-item.ok{background:#f0fdf4;border-left-color:#27ae60}
+body.dk .fix-item.ok{background:#1a2d1a;border-left-color:#52b788}
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>📊 投资系统复盘看板</h1>
+    <div class="sub">2026-07-21 · 自动审阅每日报告质量</div>
+</div>
+<div class="container">
+
+<div class="nav">
+    <a href="https://hermes-main-media.devtoy.xyz/fund-system/reports/dashboard.html">📊 刷新看板</a>
+    <a href="https://hermes-main-media.devtoy.xyz/fund-system/reports/index.html">📅 历史报告</a>
+    <a href="javascript:void(0)" onclick="document.body.classList.toggle('dk')">🌓 切换主题</a>
+</div>
+
+<div class="summary">
+    <div class="summary-card">
+        <div class="num">5</div>
+        <div class="label">今日报告</div>
+    </div>
+    <div class="summary-card">
+        <div class="num green">1</div>
+        <div class="label">通过审查</div>
+    </div>
+    <div class="summary-card">
+        <div class="num red">4</div>
+        <div class="label">存在问题</div>
+    </div>
+    <div class="summary-card">
+        <div class="num">33.3%</div>
+        <div class="label">预测准确率(30天)</div>
+    </div>
+    <div class="summary-card">
+        <div class="num">2</div>
+        <div class="label">今日操作建议</div>
+    </div>
+    <div class="summary-card">
+        <div class="num">1967</div>
+        <div class="label">累计预测数</div>
+    </div>
+</div>
+
+<h2>📋 今日报告质量审查</h2>
+
+        <div class="report-card">
+            <div class="rc-header">
+                <span class="rc-type">收盘复盘</span>
+                <span class="rc-status">❌</span>
+            </div>
+            <div class="rc-body">
+                <div class="rc-meta">字数: 7434 | 章节: 步骤1, 步骤2, 步骤3, 步骤4, 步骤5</div>
+                <ul><li class="issue">⚠️ 疑似截断: 末尾句子未完整</li></ul>
+            </div>
+        </div>
+        <div class="report-card">
+            <div class="rc-header">
+                <span class="rc-type">14:30决策</span>
+                <span class="rc-status">❌</span>
+            </div>
+            <div class="rc-body">
+                <div class="rc-meta">字数: 4537 | 章节: 操作, 基金, 建议</div>
+                <ul><li class="issue">⚠️ 疑似截断: 末尾句子未完整</li></ul>
+            </div>
+        </div>
+        <div class="report-card">
+            <div class="rc-header">
+                <span class="rc-type">晨报</span>
+                <span class="rc-status">❌</span>
+            </div>
+            <div class="rc-body">
+                <div class="rc-meta">字数: 5404 | 章节: </div>
+                <ul><li class="issue">缺少关键章节: 找到0/5</li></ul>
+            </div>
+        </div>
+        <div class="report-card">
+            <div class="rc-header">
+                <span class="rc-type">09:35方向</span>
+                <span class="rc-status">❌</span>
+            </div>
+            <div class="rc-body">
+                <div class="rc-meta">字数: 0 | 章节: </div>
+                <ul><li class="issue">报告不存在</li></ul>
+            </div>
+        </div>
+        <div class="report-card">
+            <div class="rc-header">
+                <span class="rc-type">午报</span>
+                <span class="rc-status">✅</span>
+            </div>
+            <div class="rc-body">
+                <div class="rc-meta">字数: 4918 | 章节: 午, 午后, 操作</div>
+                <div class="pass">全部检查通过</div>
+            </div>
+        </div>
+
+<h2>🔧 自动修复建议</h2>
+<div class="fix-section">
+<div class="fix-item">⚠️ <b>closing</b> AI分析被截断 → 增大生成时的max_tokens参数</div><div class="fix-item">⚠️ <b>decision</b> AI分析被截断 → 增大生成时的max_tokens参数</div><div class="fix-item">⚠️ <b>morning</b> 章节不完整 → 检查prompt设计，确保覆盖所有要求章节</div><div class="fix-item">❌ <b>09:35方向</b> 报告未生成 → 检查cron定时任务和脚本是否正常执行</div><div class="fix-item ok">✅ <b>午报</b> 全部检查通过</div>
+</div>
+
+<h2>📈 预测准确率趋势（近23天）</h2>
+<div class="chart">
+    <table>
+        <tr><td>07-21</td><td><div class="bar" style="width:5%;background:#e74c3c">0.0%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:5%;background:#e74c3c">0.0%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:5%;background:#e74c3c">0.0%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:5%;background:#e74c3c">0.0%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:36%;background:#e74c3c">36.2%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:36%;background:#e74c3c">36.2%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:42%;background:#e67e22">42.4%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:35%;background:#e74c3c">35.5%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:35%;background:#e74c3c">35.5%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:35%;background:#e74c3c">35.5%</div></td></tr><tr><td>07-21</td><td><div class="bar" style="width:35%;background:#e74c3c">35.5%</div></td></tr>
+    </table>
+</div>
+<div class="acc-detail">
+    <span class="stat">✅ 正确: 1967</span>
+    <span class="stat">📊 趋势: 📈上升</span>
+</div>
+
+<h2>🛠️ 今日操作信号</h2>
+<div class="op-grid">
+    <div class="op-item op-buy">🟢 买入/加仓<br>1次</div>
+    <div class="op-item op-sell">🔴 卖出/减仓<br>0次</div>
+    <div class="op-item op-hold">🟡 持有/观望<br>1次</div>
+</div>
+
+<div style="text-align:center;margin:30px 0;font-size:12px;color:#aaa">
+    自动生成 · 2026-07-21 17:59 · 每日收盘后自动更新
+</div>
+</div>
+<script>
+if(window.matchMedia("(prefers-color-scheme:dark)").matches)document.body.classList.add("dk");
+</script>
+</body></html>

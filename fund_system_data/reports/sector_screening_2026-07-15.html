@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>全行业筛选+板块配置+主任观点+分批建仓 · 投资系统</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 16px; font-size: 15px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header { background: linear-gradient(135deg,#1a2332,#161b22); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .header h1 { font-size: 20px; font-weight: 700; background: linear-gradient(135deg,var(--accent),var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header .sub { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+  .header .links { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .header .links a { color: var(--accent); text-decoration: none; font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px; }
+  .header .links a:hover { background: var(--accent); color: var(--bg); }
+  .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .md-content h2 { font-size: 15px; margin: 16px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); color: var(--accent); }
+  .md-content h3 { font-size: 14px; margin: 12px 0 6px; color: var(--green); }
+  .md-content h4 { font-size: 13px; margin: 10px 0 4px; color: var(--yellow); }
+  .md-content ul, .md-content ol { padding-left: 18px; margin: 6px 0; }
+  .md-content li { margin: 3px 0; }
+  .md-content p { margin: 6px 0; }
+  .md-content code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+  .md-content table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+  .md-content th { text-align: left; color: var(--text-dim); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .md-content td { padding: 6px 8px; border-bottom: 1px solid rgba(48,54,61,0.3); }
+  .md-content tr:last-child td { border-bottom: none; }
+  .md-content blockquote { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; color: var(--text-dim); font-size: 13px; }
+  .md-content a { color: var(--accent); }
+  .md-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .loading { text-align: center; padding: 60px; color: var(--text-dim); }
+  .loading .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) { body { padding: 10px; font-size: 14px; } table { font-size: 12px; } }
+</style>
+</head>
+<body>
+<div class="container" id="app"><div class="loading" id="loading"><div class="spinner"></div><div>加载评估报告中...</div></div></div>
+<script>
+const MD_URL = 'https://hermes-main-media.devtoy.xyz/fund-system/reports/sector_screening_2026-07-15.md';
+async function load() {
+  const app = document.getElementById('app');
+  try {
+    const resp = await fetch(MD_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const md = await resp.text();
+    const html = marked.parse(md, { breaks: true });
+    app.innerHTML = `
+      <div class="header">
+        <h1>📊 全行业筛选 + 板块配置 + 主任观点 + 分批建仓</h1>
+        <div class="sub">2026-07-15 · 18板块6个月 + 主任140条实时微博(去重) + 6支ETF净值 · 模型 tencent/hy3:free</div>
+        <div class="links"><a href="${MD_URL}" target="_blank">📄 Markdown源文件</a></div>
+      </div>
+      <div class="section"><div class="md-content">${html}</div></div>`;
+  } catch (e) {
+    document.getElementById('loading').innerHTML = '<div>加载失败: ' + e.message + '</div>';
+  }
+}
+load();
+</script>
+</body>
+</html>

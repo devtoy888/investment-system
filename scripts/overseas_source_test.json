@@ -1,0 +1,91 @@
+{
+  "_meta": {
+    "hostname": "589a851fd73f",
+    "test_time": "2026-07-18T21:46:14.818188",
+    "runs_per_source": 3,
+    "server_location": "Oracle ARM (海外)"
+  },
+  "results": {
+    "mootdx_通达信TCP": {
+      "reachable": false,
+      "avg_time_s": 21.668,
+      "format": "pandas DataFrame (TDX二进制协议)",
+      "needs_api_key": false,
+      "sample": "Socket: TCP OK: 119.97.185.59:7709\nK线: None",
+      "errors": [
+        "run1: KeyError: 'datetime'",
+        "run2: KeyError: 'datetime'",
+        "run3: KeyError: 'datetime'"
+      ],
+      "suitable": false,
+      "notes": "通达信TCP协议，海外IP通常超时",
+      "total_test_time_s": 65.882,
+      "description": "socket连接 + Quotes.factory() + get_k_data()"
+    },
+    "10jqka_同花顺": {
+      "reachable": false,
+      "avg_time_s": 0.573,
+      "format": "JSON (同花顺 REST API)",
+      "needs_api_key": false,
+      "sample": "{\n  \"hot_stocks\": \"None\",\n  \"sector_rank\": \"None\",\n  \"board_index\": \"None\"\n}",
+      "errors": [
+        "[hot_stocks] run1: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[hot_stocks] run2: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[hot_stocks] run3: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[sector_rank] run1: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[sector_rank] run2: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[sector_rank] run3: JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+        "[board_index] run1: Exception: HTTP 404",
+        "[board_index] run2: Exception: HTTP 404",
+        "[board_index] run3: Exception: HTTP 404"
+      ],
+      "suitable": false,
+      "notes": "海外可能被墙或限流",
+      "total_test_time_s": 5.159,
+      "description": "basic.10jqka.com.cn 当日强势股 + 板块涨跌排行"
+    },
+    "baidu_百度股市通": {
+      "reachable": true,
+      "avg_time_s": 0.21,
+      "format": "JSON (百度股市通 opendata API)",
+      "needs_api_key": false,
+      "sample": "{\n  \"kline\": \"K线数据可达, keys=['QueryID', 'ResultCode', 'ResultNum', 'Result'], body_len=65\",\n  \"index\": \"指数行情可达, body_len=65\"\n}",
+      "errors": [],
+      "suitable": true,
+      "notes": "百度HTTP API，国内可用。海外需验证可达性。",
+      "total_test_time_s": 1.258,
+      "description": "gushitong.baidu.com 获取指数/个股K线"
+    },
+    "sina_新浪财经三表": {
+      "reachable": true,
+      "avg_time_s": 0.734,
+      "format": "HTML表格 (新浪财经网页, GB2312编码)",
+      "needs_api_key": false,
+      "sample": "{\n  \"balance_sheet\": \"财务报表: HTTP 200, len=82172, <title>贵州茅台(600519)资产负债表_新浪财经_新浪网</title>; <meta name=\\\"Keywords\\\" content=\\\"贵州茅台资产负债表,600519资产负债表,新浪财经贵州茅台(600519)资产负债表\\\" />; <meta name=\\\"Description\\\" content=\\\"新浪财经贵州茅台(600519)行情中心,为您提供贵州茅台(600519)资产负债表信息数据查询.\\\" />; <td colspan=\\\"2\\\">&nbsp;<a target=\\\"_self\\\" href=\\\"http://money.finance.sina.com.cn/corp/go.p\",\n  \"income_stmt\": \"利润表: HTTP 200, len=59216\",\n  \"cashflow\": \"现金流量表: HTTP 200, len=76319\"\n}",
+      "errors": [],
+      "suitable": true,
+      "notes": "新浪财经三表，公开HTML，需解析GB2312编码",
+      "total_test_time_s": 6.605,
+      "description": "vip.stock.finance.sina.com.cn 获取财务报表"
+    },
+    "cninfo_巨潮公告": {
+      "reachable": false,
+      "avg_time_s": 0.69,
+      "format": "JSON (巨潮资讯网 HTTP API)",
+      "needs_api_key": false,
+      "sample": "{\n  \"latest_ann\": \"None\",\n  \"stock_ann\": \"None\"\n}",
+      "errors": [
+        "[latest_ann] run1: Exception: HTTP 500",
+        "[latest_ann] run2: Exception: HTTP 500",
+        "[latest_ann] run3: Exception: HTTP 500",
+        "[stock_ann] run1: Exception: HTTP 500",
+        "[stock_ann] run2: Exception: HTTP 500",
+        "[stock_ann] run3: Exception: HTTP 500"
+      ],
+      "suitable": false,
+      "notes": "海外不可达",
+      "total_test_time_s": 4.143,
+      "description": "cninfo.com.cn 获取基金持仓个股最新公告"
+    }
+  }
+}

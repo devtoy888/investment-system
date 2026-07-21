@@ -1,0 +1,104 @@
+{
+  "_meta": {
+    "hostname": "589a851fd73f",
+    "test_time": "2026-07-18T21:52:28.939936",
+    "runs_per_source": 3,
+    "server_location": "Oracle ARM (海外/overseas)",
+    "date_status": "周六非交易日 - 仅验证API可达性，非数据准确性"
+  },
+  "summary": {
+    "fully_available": [
+      "sina_新浪财经三表"
+    ],
+    "partially_available": [
+      "baidu_百度股市通",
+      "mootdx_通达信TCP"
+    ],
+    "unavailable": [
+      "10jqka_同花顺板块",
+      "cninfo_巨潮公告"
+    ],
+    "recommended_replacements": [
+      "sina_新浪财经三表 -> 替代不稳定的财务数据源",
+      "baidu_百度股市通 -> 需交易日验证数据返回后作为腾讯备援"
+    ]
+  },
+  "results": {
+    "mootdx_通达信TCP": {
+      "reachable": true,
+      "tcp_socket_reachable": true,
+      "kline_data_retrievable": false,
+      "avg_time_s": 18.036,
+      "format": "pandas DataFrame (TDX binary protocol on TCP 7709)",
+      "needs_api_key": false,
+      "sample": "TCP: 10/10 servers reachable: 119.97.185.59:7709\nKline: None",
+      "errors": [
+        "run1: KeyError: 'datetime'",
+        "run2: KeyError: 'datetime'",
+        "run3: KeyError: 'datetime'"
+      ],
+      "suitable": false,
+      "suitable_as_fallback": true,
+      "notes": "TCP 10/10服务器可达，但K线数据协议调用全部失败(KeyError:'datetime')。mootdx 0.11.7与pandas 3.0.3兼容性问题或海外IP数据被过滤。可考虑使用腾讯HTTP API替代。",
+      "total_test_time_s": 54.107
+    },
+    "10jqka_同花顺板块": {
+      "reachable": false,
+      "api_endpoint_reachable": false,
+      "html_page_reachable": true,
+      "avg_time_s": 1.549,
+      "format": "JSON REST API (expected), actually returns empty body",
+      "needs_api_key": false,
+      "sample": "hotstock API: None\ndata html: HTML page reachable: 78384 bytes",
+      "errors": [
+        "run1: Exception: HTTP 200 but empty body (0 bytes) - overseas IP filtered",
+        "run2: Exception: HTTP 200 but empty body (0 bytes) - overseas IP filtered",
+        "run3: Exception: HTTP 200 but empty body (0 bytes) - overseas IP filtered"
+      ],
+      "suitable": false,
+      "notes": "API端点basic.10jqka.com.cn返回HTTP 200但body为空(0字节)，海外IP被静默过滤。HTML页面(data.10jqka.com.cn)可达但数据API不可用。",
+      "total_test_time_s": 10.134
+    },
+    "baidu_百度股市通": {
+      "reachable": true,
+      "api_reachable": true,
+      "html_reachable": true,
+      "avg_time_s": 0.275,
+      "format": "JSON (gushitong.baidu.com/opendata)",
+      "needs_api_key": false,
+      "sample": "opendata: API OK: ResultNum=0, keys=['QueryID', 'ResultCode', 'ResultNum', 'Result']\nstock page: Stock page: https://finance.baidu.com/stock/ab-000001, 31001 bytes",
+      "errors": [],
+      "suitable": true,
+      "notes": "API端点HTTP 200可达，0.21s平均响应。返回空数据(ResultNum=0)，可能因非交易日(周六)或海外IP。HTML页面完全可达。需交易日验证数据返回。",
+      "total_test_time_s": 1.799
+    },
+    "sina_新浪财经三表": {
+      "reachable": true,
+      "avg_time_s": 0.523,
+      "format": "HTML tables (GB2312 encoding, sina.com.cn)",
+      "needs_api_key": false,
+      "sample": "BS: 资产负债表: 82172bytes, has_table=True\nIS: 利润表: 59216bytes, has_profit=True\nCF: 现金流表: 76319bytes, has_cf=True",
+      "errors": [],
+      "suitable": true,
+      "notes": "✅ 三表全部可达！资产负债表82172字符，利润表59216字符，现金流量表76319字符。GB2312编码需转码。零鉴权，适合替代不稳定的财务数据源。",
+      "total_test_time_s": 4.71
+    },
+    "cninfo_巨潮公告": {
+      "reachable": false,
+      "api_structure_reachable": true,
+      "has_actual_data": false,
+      "avg_time_s": 0.294,
+      "format": "JSON (cninfo.com.cn REST API)",
+      "needs_api_key": true,
+      "sample": "disclosure: None\nhisAnnouncement: hisAnnouncement: totalAnn=0, has_data=False\nwebapi: webapi: {\"resultmsg\":\"未经授权的访问,code_005_ipban_notoken false true\",\"resultcode\":401}\n",
+      "errors": [
+        "run1: Exception: HTTP 500",
+        "run2: Exception: HTTP 500",
+        "run3: Exception: HTTP 500"
+      ],
+      "suitable": false,
+      "notes": "disclosure API返回HTTP 500；hisAnnouncement/query返回HTTP 200但数据全空(totalAnnouncement=0)；webapi.cninfo.com.cn返回401 'code_005_ipban_notoken'。海外IP被完全屏蔽。",
+      "total_test_time_s": 5.95
+    }
+  }
+}

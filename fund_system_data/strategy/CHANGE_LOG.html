@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>📝 数据系统改造全量记录</title><style>
+:root{--bg:#0d1117;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#58a6ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:0}
+.header{background:linear-gradient(135deg,#1a2332 0%,#0d1117 100%);border-bottom:1px solid var(--border);padding:32px 16px 24px;text-align:center}
+.header h1{font-size:1.5em;color:#fff;margin-bottom:6px}
+.header .subtitle{color:var(--text-muted);font-size:.9em}
+#content{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+#md-content h2{font-size:1.3em;margin:28px 0 12px}
+#md-content h3{font-size:1.1em;margin:24px 0 10px;color:var(--accent)}
+#md-content p{margin:12px 0}
+#md-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.85em;overflow-x:auto;display:block}
+#md-content th,#md-content td{padding:6px 10px;border:1px solid var(--border);text-align:left}
+#md-content th{background:#1c2333;font-weight:600;color:var(--text-muted)}
+#md-content code{background:#1c2333;padding:2px 6px;border-radius:4px;font-size:.85em;color:#ffa657}
+#md-content pre{background:#161b22;border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto}
+#md-content li{margin:4px 0}
+.table-wrap{overflow-x:auto}
+</style></head>
+<body>
+<div class="header">
+<h1>📝 数据系统改造全量记录 v2</h1>
+<div class="subtitle">2026-07-19 · 最终验证 35/35 ✅</div>
+</div>
+<div id="content"><div id="md-content"><h1>📝 数据系统改造全量记录 v2</h1>
+
+<p>> 生成: 2026-07-19 · 最终验证: <strong>35/35 ✅</strong> · <a href="https://hermes-main-media.devtoy.xyz/fund-system/strategy/CHANGE_LOG.html">HTML预览</a></p>
+
+<hr>
+
+<h2>1. 改造范围总览</h2>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>类别</th>
+    <th>修改文件</th>
+    <th>验证</th>
+  </tr>
+  <tr>
+    <td><strong>数据源修复</strong></td>
+    <td><code>fund_source_akshare.py</code> / <code>fund_tools.py</code></td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td><strong>微博增强</strong></td>
+    <td><code>fund_tools.py</code> (长文本API)</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td><strong>分析框架v2</strong></td>
+    <td><code>kol_analysis.py</code> (新建)</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td><strong>Feishu→QQ Bot</strong></td>
+    <td>3个send_* + 3个wrapper</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td><strong>报告</strong></td>
+    <td>DATA_SOURCE_ASSESSMENT / CRON_JOB_ASSESSMENT / CHANGE_LOG</td>
+    <td>✅</td>
+  </tr>
+</table></div>
+
+
+<hr>
+
+<h2>2. 微博内容分析框架 v2（重点）</h2>
+
+<h3>2.1 之前的问题</h3>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>问题</th>
+    <th>表现</th>
+    <th>根因</th>
+  </tr>
+  <tr>
+    <td>内容截断</td>
+    <td>最长仅171字</td>
+    <td><code>text[:500]</code> + 短预览API</td>
+  </tr>
+  <tr>
+    <td>无事实核查</td>
+    <td>静态关键词匹配</td>
+    <td>ClaimVerifier无法匹配赛道→行情</td>
+  </tr>
+  <tr>
+    <td>无法操作</td>
+    <td>"看多科技/AI"无落实</td>
+    <td>无赛道→基金映射</td>
+  </tr>
+  <tr>
+    <td>时序不分</td>
+    <td>今日/本周/长期混为一谈</td>
+    <td>无timeframe筛选</td>
+  </tr>
+</table></div>
+
+
+<h3>2.2 v2框架设计</h3>
+
+<p><strong>4层架构，每层解决一个具体问题：</strong></p>
+
+<pre><code>┌─ 信号提取层(Extractor) ─────────────────────────┐
+│  输入: KOL博文文本                                  │
+│  输出: {赛道, 方向, 时效, 断言原文, 置信度}         │
+│  改进: 区分 today/soon/long 三个时间窗口            │
+└────────────────────────────────────────────────────┘
+                          ↓
+┌─ 事实核查层(Verifier) ────────────────────────────┐
+│  输入: 信号 + 腾讯行情数据                           │
+│  输出: ✅ 预测方向与市场一致 / ❌ 不一致             │
+│  改进: 赛道→行情key映射表（科技/AI→科创50/半导体）   │
+└────────────────────────────────────────────────────┘
+                          ↓
+┌─ 操作映射层(Mapper) ─────────────────────────────┐
+│  输入: 已核查的信号                                  │
+│  输出: {赛道, 操作方向, 具体基金, 仓位建议}          │
+│  改进: 赛道→基金映射（科技/AI→011613/017103..）     │
+└────────────────────────────────────────────────────┘
+                          ↓
+┌─ 格式化输出层(format_push) ──────────────────────┐
+│  输出: QQ Bot Markdown → 今日操作建议表格            │
+│        → 信号摘要(含✅/❌标记) → 统计汇总           │
+└────────────────────────────────────────────────────┘</code></pre>
+
+<h3>2.3 当日操作建议示例（真实数据测试）</h3>
+
+<pre><code>📋 KOL信号 → 今日操作建议
+| 赛道      | 建议 | 置信度 | 涉及基金                     |
+|:----------|:----:|:------:|:----------------------------|
+| 科技/AI   | 🟢减仓 | 53%   | 011613(5%)、017103(5%)      |
+| 市场整体  | 🔴增持 | 56%   | —                           |
+| 资源/周期 | 🟢减持 | 50%   | 163302(3%)、021448(3%)      |
+
+🔍 当日信号摘要
+  [唐史主任]📉 科技/AI(today) ✅ — 实际-7.12%
+  [小浣熊1230]📉 市场整体(today) ✅ — 实际-3.05%</code></pre>
+
+<h3>2.4 赛道→基金映射表（可扩展）</h3>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>赛道</th>
+    <th>基金代码</th>
+    <th>基金名称</th>
+    <th>仓位建议</th>
+  </tr>
+  <tr>
+    <td>科技/AI</td>
+    <td>011613</td>
+    <td>华夏科创50ETF联接C</td>
+    <td>+5% / -5%</td>
+  </tr>
+  <tr>
+    <td>科技/AI</td>
+    <td>017103</td>
+    <td>大摩数字经济混合C</td>
+    <td>+5% / -5%</td>
+  </tr>
+  <tr>
+    <td>黄金</td>
+    <td>009477</td>
+    <td>中银上海金ETF联接C</td>
+    <td>+3% / -3%</td>
+  </tr>
+  <tr>
+    <td>资源/周期</td>
+    <td>163302</td>
+    <td>大摩资源优选混合</td>
+    <td>+3% / -3%</td>
+  </tr>
+  <tr>
+    <td>新能源</td>
+    <td>012895</td>
+    <td>天弘中证新能源指数增强C</td>
+    <td>+3% / -3%</td>
+  </tr>
+  <tr>
+    <td>新能源</td>
+    <td>013589</td>
+    <td>天弘中证光伏产业指数C</td>
+    <td>+3% / -3%</td>
+  </tr>
+</table></div>
+
+
+<hr>
+
+<h2>3. 多轮验证结果</h2>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>轮次</th>
+    <th>日期</th>
+    <th>验证范围</th>
+    <th>通过率</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>07-18</td>
+    <td>语法+引用</td>
+    <td>21/21</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>07-18</td>
+    <td>功能+输出</td>
+    <td>15/15</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>07-18</td>
+    <td>Feishu清理+残留</td>
+    <td>27/27</td>
+  </tr>
+  <tr>
+    <td><strong>4</strong></td>
+    <td><strong>07-19</strong></td>
+    <td><strong>最终全量(含KOL框架v2)</strong></td>
+    <td><strong>35/35</strong></td>
+  </tr>
+</table></div>
+
+
+<p><strong>关键测试数据：</strong></p>
+<p>- 微博拉取：唐史主任15条/小浣熊15条 ✅</p>
+<p>- 长文本突破500字：6条（最长1218字） ✅</p>
+<p>- 事实核查：29/33信号已核查（匹配行情数据） ✅</p>
+<p>- 操作建议：4条，全部带基金映射 ✅</p>
+
+<hr>
+
+<h2>4. 文件变更清单</h2>
+
+<div class="table-wrap"><table>
+  <tr>
+    <th>文件</th>
+    <th>状态</th>
+    <th>改动</th>
+  </tr>
+  <tr>
+    <td><code>fund_tools.py</code></td>
+    <td>✏️</td>
+    <td>长文本API + isLongText + text[:2000]</td>
+  </tr>
+  <tr>
+    <td><code>kol_analysis.py</code></td>
+    <td>🆕</td>
+    <td>完整分析框架v2（Extractor/Verifier/Mapper）</td>
+  </tr>
+  <tr>
+    <td><code>collect_morning_data.py</code></td>
+    <td>✏️</td>
+    <td>切换v2框架 + 事实核查统计</td>
+  </tr>
+  <tr>
+    <td><code>send_morning.py</code></td>
+    <td>✏️</td>
+    <td>删feishu-deps + done!残留</td>
+  </tr>
+  <tr>
+    <td><code>send_noon.py</code></td>
+    <td>✏️</td>
+    <td>同上</td>
+  </tr>
+  <tr>
+    <td><code>send_closing.py</code></td>
+    <td>✏️</td>
+    <td>同上</td>
+  </tr>
+  <tr>
+    <td><code>run_morning.py</code></td>
+    <td>✏️</td>
+    <td>删feishu-deps + stdout→QQ</td>
+  </tr>
+  <tr>
+    <td><code>run_noon.py</code></td>
+    <td>✏️</td>
+    <td>同上</td>
+  </tr>
+  <tr>
+    <td><code>run_closing.py</code></td>
+    <td>✏️</td>
+    <td>同上</td>
+  </tr>
+  <tr>
+    <td><code>CHANGE_LOG.md/html</code></td>
+    <td>🆕</td>
+    <td>本报告</td>
+  </tr>
+</table></div>
+
+
+<p><strong>📎 完整HTML：</strong> https://hermes-main-media.devtoy.xyz/fund-system/strategy/CHANGE_LOG.html</p>
+</div></div>
+</body></html>

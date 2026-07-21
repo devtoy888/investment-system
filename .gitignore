@@ -1,0 +1,96 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+.env*
+
+# === Node ===
+node_modules/
+.npm/
+.cache/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Hermes System ===
+state.db*
+sessions/
+logs/
+cron/output/
+pairing/
+memories/
+plugins/
+platforms/
+hooks/
+gateway/
+config/
+shared/
+sandboxes/
+spawn-trees/
+plans/
+kanban/
+.hermes_history
+.skills_prompt_snapshot.json
+models_dev_cache.json
+channel_directory.json
+gateway_state.json
+gateway.lock
+gateway.pid
+weibo_cookies.json
+weibo_uid.txt
+auth.json
+auth.lock
+_config.yaml
+_config.yaml.bak
+.find_session*.py
+_recovery_*
+
+# === Temp / Generated ===
+/tmp/
+*.bak
+*.tmp
+daily-card*.png
+gen_daily_card*.py
+_r2_url.txt
+_fix*.py
+_patch*.py
+_revert*.py
+_verify*.py
+_gen_index.py
+_patch_lib*.py
+_*.py
+_*.js
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Project deps ===
+akshare-deps/
+mootdx-deps/
+pip-deps/
+lazy-packages/
+.feishu-deps/
+audio_cache/
+image_cache/
+
+# === Media ===
+*.mp4
+*.mp3
+*.wav
+
+# === Test files ===
+test_*.py
+test_*.js
+
+# === Vibe Research (external references) ===
+Vibe-Research/
+Vibe-Trading/

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graphify 在 LLM Wiki 的落地评估与配置核查（P2 已完成）</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--fg:#e6edf3;--mut:#8b949e;--ok:#3fb950;--bad:#f85149;--warn:#d29922;--b1:#1f6feb;--bd:#30363d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;padding:24px}
+body.light{--bg:#fff;--card:#f6f8fa;--fg:#1f2328;--mut:#57606a;--bd:#d0d7de}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-size:26px;margin-bottom:8px}
+h2{font-size:20px;margin:28px 0 12px;border-left:4px solid var(--b1);padding-left:10px}
+h3{font-size:16px;margin:18px 0 8px;color:var(--b1)}
+.meta{color:var(--mut);font-size:13px;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.card .n{font-size:24px;font-weight:700;color:var(--ok)}
+.card .l{font-size:12px;color:var(--mut);margin-top:4px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;background:var(--card);border-radius:8px;overflow:hidden}
+th,td{border:1px solid var(--bd);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:rgba(31,111,235,.12);font-weight:600}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600}
+.t-ok{background:rgba(63,185,80,.15);color:var(--ok)}
+.t-bad{background:rgba(248,81,73,.15);color:var(--bad)}
+.t-warn{background:rgba(210,153,34,.15);color:var(--warn)}
+.block{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin:12px 0}
+.foot{color:var(--mut);font-size:12px;margin-top:30px;border-top:1px solid var(--bd);padding-top:12px}
+.tg{position:fixed;top:14px;right:14px;background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:13px}
+ul{margin:8px 0 8px 20px}
+code{background:rgba(110,118,129,.2);padding:1px 5px;border-radius:4px;font-size:13px}
+.done{color:var(--ok);font-weight:600}
+.pend{color:var(--warn);font-weight:600}
+</style>
+</head>
+<body>
+<button class="tg" onclick="document.body.classList.toggle('light')">🌓 切换主题</button>
+<div class="wrap">
+<h1>Graphify 在 LLM Wiki 的落地评估与配置核查</h1>
+<div class="meta">创建 2026-07-19 · 类型 comparison · 经实地核查 + 浏览器真实渲染 + 跳页端到端 + 矛盾检测全量验证</div>
+
+<div class="cards">
+  <div class="card"><div class="n">790</div><div class="l">图谱节点</div></div>
+  <div class="card"><div class="n">1053</div><div class="l">图谱边（enrich 后）</div></div>
+  <div class="card"><div class="n">160</div><div class="l">INFERRED 推断边</div></div>
+  <div class="card"><div class="n">5/5</div><div class="l">页面类型关联覆盖</div></div>
+  <div class="card"><div class="n">0</div><div class="l">ECharts 依赖</div></div>
+  <div class="card"><div class="n">0</div><div class="l">矛盾检测 ERROR</div></div>
+</div>
+
+<h2>一、核心结论</h2>
+<div class="block">
+<ul>
+<li><strong>ECharts 已弃用，改用 Graphify 原生 graph.html</strong>：零维护、自带搜索/置信度 tooltip/社区过滤/节点跳页。</li>
+<li><strong>每页关联段落已全站落地</strong>（related-pages v20）：无 h2 页自动创建"📊 图谱关联"段 + EXTRACTED/INFERRED 中文徽章；概念/实体/首页/中文子目录/YouTube 源页实测全通过。</li>
+<li><strong>矛盾检测已落地</strong>（contradiction-check.py）：6 类静态检查，0 ERROR / 48 WARN（WARN 为已知 schema 缺口），固化进 wiki-ingest Step 3b 门禁。</li>
+<li><strong>配置错位已修复</strong>：Graphify skill 已从 investment profile 迁移到 llm-wiki profile。</li>
+<li><strong>是否达参考设计</strong>：架构层已超标；原两处可选优化（每页 Related、矛盾检测）均已实施完成。</li>
+</ul>
+</div>
+
+<h2>二、是否达到参考文章设计需求</h2>
+<h3>Jsong《LLM Wiki + Graphify》清单</h3>
+<table>
+<tr><th>设计要求</th><th>实现</th><th>状态</th></tr>
+<tr><td>三层架构 + SCHEMA</td><td>完整三层 + SCHEMA</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>Graphify 自动社区发现</td><td>Leiden 每天重建</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>交互式图谱浏览器</td><td>Graphify 原生 graph.html（拖拽/缩放/搜索/跳页）</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>God Nodes / 社区着色</td><td>community_name + 配色</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>每页注入 "Related (from Graphify)"</td><td>v20 全站注入 + 中文徽章</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>边置信度着色</td><td>Graphify 原生 hover 显示 EXTRACTED/INFERRED</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>节点点击跳 wiki 页</td><td>文件级跳页（实测 200）</td><td><span class="tag t-ok">达标</span></td></tr>
+</table>
+<h3>Kunal《LLM Wiki 实操》清单</h3>
+<table>
+<tr><th>要求</th><th>实现</th><th>状态</th></tr>
+<tr><td>目录级 index 解决 >200 文件爆炸</td><td>index.md + 分类目录</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>矛盾检测</td><td>contradiction-check.py 门禁</td><td><span class="tag t-ok">达标</span></td></tr>
+<tr><td>增量更新只改受影响页</td><td>Graphify 全量重建；lint 部分覆盖</td><td><span class="tag t-warn">部分</span></td></tr>
+<tr><td>公网可访问展示层</td><td>MkDocs + CF Tunnel + 独立域名</td><td><span class="tag t-ok">达标</span></td></tr>
+</table>
+
+<h2>三、为何弃用 ECharts？节点跳页粒度</h2>
+<div class="block">
+<ul>
+<li><strong>Graphify 自身有可视化</strong>（graph.html，vis-network），并非无数据展示功能。</li>
+<li>改用原生图后<strong>反获能力</strong>：搜索框、NODE INFO 面板、82 社区过滤器、置信度 tooltip、每页关联段，且零维护。</li>
+<li><strong>文件级跳页</strong>（跳对应 md 页）：已实现并验证；只依赖 <code>source_file</code>，稳定不脆弱。</li>
+<li><strong>heading 级精确锚点跳转：评估为不需要</strong>。MkDocs 锚点依赖 slug、Graphify 节点无结构化锚点；文件级+页内 TOC 已覆盖；边际收益仅省一次 TOC 点击。故维持文件级。</li>
+</ul>
+</div>
+
+<h2>四、行动清单（全部完成）</h2>
+<table>
+<tr><th>优先级</th><th>项</th><th>状态</th></tr>
+<tr><td>P0</td><td>迁移 Graphify skill 到 llm-wiki profile</td><td><span class="done">✅ 已完成</span></td></tr>
+<tr><td>P1</td><td>弃用 ECharts，改用 Graphify 原生 graph.html</td><td><span class="done">✅ 已完成</span></td></tr>
+<tr><td>P1</td><td>节点点击跳 wiki 页（文件级）</td><td><span class="done">✅ 已验证 200</span></td></tr>
+<tr><td>P1</td><td>confidence 着色/tooltip</td><td><span class="done">✅ 原生提供</span></td></tr>
+<tr><td>P2</td><td>每页注入 "Related (from Graphify)" 段落</td><td><span class="done">✅ v20 全站覆盖+中文徽章</span></td></tr>
+<tr><td>P2</td><td>摄入流程加矛盾检测</td><td><span class="done">✅ contradiction-check.py + Step 3b</span></td></tr>
+</table>
+
+<h2>五、P2 专项实施与验证（科学交叉验证）</h2>
+<h3>5.1 每页图谱关联段落（related-pages v20）</h3>
+<p>修复的真实问题（科学验证暴露）：</p>
+<table>
+<tr><th>#</th><th>问题</th><th>修复</th></tr>
+<tr><td>1</td><td>INFERRED 边全缺失（820 边全 EXTRACTED）</td><td>enrich-graph.py 修复 → 893 EXTRACTED + 160 INFERRED = 1053</td></tr>
+<tr><td>2</td><td>无 h2 页不注入（实体页等）</td><td>v20 自动创建"📊 图谱关联"段</td></tr>
+<tr><td>3</td><td>中文子目录页 0 关联（URL 未解码）</td><td>v20 加 decodeURIComponent</td></tr>
+<tr><td>4</td><td>stem 匹配失败（子目录页）</td><td>v20 加 stem2ids 映射</td></tr>
+<tr><td>5</td><td>CF 缓存旧 JS</td><td>mkdocs.yml 引用加 ?v=2 强制回源</td></tr>
+</table>
+<p><strong>全量多角度浏览器验证（通过）：</strong></p>
+<table>
+<tr><th>页面类型</th><th>示例</th><th>关联数</th><th>状态</th></tr>
+<tr><td>概念页（有 h2）</td><td>6dim-analysis-framework</td><td>7</td><td><span class="done">通过</span></td></tr>
+<tr><td>实体页（无 h2）</td><td>hermes-agent</td><td>9</td><td><span class="done">通过</span></td></tr>
+<tr><td>首页（INDEX_URLS）</td><td>/</td><td>多项</td><td><span class="done">通过</span></td></tr>
+<tr><td>中文子目录页</td><td>网络安全等级保护/概述</td><td>10</td><td><span class="done">通过</span></td></tr>
+<tr><td>YouTube 源页（无 h2）</td><td>hermes-agent-masterclass-overview</td><td>10</td><td><span class="done">通过</span></td></tr>
+</table>
+<p>控制台错误：<span class="done">0</span>。</p>
+
+<h3>5.2 矛盾检测（contradiction-check.py）</h3>
+<ul>
+<li>纯静态、零依赖（PyYAML）、可全量重复跑。</li>
+<li>检查项：frontmatter 必填、日期逻辑(created≤updated)、重复 title、contested 无说明、source_file 误填、工具版本漂移。</li>
+<li>结果：<span class="done">0 ERROR</span> / <span class="warn">48 WARN</span>（WARN 集中在 raw/ 源页、index 页缺 sources，属已知 schema 缺口，非真矛盾）。</li>
+<li>已固化进 <code>wiki-ingest</code> Step 3b 作为摄入质量门禁。</li>
+</ul>
+
+<h3>5.3 Skill 固化</h3>
+<ul>
+<li><code>wiki-knowledge-graph</code> SKILL：修正 ECharts 过时描述，加入 graph.html 原生图、矛盾检测、enrich INFERRED 说明、related-pages <code>?v=</code> CF 缓存协议。</li>
+<li><code>wiki-ingest</code> SKILL：Step 3 加 build-graph.py 原生图说明，新增 Step 3b 矛盾检测门禁，Pitfalls 验证项更新。</li>
+</ul>
+
+<h2>六、相关页面</h2>
+<ul>
+<li><a href="https://wiki.devtoy.xyz/setup-guide/">setup-guide</a> — 部署与 Graphify 集成</li>
+<li><a href="https://wiki.devtoy.xyz/concepts/knowledge-graph/">knowledge-graph</a> — 知识图谱架构</li>
+<li><a href="https://wiki.devtoy.xyz/concepts/graph-viewer/">graph-viewer</a> — 交互式图谱浏览器（Graphify 原生）</li>
+<li><a href="https://hermes-main-media.devtoy.xyz/references/wiki-frontend-framework-eval.html">展示框架评估</a> — MkDocs EOL 与替代</li>
+</ul>
+
+<div class="foot">本页基于 PyPI/graphify.net 官方文档、Jsong 与 Kunal 实践长文、容器内产物、浏览器真实渲染、跳页端到端验证、矛盾检测全量运行，非推测。P2 五项修复均经真实浏览器多角度验证。</div>
+</div>
+</body>
+</html>

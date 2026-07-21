@@ -1,0 +1,34 @@
+{
+  "type": "建仓",
+  "date": "2026-07-06",
+  "time": "10:34",
+  "status": "待执行（用户选方案B，等下午13:30实时分析后确认）",
+  "context": "用户清仓医药/机器人/航天后，根据唐史主任司马迁今日微博+实时市场数据分析，建议重新建仓医药方向",
+  "decision_rationale": {
+    "signal": "中证医药100指数自2021年高点回调超40%，近期低位反弹+2.49%，补涨趋势确认",
+    "positioning": "防御性配置，主任定位创新药为防御品种，与当前科技调整周期形成对冲",
+    "today_data": "医药100今日+2.49%，创新药ETF+3.48%，医药板块全线走强"
+  },
+  "chosen_plan": "B（两只都买）",
+  "orders": [
+    {
+      "fund": "天弘中证医药100C",
+      "code": "001551",
+      "amount": 240,
+      "pct": "4%",
+      "role": "医药打底仓（含中药防御）"
+    },
+    {
+      "fund": "天弘中证创新药产业联接C",
+      "code": "014565",
+      "amount": 120,
+      "pct": "2%",
+      "role": "创新药卫星仓（进攻弹性）"
+    }
+  ],
+  "total_amount": 360,
+  "total_pct": "6%",
+  "platform": "京东金融",
+  "afternoon_analysis_scheduled": "13:30（北京时间），分析医药/创新药/机器人/军工实时数据后出最终建议",
+  "operation_record_file": "/opt/data/scripts/operation_records/2026-07-06_医药建仓.json"
+}

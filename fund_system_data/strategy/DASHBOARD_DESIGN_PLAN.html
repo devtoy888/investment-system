@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>投资实用看板 · 完整设计方案</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;background:#0a0e1a;color:#f3f4f6;line-height:1.8}
+.header{background:linear-gradient(135deg,#0a0e1a,#1a1040);padding:24px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.06)}
+.header h1{font-size:20px;color:#f59e0b;margin-bottom:4px}
+.header .sub{font-size:12px;color:#9ca3af}
+.container{max-width:720px;margin:0 auto;padding:12px}
+h2{font-size:16px;color:#f59e0b;margin:20px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06)}
+h3{font-size:14px;color:#e5e7eb;margin:14px 0 8px}
+h4{font-size:13px;color:#9ca3af;margin:10px 0 6px}
+p,li{font-size:13px;color:#d1d5db;margin:6px 0}
+ul,ol{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+.card{background:rgba(17,24,39,0.8);border-radius:12px;padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,0.06)}
+code{background:rgba(245,158,11,0.1);color:#f59e0b;padding:1px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono','Fira Code',monospace}
+pre{background:#111827;border-radius:8px;padding:10px;overflow-x:auto;font-size:12px;line-height:1.5;margin:8px 0;border:1px solid rgba(255,255,255,0.06)}
+pre code{background:none;padding:0;color:#e5e7eb}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin:2px 3px}
+.tag-p0{background:rgba(239,68,68,0.2);color:#ef4444}
+.tag-p1{background:rgba(245,158,11,0.2);color:#f59e0b}
+.tag-p2{background:rgba(107,114,128,0.2);color:#9ca3af}
+.badge{display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px}
+.badge-green{background:rgba(34,197,94,0.15);color:#22c55e}
+.badge-red{background:rgba(239,68,68,0.15);color:#ef4444}
+.badge-yellow{background:rgba(245,158,11,0.15);color:#f59e0b}
+.badge-blue{background:rgba(59,130,246,0.15);color:#3b82f6}
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{text-align:left;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.1);color:#9ca3af;font-weight:500}
+td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.04);color:#d1d5db}
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.nav a{padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px;background:rgba(245,158,11,0.1);color:#f59e0b}
+.nav a:hover{background:#f59e0b;color:#0a0e1a}
+.toc{background:rgba(17,24,39,0.5);border-radius:12px;padding:12px 16px;margin:10px 0;border:1px solid rgba(255,255,255,0.06)}
+.toc a{color:#9ca3af;text-decoration:none;font-size:12px;line-height:2}
+.toc a:hover{color:#f59e0b}
+.mermaid{background:#111827;border-radius:8px;padding:12px;margin:8px 0;font-family:monospace;font-size:12px;line-height:1.6;white-space:pre;overflow-x:auto;color:#e5e7eb}
+.footer{text-align:center;padding:20px;color:#6b7280;font-size:11px}
+@media(max-width:430px){.container{padding:8px}h2{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 投资实用看板 · 完整设计方案</h1>
+<div class="sub">评估日期 2026-07-21 · 参考 Vibe-Research + Vibe-Trading · 当前系统全量评估</div>
+</div>
+<div class="container">
+
+<div class="toc">
+<strong style="color:#f59e0b;font-size:13px">目录</strong><br>
+<a href="#s1">1. 现状全量盘点</a><br>
+<a href="#s2">2. 参考项目拆解</a><br>
+<a href="#s3">3. 核心差距分析</a><br>
+<a href="#s4">4. 看板设计原则</a><br>
+<a href="#s5">5. 页面体系（完整规格）</a><br>
+<a href="#s6">6. 数据流设计</a><br>
+<a href="#s7">7. 技术方案选型</a><br>
+<a href="#s8">8. 分阶段实施路线</a><br>
+<a href="#s9">9. 开发规范</a><br>
+<a href="#s10">10. 附录：与现有系统的集成点</a>
+</div>
+
+<h2 id="s1">1. 现状全量盘点</h2>
+
+<h3>1.1 已建设施</h3>
+
+<table>
+<tr><th>模块</th><th>状态</th><th>说明</th></tr>
+<tr><td>数据采集层</td><td><span class="badge badge-green">稳定</span></td><td>腾讯行情~2s、天天基金~3-8s、外盘Yahoo~3s</td></tr>
+<tr><td>推送系统</td><td><span class="badge badge-green">已验证</span></td><td>8:00/11:35/16:00/周末，5段全覆盖</td></tr>
+<tr><td>风险预警</td><td><span class="badge badge-green">已验证</span></td><td>单日>5%+连跌3日检测</td></tr>
+<tr><td>偏离度检测</td><td><span class="badge badge-green">已验证</span></td><td>科技/AI占比86%🔴</td></tr>
+<tr><td>信号引擎</td><td><span class="badge badge-green">已验证</span></td><td>signal_engine.py + YAML规则</td></tr>
+<tr><td>KOL系统</td><td><span class="badge badge-green">已验证</span></td><td>唐主任+小浣熊双源</td></tr>
+<tr><td>决策验证</td><td><span class="badge badge-green">已上线</span></td><td>decisions.jsonl + daily-snapshots.jsonl</td></tr>
+<tr><td>持仓管理</td><td><span class="badge badge-green">已上线</span></td><td>seed_portfolio.json + 每日快照</td></tr>
+<tr><td>LLM分析</td><td><span class="badge badge-green">已接入</span></td><td>DeepSeek v4 Flash</td></tr>
+<tr><td>R2归档</td><td><span class="badge badge-green">稳定</span></td><td>所有报告+数据自动上传</td></tr>
+</table>
+
+<h3>1.2 现有Dashboard缺陷</h3>
+
+<div class="card">
+<p><strong>当前 /opt/data/fund_system_data/reports/dashboard.html</strong></p>
+<p>❌ 纯文本摘要，无实时行情展示</p>
+<p>❌ 预测准确率全是同一天数据（23条重复）</p>
+<p>❌ 没有持仓盈亏视图</p>
+<p>❌ 没有板块热度图</p>
+<p>❌ 没有KOL信号聚合时间线</p>
+<p>❌ 没有操作建议的可追溯性</p>
+<p>❌ 静态HTML，无交互</p>
+<p>❌ 手机端排版简陋</p>
+<p>❌ 无导航体系</p>
+</div>
+
+<h3>1.3 技术约束</h3>
+
+<div class="mermaid">
+├── 服务器: Oracle ARM (2C11G45G)
+├── 前端部署: R2静态存储 (CDN)
+├── 数据更新: cron驱动，非实时WebSocket
+├── 推送渠道: QQ Bot (纯文字+emoji)
+├── 报告载体: md+html成对上传R2
+├── 核心约束: 不引入Node.js/Python后端新服务
+└── 用户习惯: 手机浏览器查看R2页面
+</div>
+
+<h2 id="s2">2. 参考项目拆解</h2>
+
+<h3>2.1 Vibe-Research（UI/UX参考）</h3>
+<p><code>github.com/simonlin1212/Vibe-Research</code> · 930+ star</p>
+
+<div class="card">
+<p><strong>页面体系（React 19 + TypeScript + Tailwind）</strong></p>
+<table>
+<tr><th>页面</th><th>核心内容</th><th>可借鉴</th></tr>
+<tr><td>DailyReview.tsx</td><td>大盘+全球+自选+短线+板块+AI复盘</td><td><span class="badge badge-green">板块可视化</span></td></tr>
+<tr><td>Portfolio.tsx</td><td>持仓+成本+盈亏+清仓</td><td><span class="badge badge-green">盈亏表设计</span></td></tr>
+<tr><td>StockData.tsx</td><td>个股估值+财报+资金面</td><td><span class="badge badge-yellow">tab布局</span></td></tr>
+<tr><td>Sectors.tsx</td><td>板块+产业链</td><td><span class="badge badge-green">热度可视化</span></td></tr>
+<tr><td>Watchlist.tsx</td><td>批量自选+表格总览</td><td><span class="badge badge-yellow">表格规范</span></td></tr>
+</table>
+<p><strong>设计亮点</strong>：侧栏导航、玻璃暖橙主题、暗色模式、卡片式布局</p>
+</div>
+
+<h3>2.2 Vibe-Trading（策略参考）</h3>
+<p><code>github.com/HKUDS/Vibe-Trading</code> · 26k star</p>
+
+<div class="card">
+<p><strong>可借鉴策略模块</strong></p>
+<table>
+<tr><th>模块</th><th>已有?</th><th>可借鉴</th></tr>
+<tr><td>Signal Engine (YAML)</td><td><span class="badge badge-green">✅</span></td><td>信号强度/置信度分级</td></tr>
+<tr><td>因子算子库</td><td><span class="badge badge-yellow">⚠️</span></td><td>扩展夏普/卡玛/索提诺</td></tr>
+<tr><td>基准对比</td><td><span class="badge badge-green">✅</span></td><td>多维度化</td></tr>
+<tr><td>组合优化器</td><td><span class="badge badge-red">❌</span></td><td>暂不需（资金小）</td></tr>
+<tr><td>Shadow Account</td><td><span class="badge badge-red">❌</span></td><td>暂不需</td></tr>
+</table>
+<p><strong>关键结论</strong>：VT-1~8已评估并部分实现。看板聚焦展示层，不重复造策略轮子。</p>
+</div>
+
+<h2 id="s3">3. 核心差距分析</h2>
+
+<h3>3.1 用户真正需要</h3>
+
+<div class="mermaid">
+数据层 → cron脚本 → QQ推送  ✅ 几乎完美
+数据层 → cron脚本 → R2报告  ✅ 可用但不够直观
+数据层 → 现有dashboard  → 手机查看  ❌ 信息密度和交互不足
+</div>
+
+<p><strong>实用看板 =</strong> 一屏看清持仓盈亏 + 趋势可视化 + 操作回溯 + 决策上下文 + 手机优先</p>
+
+<h3>3.2 不做清单</h3>
+
+<ul>
+<li>❌ 实时WebSocket行情 — 不需要长连接</li>
+<li>❌ 注册登录系统 — 个人用</li>
+<li>❌ 全量个股搜索 — 只关注14支基金</li>
+<li>❌ AI对话式看板 — LLM已集成在推送中</li>
+<li>❌ 回测引擎 — 资金小(~6426)无意义</li>
+<li>❌ React/Vue全家桶 — 增加维护负担</li>
+</ul>
+
+<h3>3.3 做清单</h3>
+
+<table>
+<tr><th>功能</th><th>优先级</th><th>说明</th></tr>
+<tr><td>持仓总览（含盈亏）</td><td><span class="tag tag-p0">P0</span></td><td>核心需求</td></tr>
+<tr><td>板块热度可视化</td><td><span class="tag tag-p0">P0</span></td><td>辅助判断轮动</td></tr>
+<tr><td>操作记录时间线</td><td><span class="tag tag-p0">P0</span></td><td>可追溯</td></tr>
+<tr><td>大盘+外盘实时行情</td><td><span class="tag tag-p0">P0</span></td><td>开屏第一眼</td></tr>
+<tr><td>组合偏离度</td><td><span class="tag tag-p0">P0</span></td><td>84%超配警示</td></tr>
+<tr><td>预测准确率</td><td><span class="tag tag-p1">P1</span></td><td>已有数据</td></tr>
+<tr><td>KOL信号时间线</td><td><span class="tag tag-p1">P1</span></td><td>394条已采集</td></tr>
+<tr><td>基金详情页</td><td><span class="tag tag-p1">P1</span></td><td>单支深度</td></tr>
+<tr><td>信号引擎状态</td><td><span class="tag tag-p1">P1</span></td><td>规则触发</td></tr>
+<tr><td>系统健康状态</td><td><span class="tag tag-p2">P2</span></td><td>数据源可用率</td></tr>
+</table>
+
+<h2 id="s4">4. 看板设计原则</h2>
+
+<h3>4.1 核心理念</h3>
+
+<div class="mermaid">
+数据驱动 → 每个数字都可追溯来源
+手机优先 → 320px~430px宽度完美展示
+策略感知 → 84%超配/深套>25%/建仓期→看板给上下文
+静态SPA → HTML+CSS+JS，零构建工具
+增量更新 → 数据通过JSON注入，页面无需重新生成
+暗色优先 → 金融类应用暗色是默认体验
+</div>
+
+<h3>4.2 配色体系</h3>
+
+<div class="card">
+<table>
+<tr><th>用途</th><th>色值</th><th>色块</th></tr>
+<tr><td>背景</td><td>#0a0e1a</td><td style="background:#0a0e1a;width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>卡片</td><td>#111827/80</td><td style="background:rgba(17,24,39,0.8);width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>强调</td><td>#f59e0b</td><td style="background:#f59e0b;width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>涨</td><td>#22c55e</td><td style="background:#22c55e;width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>跌</td><td>#ef4444</td><td style="background:#ef4444;width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>主文字</td><td>#f3f4f6</td><td style="background:#f3f4f6;width:30px;border-radius:4px">&nbsp;</td></tr>
+<tr><td>辅文字</td><td>#9ca3af</td><td style="background:#9ca3af;width:30px;border-radius:4px">&nbsp;</td></tr>
+</table>
+</div>
+
+<h2 id="s5">5. 页面体系</h2>
+
+<h3>5.1 页面地图</h3>
+
+<div class="mermaid">
+📊 投资实用看板 (index.html)
+├── 🏠 总览 Dashboard（默认页）
+│   ├── 大盘天气（6大指数）
+│   ├── 组合速览（投入/市值/盈亏/偏离度）
+│   ├── 今日推送摘要
+│   ├── 操作时间线（最近5条）
+│   ├── 板块热度（10行业）
+│   └── 风险提示
+│
+├── 💼 持仓详情 (#portfolio)
+│   ├── 14基金完整盈亏表
+│   ├── 偏离度仪表
+│   ├── 建仓进度
+│   ├── 行业分布饼图（SVG）
+│   └── 累计收益曲线
+│
+├── 📈 板块轮动 (#sectors)
+│   ├── 日涨跌排行
+│   ├── 近5日趋势（迷你线图）
+│   └── 板块-持仓关联
+│
+├── 📜 操作记录 (#operations)
+│   ├── 完整时间线
+│   ├── 操作类型统计
+│   └── 单次操作详情
+│
+├── 🤖 信号系统 (#signals)
+│   ├── 信号引擎状态
+│   ├── KOL信号时间线
+│   └── 信号-操作关联
+│
+└── 📊 数据验证 (#verify)
+    ├── 预测准确率趋势
+    ├── 数据源可用率
+    └── 系统健康检查
+</div>
+
+<h3>5.2 总览页详细设计</h3>
+
+<div class="card">
+<pre>
+┌────────────────────────────────┐
+│ 📊 投资看板 · 2026-07-21       │  ← 顶栏
+├────────────────────────────────┤
+│ 🔴 沪深300: 3921 ▼1.2%        │  ← 大盘天气（6指数）
+│ 🟢 恒生: 18923 ▲0.5%          │
+├────────────────────────────────┤
+│ 总投入 ¥6,426         总盈亏   │  ← 组合速览
+│          市值 ¥4,817   -25% 🔴 │     大号数字+进度条
+│ 科技占比 84%🔴  建仓 43%████  │
+├────────────────────────────────┤
+│ 最新推送：收盘复盘 16:00        │  ← 推送摘要
+│ "今日沪深300下跌1.2%..."       │
+├────────────────────────────────┤
+│ 📜 07-16 买入 003096 +¥160     │  ← 操作时间线
+├────────────────────────────────┤
+│ 📊 板块热度                    │
+│ 🔴 半导体 -2.3% ████████░░    │
+│ 🟢 黄金 +1.2% ████░░░░░░░     │
+├────────────────────────────────┤
+│ ⚠️ 科技超配84%(目标&lt;65%) 🟡   │  ← 风险提示
+</pre>
+</div>
+
+<h3>5.3 持仓页详细设计</h3>
+
+<div class="card">
+<pre>
+| 代码 | 名称 | 成本 | 现价 | 市值 | 盈亏 | 占比 | 状态 |
+|-----|------|------|------|------|------|------|------|
+|011613|华夏科创50C|1402|0.832|932|-33.5%🔴|20.3%|深套|
+|024418|华夏半导体C|1325|0.852|895|-32.5%🔴|19.4%|深套|
+|...   |...        |...  |...  |...  |...    |...  |...  |
+|003096|中欧医疗C|160|0.554|159|-0.3%🟡|3.3%|建仓|
+|013403|恒生科技C|150|0.982|150|0%🟡|3.1%|建仓|
+
+附件：SVG饼图（行业分布）+ 偏离度环形仪表 + 建仓进度条
+</pre>
+</div>
+
+<h2 id="s6">6. 数据流设计</h2>
+
+<div class="mermaid">
+cron脚本（数据采集）
+    │
+    ▼
+fund_tools.py → JSONL/CSV/JSON（本地）
+    │
+    ▼
+generate_dashboard_data.py ← 🆕 新增聚合脚本
+    │
+    ▼
+r2_uploader.py → R2 (CDN)
+    │
+    ▼
+dashboard/index.html（静态SPA）
+    │
+    ▼
+fetch('/fund-system/data/dashboard.json')
+    │
+    ▼
+JavaScript → 渲染所有卡片/图表
+</div>
+
+<h3>6.1 核心数据文件</h3>
+
+<p><code>fund-system/data/dashboard.json</code></p>
+
+<pre>{
+  "date": "2026-07-21",
+  "market": {
+    "indexes": [
+      {"code":"000001","name":"上证指数",
+       "price":3125.42,"change_pct":-1.23},
+      ...
+    ]
+  },
+  "portfolio": {
+    "total_cost": 6426.00,
+    "current_value": 4817.35,
+    "total_profit_pct": -25.04,
+    "tech_ratio": 84.2,
+    "building_progress": 43,
+    "funds": [...]
+  },
+  "sectors": [...],
+  "operations": [...],
+  "signals": {...},
+  "risks": [...],
+  "accuracy": {...},
+  "updated_at": "2026-07-21T16:10:00+08:00"
+}</pre>
+
+<h3>6.2 数据集成映射</h3>
+
+<table>
+<tr><th>现有系统</th><th>看板消费方式</th></tr>
+<tr><td>fund_tools.py（实时行情）</td><td>采集时写JSON</td></tr>
+<tr><td>portfolio_snapshot.py</td><td>读取最新CSV</td></tr>
+<tr><td>operations/operation_*.md</td><td>解析md</td></tr>
+<tr><td>signals.jsonl</td><td>读取最近N条</td></tr>
+<tr><td>accuracy.jsonl</td><td>读取全量</td></tr>
+<tr><td>daily-snapshots.jsonl</td><td>趋势曲线</td></tr>
+<tr><td>risk_warning.py 输出</td><td>读取最近</td></tr>
+</table>
+
+<h2 id="s7">7. 技术方案选型</h2>
+
+<h3>7.1 推荐方案</h3>
+
+<div class="card">
+<p><strong style="color:#22c55e;font-size:16px">✅ 纯HTML/CSS/JS SPA — 零依赖</strong></p>
+<p>理由：</p>
+<ul>
+<li>零构建步骤，直接上传R2</li>
+<li>无需Node.js/npm，维护成本最低</li>
+<li>符合当前技术栈（md+html模式已跑通）</li>
+<li>服务器不跑新服务，cron生成JSON即可</li>
+</ul>
+</div>
+
+<h3>7.2 目录结构</h3>
+
+<pre>
+fund-system/
+├── dashboard/                     ← 🆕 看板
+│   ├── index.html                ← SPA入口
+│   ├── css/style.css             ← 全站样式
+│   ├── js/
+│   │   ├── app.js                ← 路由+初始化
+│   │   ├── data.js               ← fetch+缓存
+│   │   ├── views/
+│   │   │   ├── dashboard.js      ← 总览
+│   │   │   ├── portfolio.js      ← 持仓
+│   │   │   ├── sectors.js        ← 板块
+│   │   │   ├── operations.js     ← 操作
+│   │   │   ├── signals.js        ← 信号
+│   │   │   └── verify.js         ← 验证
+│   │   └── charts/
+│   │       ├── pie.js            ← SVG饼图
+│   │       ├── bar.js            ← 柱状图
+│   │       ├── line.js           ← 迷你线图
+│   │       └── gauge.js          ← 环形仪表
+│   └── assets/icons.svg
+├── data/
+│   ├── dashboard.json            ← 🆕 聚合数据
+│   └── ...                        ← 已有数据
+└── reports/                       ← 已有报告
+</pre>
+
+<h2 id="s8">8. 分阶段实施路线</h2>
+
+<div class="card">
+<h3>阶段一：数据基建（1-2天）</h3>
+<table>
+<tr><th>任务</th><th>产出</th></tr>
+<tr><td>编写 generate_dashboard_data.py</td><td>dashboard.json 聚合脚本</td></tr>
+<tr><td>集成到收盘推送后</td><td>交易日16:15自动生成</td></tr>
+<tr><td>上传R2</td><td>fund-system/data/dashboard.json</td></tr>
+<tr><td>数据校验</td><td>curl验证JSON完整性</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>阶段二：核心看板（2-3天）</h3>
+<table>
+<tr><th>任务</th><th>产出</th></tr>
+<tr><td>index.html骨架</td><td>SPA入口+路由+暗色主题</td></tr>
+<tr><td>style.css</td><td>全站样式（~500行）</td></tr>
+<tr><td>charts基础模块</td><td>pie.js + bar.js + gauge.js（SVG手绘）</td></tr>
+<tr><td>Dashboard总览页</td><td>大盘+组合+操作+板块+风险</td></tr>
+<tr><td>持仓详情页</td><td>14基金表+饼图+偏离度+建仓进度</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>阶段三：扩展页面（1-2天）</h3>
+<table>
+<tr><th>任务</th><th>产出</th></tr>
+<tr><td>板块轮动页</td><td>10行业+5日趋势+基金关联</td></tr>
+<tr><td>操作记录页</td><td>完整时间线+统计</td></tr>
+<tr><td>信号系统页</td><td>信号引擎+KOL时间线</td></tr>
+<tr><td>数据验证页</td><td>准确率趋势+数据源可用率</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>阶段四：打磨与自动化（1天）</h3>
+<table>
+<tr><th>任务</th><th>说明</th></tr>
+<tr><td>CRON自动更新</td><td>交易日16:15自动</td></tr>
+<tr><td>加载动画</td><td>skeleton loading</td></tr>
+<tr><td>离线缓存</td><td>Service Worker（可选）</td></tr>
+<tr><td>滚动性能优化</td><td>长列表虚拟滚动</td></tr>
+</table>
+</div>
+
+<p style="text-align:center;font-size:15px;margin:16px 0;color:#f59e0b"><strong>总计：5-8天 · 4阶段完成</strong></p>
+
+<h2 id="s9">9. 开发规范</h2>
+
+<h3>9.1 样式规范</h3>
+
+<pre>:root {
+  --bg-body: #0a0e1a;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --accent: #f59e0b;
+  --up: #22c55e;
+  --down: #ef4444;
+  --flat: #6b7280;
+  --radius: 12px;
+}
+
+/* 响应式断点 */
+@media (max-width: 430px) { /* 手机 */ }
+@media (min-width: 768px) { /* 平板 */ }
+@media (min-width: 1280px) { /* 桌面 */ }</pre>
+
+<h3>9.2 命名约定</h3>
+
+<pre>// 视图函数
+renderDashboard(data)
+renderPortfolio(data)
+renderSectors(data)
+renderOperations(data)
+renderSignals(data)
+renderVerify(data)
+
+// 图表函数
+drawPieChart(container, data, options)
+drawBarChart(container, data, options)
+drawMiniLine(container, options)
+drawGauge(container, value, options)
+
+// 工具函数
+formatMoney(n)     // ¥1,234.56
+formatPct(n)       // +1.23%
+getChangeColor(n)  // 'up' | 'down' | 'flat'</pre>
+
+<h2 id="s10">10. 附录：集成点</h2>
+
+<h3>10.1 新增脚本</h3>
+
+<p><code>scripts/generate_dashboard_data.py</code> — 交易日16:15运行，读取<strong>8个现有数据源</strong>，聚合输出<code>dashboard.json</code></p>
+
+<h3>10.2 需修改的现有脚本</h3>
+
+<table>
+<tr><th>脚本</th><th>修改</th></tr>
+<tr><td>portfolio_snapshot.py</td><td>增加JSON输出</td></tr>
+<tr><td>run_closing.py</td><td>末尾调用generate_dashboard_data.py</td></tr>
+<tr><td>r2_upload_and_verify.py</td><td>增加dashboard目录同步</td></tr>
+</table>
+
+<h3>10.3 R2目录变更</h3>
+
+<pre>
+fund-system/
+├── dashboard/                    ← 🆕 看板页面
+│   ├── index.html               ← SPA入口
+│   ├── css/style.css
+│   └── js/...
+├── data/
+│   ├── dashboard.json           ← 🆕 聚合数据
+│   ├── portfolio-*.csv
+│   └── ...
+├── reports/                     ← 已有
+├── evolution/                   ← 已有
+└── strategy/                    ← 已有
+</pre>
+
+<div style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(34,197,94,0.1));border-radius:12px;padding:16px;margin:20px 0;border:1px solid rgba(245,158,11,0.2);text-align:center">
+<p style="font-size:14px;color:#f3f4f6"><strong>一句话方案</strong></p>
+<p style="font-size:13px;color:#d1d5db">保持cron数据管道不变，新增 generate_dashboard_data.py 聚合所有现有数据为 dashboard.json，上传R2；同时开发一个纯HTML/CSS/JS的SPA（零依赖），通过fetch该JSON渲染6个手机优先的页面，实现从"数据充裕但视觉贫瘠"到"一目了然的决策看板"的跃迁。</p>
+</div>
+
+</div>
+
+<div class="footer">
+本方案由「投资助手」全量评估生成 · 基于当前系统实际能力 · 不做过度设计<br>
+评估日期 2026-07-21 · 参考 Vibe-Research(UI) + Vibe-Trading(Strategy)
+</div>
+
+<script>
+if(window.matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.style.colorScheme="dark";
+</script>
+</body>
+</html>

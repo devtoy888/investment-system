@@ -1,0 +1,18 @@
+{
+  "last_analysis": "2026-07-21T17:59:11.746598",
+  "accuracy_trend": {
+    "days": 30,
+    "records": 23,
+    "total_predictions": 1967,
+    "avg_accuracy": 33.3,
+    "trend": "up"
+  },
+  "weekly_averages": {
+    "2026-07": 40.3
+  },
+  "suggestions": [
+    "🔴 预测准确率低于50%，建议审查prompt中的市场分析逻辑",
+    "📈 最近5天准确率持续提升，系统在自我改进"
+  ],
+  "total_reports_analyzed": 19
+}

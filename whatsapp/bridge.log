@@ -1,0 +1,154 @@
+🌉 WhatsApp bridge listening on port 3000 (mode: bot)
+📁 Session stored in: /opt/data/whatsapp/session
+🔒 Allowed users: 8618135070938, 8618192361520
+
+{"level":40,"time":1782032508114,"pid":4448,"hostname":"d50886090980","msg":"no name present, ignoring presence update request..."}
+✅ WhatsApp connected!
+{"level":50,"time":1782032919377,"pid":4448,"hostname":"d50886090980","reasonNode":{"tag":"conflict","attrs":{"type":"device_removed"}},"fullErrorNode":{"tag":"stream:error","attrs":{"code":"401"},"content":[{"tag":"conflict","attrs":{"type":"device_removed"}}]},"msg":"stream errored out"}
+❌ Logged out. Delete session and restart to re-authenticate.
+🌉 WhatsApp bridge listening on port 3000 (mode: bot)
+📁 Session stored in: /opt/data/whatsapp/session
+🔒 Allowed users: 8618135070938, 8618192361520
+
+❌ Logged out. Delete session and restart to re-authenticate.
+🌉 WhatsApp bridge listening on port 3000 (mode: self-chat)
+📁 Session stored in: /opt/data/whatsapp/session
+🔒 Allowed users: *
+
+✅ WhatsApp connected!
+🌉 WhatsApp bridge listening on port 3000 (mode: self-chat)
+📁 Session stored in: /opt/data/whatsapp/session
+🔒 Allowed users: *
+
+✅ WhatsApp connected!
+{"level":40,"time":1782034677311,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782042812436,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782090743533,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+{"level":50,"time":1782128602927,"pid":5650,"hostname":"d50886090980","msg":"error in sending keep alive"}
+{"level":50,"time":1782128602927,"pid":5650,"hostname":"d50886090980","msg":"error in sending keep alive"}
+✅ WhatsApp connected!
+{"level":40,"time":1782128626999,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782138306759,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782148307016,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782153799937,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782164699167,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782164724262,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782185404126,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782186805144,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782207399314,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782229161804,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782234904550,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782238003232,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782239924181,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+{"level":50,"time":1782248363034,"pid":5650,"hostname":"d50886090980","msg":"error in sending keep alive"}
+✅ WhatsApp connected!
+{"level":40,"time":1782248387109,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782254591494,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782254616729,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782254685175,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782254710785,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782292314895,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782292339180,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782317308281,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782325310538,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782326617527,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782331958273,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782333684222,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782335553890,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782335578099,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782362531968,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782386922139,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782404232055,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782411118160,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782413201291,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782426531860,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782426556220,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+{"level":50,"time":1782426895497,"pid":5650,"hostname":"d50886090980","fullErrorNode":{"tag":"stream:error","attrs":{"code":"503"}},"msg":"stream errored out"}
+⚠️  Connection closed (reason: 503). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782426920064,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782441393755,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782449937402,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782492729531,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782496057516,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782500120695,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782505451935,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782506804851,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782517684962,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}
+⚠️  Connection closed (reason: 428). Reconnecting in 3s...
+✅ WhatsApp connected!
+{"level":40,"time":1782520802042,"pid":5650,"hostname":"d50886090980","msg":"Timeout in AwaitingInitialSync, forcing state to Online and flushing buffer"}

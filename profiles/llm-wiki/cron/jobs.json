@@ -1,0 +1,189 @@
+{
+  "jobs": [
+    {
+      "id": "2a010fef10f1",
+      "name": "cleanup-cron-sessions",
+      "prompt": "",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": null,
+      "model_snapshot": null,
+      "base_url": null,
+      "script": "cleanup-cron-sessions.py",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 */6 * * *",
+        "display": "0 */6 * * *"
+      },
+      "schedule_display": "0 */6 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 28
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-14T13:29:13.951941+00:00",
+      "next_run_at": "2026-07-21T18:00:00+00:00",
+      "last_run_at": "2026-07-21T12:00:04.224662+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "qqbot:42B8D46AC1494E3C97DD31B69ED652C3",
+      "origin": {
+        "platform": "qqbot",
+        "chat_id": "42B8D46AC1494E3C97DD31B69ED652C3",
+        "chat_name": null,
+        "thread_id": null,
+        "user_id": "42B8D46AC1494E3C97DD31B69ED652C3"
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null
+    },
+    {
+      "id": "2400f4593606",
+      "name": "wiki-push",
+      "prompt": "",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": null,
+      "model_snapshot": null,
+      "base_url": null,
+      "script": "wiki-push.sh",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 19 * * *",
+        "display": "0 19 * * *"
+      },
+      "schedule_display": "0 19 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 6
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-15T01:14:13.740093+00:00",
+      "next_run_at": "2026-07-21T19:00:00+00:00",
+      "last_run_at": "2026-07-20T19:00:23.605494+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "qqbot:42B8D46AC1494E3C97DD31B69ED652C3",
+      "origin": {
+        "platform": "qqbot",
+        "chat_id": "42B8D46AC1494E3C97DD31B69ED652C3",
+        "chat_name": null,
+        "thread_id": null,
+        "user_id": "42B8D46AC1494E3C97DD31B69ED652C3"
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null
+    },
+    {
+      "id": "2d6632798694",
+      "name": "nightly-build",
+      "prompt": "",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": null,
+      "model_snapshot": null,
+      "base_url": null,
+      "script": "nightly-build.sh",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 18 * * *",
+        "display": "0 18 * * *"
+      },
+      "schedule_display": "0 18 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 6
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-15T01:18:27.287318+00:00",
+      "next_run_at": "2026-07-21T18:00:00+00:00",
+      "last_run_at": "2026-07-20T18:00:38.784583+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "qqbot:42B8D46AC1494E3C97DD31B69ED652C3",
+      "origin": {
+        "platform": "qqbot",
+        "chat_id": "42B8D46AC1494E3C97DD31B69ED652C3",
+        "chat_name": null,
+        "thread_id": null,
+        "user_id": "42B8D46AC1494E3C97DD31B69ED652C3"
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null
+    },
+    {
+      "id": "8a5d794cacfd",
+      "name": "wiki-daily-lint",
+      "prompt": "\u8fd0\u884c wiki lint \u81ea\u52a8\u4fee\u590d\u5e76\u62a5\u544a\u3002\u6267\u884c\uff1apython3 /opt/data/profiles/llm-wiki/scripts/lint-wiki.py --apply 2>&1 | tail -40\u3002\u5982\u679c\u4fee\u590d\u540e Total issues \u4ecd > 0\uff08\u975e frontmatter \u7c7b\uff09\uff0c\u5217\u51fa\u5269\u4f59\u95ee\u9898\u3002\u5426\u5219\u62a5\u544a\"Lint \u901a\u8fc7 + \u5df2\u81ea\u52a8\u4fee\u590d frontmatter\"\u3002",
+      "skills": [],
+      "skill": null,
+      "model": null,
+      "provider": null,
+      "provider_snapshot": null,
+      "model_snapshot": null,
+      "base_url": null,
+      "script": "lint-wiki.py",
+      "no_agent": true,
+      "context_from": null,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 4 * * *",
+        "display": "0 4 * * *"
+      },
+      "schedule_display": "0 4 * * *",
+      "repeat": {
+        "times": null,
+        "completed": 6
+      },
+      "enabled": true,
+      "state": "scheduled",
+      "paused_at": null,
+      "paused_reason": null,
+      "created_at": "2026-07-15T08:37:25.791881+00:00",
+      "next_run_at": "2026-07-22T04:00:00+00:00",
+      "last_run_at": "2026-07-21T04:01:00.114835+00:00",
+      "last_status": "ok",
+      "last_error": null,
+      "last_delivery_error": null,
+      "deliver": "origin",
+      "origin": {
+        "platform": "qqbot",
+        "chat_id": "42B8D46AC1494E3C97DD31B69ED652C3",
+        "chat_name": null,
+        "thread_id": null,
+        "user_id": "42B8D46AC1494E3C97DD31B69ED652C3"
+      },
+      "enabled_toolsets": null,
+      "workdir": null,
+      "fire_claim": null
+    }
+  ],
+  "updated_at": "2026-07-21T12:00:04.225115+00:00"
+}

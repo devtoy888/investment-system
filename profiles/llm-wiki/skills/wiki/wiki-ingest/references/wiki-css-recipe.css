@@ -1,0 +1,137 @@
+/*
+ * DevToy Wiki Custom Styles — reference recipe
+ * Copy to /llm-wiki/docs/stylesheets/extra.css and add
+ *   extra_css:
+ *   - stylesheets/extra.css
+ * to mkdocs.yml. Then docker restart llm-wiki.
+ */
+
+/* ===== Typography ===== */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+                 "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+p, li {
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* ===== Header ===== */
+.md-header {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.md-nav--primary .md-nav__title {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+    color: white;
+}
+
+/* ===== Homepage Hero ===== */
+.md-typeset h1:first-of-type {
+    font-size: 2.2em;
+    margin-top: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 3px solid #3949ab;
+}
+
+/* Blockquote styling (used for summary) */
+.md-typeset blockquote {
+    border-left: 4px solid #3949ab;
+    background: rgba(57, 73, 171, 0.05);
+    padding: 0.8em 1.2em;
+    border-radius: 0 8px 8px 0;
+}
+
+/* ===== Section headings ===== */
+.md-typeset h2 {
+    margin-top: 1.5em;
+    padding: 0.5em 1em;
+    background: rgba(57, 73, 171, 0.08);
+    border-radius: 6px;
+    font-size: 1.3em;
+}
+
+.md-typeset h3 {
+    margin-top: 1.2em;
+    padding-left: 0.5em;
+    border-left: 3px solid #3949ab;
+}
+
+/* ===== Tables ===== */
+.md-typeset table:not([class]) {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.md-typeset table:not([class]) th {
+    background: #283593;
+    color: white;
+    font-weight: 500;
+}
+
+/* ===== Links ===== */
+.md-typeset a {
+    color: #1565c0;
+    transition: color 0.2s;
+}
+
+.md-typeset a:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+}
+
+/* ===== Code blocks ===== */
+.md-typeset code {
+    border-radius: 4px;
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+}
+
+.md-typeset pre > code {
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== Separators ===== */
+.md-typeset hr {
+    margin: 2em 0;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #3949ab, transparent);
+}
+
+/* ===== Footer ===== */
+.md-footer {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+}
+
+.md-footer-meta {
+    background: rgba(0,0,0,0.2);
+}
+
+/* ===== Dark mode overrides ===== */
+[data-md-color-scheme="slate"] .md-typeset h2 {
+    background: rgba(99, 115, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+    background: rgba(99, 115, 255, 0.08);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h3 {
+    border-left-color: #6373ff;
+}
+
+[data-md-color-scheme="slate"] .md-header {
+    background: linear-gradient(135deg, #0d1442 0%, #1a237e 50%, #283593 100%);
+}
