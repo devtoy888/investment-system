@@ -182,8 +182,9 @@ def collect_market():
 
 
 def collect_analysis():
-    """读JSONL → 生成含实际数据的摘要（字段summary为空，从quotes/market_overview/sectors生成）"""
+    """读JSONL → 轻量摘要 + R2详情URL"""
     reports = []
+    R2_BASE = 'https://hermes-main-media.devtoy.xyz/fund-system'
     
     def _load(path):
         if not os.path.exists(path):
@@ -216,7 +217,10 @@ def collect_analysis():
                 sorted_sc = sorted(sc_pcts.items(), key=lambda x: x[1], reverse=True)
                 parts.append('📈' + ' '.join(f"{n}({p:+.1f}%)" for n,p in sorted_sc[:3]))
                 parts.append('📉' + ' '.join(f"{n}({p:+.1f}%)" for n,p in sorted_sc[-3:]))
-            reports.append({'type': 'morning', 'date': last.get('date',''), 'summary': ' | '.join(parts)})
+            dt = last.get('date', '')
+            reports.append({'type': 'morning', 'date': dt,
+                            'summary': ' | '.join(parts),
+                            'detail_url': f'{R2_BASE}/reports/morning-{dt}.md'})
         except: pass
     
     # 午报
@@ -230,10 +234,12 @@ def collect_analysis():
             for name in ['上证指数', '沪深300', '科创50', '创业板指']:
                 q = quotes.get(name, {}) or {}
                 pct = float(q.get('change_pct', 0))
-                if pct != 0:
-                    parts.append(f"{name}{pct:+.2f}%")
+                if pct != 0: parts.append(f"{name}{pct:+.2f}%")
             if mv: parts.append(f"涨{mv.get('rise_count','?')}/{mv.get('fall_count','?')}")
-            reports.append({'type': 'noon', 'date': last.get('date',''), 'summary': '午盘: ' + ' | '.join(parts)})
+            dt = last.get('date', '')
+            reports.append({'type': 'noon', 'date': dt,
+                            'summary': '午盘: ' + ' | '.join(parts),
+                            'detail_url': f'{R2_BASE}/reports/noon-{dt}.md'})
         except: pass
     
     # 收盘
@@ -248,18 +254,22 @@ def collect_analysis():
                 q = quotes.get(name, {}) or {}
                 pct = float(q.get('change_pct', 0))
                 if pct != 0: parts.append(f"{name}{pct:+.2f}%")
-            reports.append({'type': 'closing', 'date': last.get('date',''), 'summary': '收盘: ' + ' | '.join(parts)})
+            dt = last.get('date', '')
+            reports.append({'type': 'closing', 'date': dt,
+                            'summary': '收盘: ' + ' | '.join(parts),
+                            'detail_url': f'{R2_BASE}/reports/closing-{dt}.md'})
         except: pass
     
     return reports
 
 
 def collect_operations():
-    """读操作markdown文件 → 含标题和摘要"""
+    """读操作markdown → 带R2详情URL"""
     ops = []
+    R2_BASE = 'https://hermes-main-media.devtoy.xyz/fund-system'
     if not os.path.isdir(OPERATIONS_DIR):
         return ops
-    files = sorted([f for f in os.listdir(OPERATIONS_DIR) if f.endswith('.md') and f != 'README.md'], reverse=True)[:5]
+    files = sorted([f for f in os.listdir(OPERATIONS_DIR) if f.endswith('.md') and f != 'README.md'], reverse=True)[:10]
     import re
     for fn in files:
         m = re.match(r'operation_(\d{4}-\d{2}-\d{2})', fn)
@@ -277,11 +287,12 @@ def collect_operations():
                 if ls.startswith('# '):
                     title = ls.lstrip('# ').strip()
                     break
-            body = [l.strip() for l in content_lines if l.strip() and not l.startswith('#')][:2]
-            summary = ' '.join(body)[:120]
+            body = [l.strip() for l in content_lines if l.strip() and not l.startswith('#')][:3]
+            summary = ' '.join(body)[:150]
         except:
             pass
-        ops.append({'date': date_str, 'file': fn, 'title': title, 'summary': summary})
+        ops.append({'date': date_str, 'file': fn, 'title': title, 'summary': summary,
+                     'detail_url': f'{R2_BASE}/operations/{fn}'})
     return ops
 
 

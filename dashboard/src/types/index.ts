@@ -63,6 +63,7 @@ export interface AnalysisReport {
   type: string;
   date: string;
   summary: string;
+  detail_url: string;
 }
 
 export interface OperationRecord {
@@ -70,6 +71,7 @@ export interface OperationRecord {
   file: string;
   title: string;
   summary: string;
+  detail_url: string;
 }
 
 export interface DashboardData {

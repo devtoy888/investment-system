@@ -1,16 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { PageHeader } from '../components/PageHeader';
 import { GlassCard } from '../components/GlassCard';
 import { fetchDashboard, pctColor, formatPct } from '../lib/api';
 import type { DashboardData } from '../types';
 import * as echarts from 'echarts';
 
+type DetailItem = {
+  title: string;
+  url: string;
+  date: string;
+} | null;
+
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [detail, setDetail] = useState<DetailItem>(null);
+  const [detailContent, setDetailContent] = useState('');
+  const [detailLoading, setDetailLoading] = useState(false);
   const flowChartRef = useRef<HTMLDivElement>(null);
   const gaugeRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,6 +36,36 @@ export default function Dashboard() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  // 点击详情 → 从R2 fetch完整markdown
+  const openDetail = useCallback(async (item: DetailItem) => {
+    if (!item) return;
+    setDetail(item);
+    setDetailContent('');
+    setDetailLoading(true);
+    try {
+      const resp = await fetch(item.url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const text = await resp.text();
+      setDetailContent(text);
+    } catch {
+      setDetailContent('**加载失败** — R2文件暂不可用');
+    }
+    setDetailLoading(false);
+  }, []);
+
+  const closeDetail = useCallback(() => {
+    setDetail(null);
+    setDetailContent('');
+  }, []);
+
+  // ESC／点击遮罩关闭
+  useEffect(() => {
+    if (!detail) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') closeDetail(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [detail, closeDetail]);
 
   // ECharts: 板块资金流柱状图
   useEffect(() => {
@@ -44,90 +84,61 @@ export default function Dashboard() {
         type: 'bar', data: top5.map(s => s.net_inflow_yi).reverse(),
         itemStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
-            { offset: 0, color: '#f59e0b' }, { offset: 1, color: '#f97316' }
+            { offset: 0, color: '#f43f5e' }, { offset: 1, color: '#fb7185' },
           ]),
           borderRadius: [0, 4, 4, 0],
         },
         label: { show: true, position: 'right', color: '#9ca3af', fontSize: 10,
-          formatter: (p: any) => `${p.value.toFixed(1)}亿` },
+                 formatter: (p: any) => `${p.value.toFixed(0)}亿` },
       }],
-      tooltip: { trigger: 'axis' },
     });
     return () => chart.dispose();
   }, [data]);
 
-  // ECharts: 偏离度仪表盘
+  // ECharts: 科技偏离度仪表盘
   useEffect(() => {
-    if (!data?.portfolio?.tech_deviation_pct === undefined || !gaugeRef.current) return;
-    const dev = data!.portfolio.tech_deviation_pct;
+    if (!data?.portfolio?.tech_deviation_pct || !gaugeRef.current) return;
     const chart = echarts.init(gaugeRef.current);
+    const dev = data.portfolio.tech_deviation_pct;
     chart.setOption({
       backgroundColor: 'transparent',
       series: [{
-        type: 'gauge', center: ['50%', '60%'], radius: '80%',
-        startAngle: 220, endAngle: -40,
-        min: -30, max: 30,
-        splitNumber: 6,
+        type: 'gauge', center: ['50%', '55%'], radius: '85%',
+        min: -50, max: 50, splitNumber: 5,
         axisLine: {
           lineStyle: {
-            width: 12,
-            color: [
-              [0.25, '#22c55e'],   // 0~25% → green (under-allocated)
-              [0.5, '#f59e0b'],    // 25~50% → yellow (balanced)
-              [0.75, '#f97316'],   // 50~75% → orange
-              [1, '#ef4444'],      // 75~100% → red (over-allocated)
-            ]
-          }
+            width: 8, color: [
+              [0.3, '#22c55e'], [0.5, '#eab308'], [1, '#ef4444'],
+            ],
+          },
         },
         axisTick: { show: false },
-        splitLine: { length: 8, lineStyle: { color: '#4b5563' } },
-        axisLabel: { color: '#9ca3af', fontSize: 9,
-          formatter: (v: number) => `${v > 0 ? '+' : ''}${v}%` },
-        pointer: { length: '60%', width: 4, itemStyle: { color: '#f59e0b' } },
+        splitLine: { length: 8, lineStyle: { width: 2, color: '#4b5563' } },
+        axisLabel: { color: '#9ca3af', fontSize: 9, distance: 15 },
+        pointer: { length: '60%', width: 4, itemStyle: { color: '#f43f5e' } },
         detail: {
           valueAnimation: true,
-          formatter: `{value}%\n偏离度`,
-          color: dev > 15 ? '#ef4444' : dev > 5 ? '#f59e0b' : '#22c55e',
-          fontSize: 14, fontWeight: 'bold',
+          formatter: `{value}%`, color: '#f43f5e', fontSize: 18,
+          fontFamily: 'monospace', offsetCenter: [0, '60%'],
         },
-        data: [{ value: Math.round(dev * 10) / 10 }],
+        data: [{ value: dev, name: '科技偏离度' }],
+        title: { offsetCenter: [0, '85%'], fontSize: 10, color: '#9ca3af' },
       }],
     });
     return () => chart.dispose();
   }, [data]);
 
-  // ── 加载态 ──
-  if (loading) return (
-    <div>
-      <PageHeader title="📊 投资看板" subtitle="加载中..." />
-      <div className="grid grid-cols-2 gap-4">
-        {[1,2,3,4].map(i => (
-          <GlassCard key={i}><div className="h-20 bg-white/5 animate-pulse rounded" /></GlassCard>
-        ))}
-      </div>
-    </div>
-  );
+  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">加载中...</div>;
+  if (error) return <div className="flex items-center justify-center h-64 text-red-400">{error}</div>;
+  if (!data) return <div className="flex items-center justify-center h-64 text-gray-500">暂无数据</div>;
 
-  if (error || !data) return (
-    <div>
-      <PageHeader title="📊 投资看板" subtitle={new Date().toLocaleDateString('zh-CN')} />
-      <GlassCard className="text-center py-8">
-        <p className="text-red-400 text-lg">⚠️ {error || '暂无数据'}</p>
-        <p className="text-gray-500 text-sm mt-2">数据源可能尚未更新，请稍后再试</p>
-      </GlassCard>
-    </div>
-  );
-
-  // ── 正常渲染 ──
   const pf = data.portfolio;
   const mv = data.market_overview;
+  const typeLabel: Record<string, string> = { morning: '晨报', noon: '午报', closing: '收盘' };
 
   return (
-    <div>
-      <PageHeader
-        title="📊 投资看板"
-        subtitle={`${data.date} ${data.time} · 数据每4h更新`}
-      />
+    <div className="relative min-h-screen">
+      <PageHeader title="📊 投资看板" />
 
       {/* 大盘指数 */}
       <section className="mb-6">
@@ -166,96 +177,75 @@ export default function Dashboard() {
           <GlassCard>
             <p className="text-xs text-gray-400">科技偏离度</p>
             <p className={`text-lg font-bold font-mono mt-1 ${pctColor(pf.tech_deviation_pct)}`}>
-              {pf.tech_deviation_pct > 0 ? '+' : ''}{pf.tech_deviation_pct}%
+              {formatPct(pf.tech_deviation_pct)}
             </p>
           </GlassCard>
         </div>
       </section>
 
-      {/* 中部: 板块资金流 + 偏离度仪表 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        {/* 板块资金流TOP5 */}
-        <GlassCard>
-          <h3 className="text-xs font-semibold text-gray-400 mb-2">板块资金流 TOP5</h3>
-          <div ref={flowChartRef} style={{ height: 200 }} />
-        </GlassCard>
+      {/* 板块资金流 + 偏离度仪表盘 */}
+      <section className="mb-6">
+        <h2 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">板块资金流</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <GlassCard className="sm:col-span-2">
+            <div ref={flowChartRef} style={{ height: 160 }} />
+          </GlassCard>
+          <GlassCard>
+            <div ref={gaugeRef} style={{ height: 160 }} />
+          </GlassCard>
+        </div>
+      </section>
 
-        {/* 偏离度仪表盘 */}
+      {/* 涨跌家数 */}
+      <section className="mb-6">
+        <h2 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">市场总览</h2>
         <GlassCard>
-          <h3 className="text-xs font-semibold text-gray-400 mb-2">科技偏离度</h3>
-          <div ref={gaugeRef} style={{ height: 180 }} />
-        </GlassCard>
-      </div>
-
-      {/* 涨跌家数 + 建仓进度 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <GlassCard>
-          <h3 className="text-xs font-semibold text-gray-400 mb-2">涨跌家数</h3>
-          <div className="flex items-center gap-4 mt-1">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-400 font-mono">{mv.advance}</p>
-              <p className="text-xs text-gray-500">上涨</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-red-400 font-mono">{mv.decline}</p>
-              <p className="text-xs text-gray-500">下跌</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-gray-400 font-mono">{mv.flat}</p>
-              <p className="text-xs text-gray-500">平盘</p>
-            </div>
-            <div className="text-xs text-gray-600 ml-auto">
-              共{mv.total || mv.advance + mv.decline + mv.flat}只
-            </div>
+          <div className="flex flex-wrap gap-4 text-sm">
+            <span>涨 <span className="text-green-400 font-bold">{mv.advance}</span></span>
+            <span>跌 <span className="text-red-400 font-bold">{mv.decline}</span></span>
+            <span>平 <span className="text-gray-400">{mv.flat}</span></span>
+            <span>涨停 <span className="text-purple-400 font-bold">{data.indices.length > 0 ? '—' : '—'}</span></span>
+            <span>合计 <span className="text-gray-300">{mv.total || mv.advance + mv.decline + (mv.flat || 0)}</span></span>
           </div>
         </GlassCard>
+      </section>
 
+      {/* 网格: 分析摘要 + 操作记录 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        {/* 分析摘要 — 可点击 */}
         <GlassCard>
-          <h3 className="text-xs font-semibold text-gray-400 mb-2">建仓进度</h3>
-          {pf.building_funds?.length > 0 ? pf.building_funds.map(b => (
-            <div key={b.code} className="mt-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-300">{b.name || b.code}</span>
-                <span className="text-gray-400">¥{b.current.toFixed(0)}/{b.target}</span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-2 mt-1">
-                <div className="bg-brand-accent h-2 rounded-full transition-all"
-                     style={{ width: `${Math.min(b.progress_pct, 100)}%` }} />
-              </div>
-            </div>
-          )) : <p className="text-gray-500 text-xs mt-2">暂无建仓数据</p>}
-        </GlassCard>
-      </div>
-
-      {/* 最新分析 */}
-      {data.latest_analysis?.length > 0 && (
-        <section className="mb-6">
-          <h2 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider">最新分析</h2>
+          <h3 className="text-xs font-semibold text-gray-400 mb-2">最新分析</h3>
           <div className="space-y-2">
-            {data.latest_analysis.map((a: any, i: number) => (
-              <GlassCard key={i}>
-                <div className="flex items-start gap-2">
-                  <span className="text-xs px-1.5 py-0.5 rounded bg-brand-accent/20 text-brand-accent font-medium mt-0.5">
-                    {a.type === 'morning' ? '晨报' : a.type === 'noon' ? '午报' : a.type === 'closing' ? '收盘' : a.type}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400">{a.date}</p>
-                    <p className="text-sm text-gray-300 mt-0.5 line-clamp-2">{a.summary || '无摘要'}</p>
-                  </div>
+            {data.latest_analysis?.map((a, i) => (
+              <div key={i}
+                   className="text-xs border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
+                   onClick={() => openDetail({
+                     title: `${typeLabel[a.type] || a.type} · ${a.date}`,
+                     url: a.detail_url, date: a.date
+                   })}>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-300 font-medium">{typeLabel[a.type] || a.type}</span>
+                  <span className="text-gray-500 text-[10px]">{a.date}</span>
                 </div>
-              </GlassCard>
+                {a.summary && (
+                  <p className="text-gray-400 mt-1 leading-relaxed">{a.summary}</p>
+                )}
+              </div>
             ))}
           </div>
-        </section>
-      )}
+        </GlassCard>
 
-      {/* 操作记录 */}
-      {data.operations?.length > 0 && (
+        {/* 操作记录 — 可点击 */}
         <GlassCard>
           <h3 className="text-xs font-semibold text-gray-400 mb-2">最近操作</h3>
           <div className="space-y-2">
-            {data.operations.map((op: any) => (
-              <div key={op.date} className="text-sm border-b border-white/5 pb-2 last:border-0">
+            {data.operations?.map((op, i) => (
+              <div key={i}
+                   className="text-sm border-b border-white/5 pb-2 last:border-0 cursor-pointer hover:bg-white/5 rounded p-1 -mx-1 transition-colors"
+                   onClick={() => openDetail({
+                     title: op.title || `操作 ${op.date}`,
+                     url: op.detail_url, date: op.date
+                   })}>
                 <div className="flex justify-between items-start">
                   <span className="font-medium text-gray-200 text-xs">
                     {op.title || '📝 操作记录'}
@@ -269,11 +259,42 @@ export default function Dashboard() {
             ))}
           </div>
         </GlassCard>
-      )}
+      </div>
 
       <div className="text-center text-gray-600 text-xs mt-6">
         投资看板 v0.2.0 · 数据来源: fund_tools · 每交易日更新
       </div>
+
+      {/* 详情弹窗 */}
+      {detail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+             onClick={closeDetail}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div ref={modalRef}
+               className="relative bg-gray-900 border border-white/10 rounded-xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl"
+               onClick={e => e.stopPropagation()}>
+            {/* 弹窗头 */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div>
+                <h2 className="text-sm font-bold text-white">{detail.title}</h2>
+                <p className="text-[10px] text-gray-500 mt-0.5">{detail.date}</p>
+              </div>
+              <button onClick={closeDetail}
+                      className="text-gray-500 hover:text-white text-lg leading-none p-1">
+                ✕
+              </button>
+            </div>
+            {/* 弹窗内容 — 纯文本渲染 */}
+            <div className="overflow-y-auto p-4 flex-1">
+              {detailLoading ? (
+                <div className="text-gray-400 text-sm">加载中...</div>
+              ) : (
+                <pre className="text-xs text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">{detailContent}</pre>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
