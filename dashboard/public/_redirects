@@ -1,1 +1,6 @@
+# API paths: skip redirect, let _worker.js handle
+/api/*
+/assets/*
+
+# SPA fallback: all other paths → index.html
 /* /index.html 200
