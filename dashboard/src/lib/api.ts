@@ -1,4 +1,4 @@
-import type { NavHistory, AnalysisReport } from '../types';
+import type { NavHistory, AnalysisReport, DashboardData } from '../types';
 
 const DASHBOARD_URL = '/api/dashboard';
 const HISTORY_URL = '/api/history';
@@ -10,13 +10,13 @@ async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   return resp.json();
 }
 
-export async function fetchDashboard(signal?: AbortSignal) {
+export async function fetchDashboard(signal?: AbortSignal): Promise<DashboardData | null> {
   try {
-    return await fetchJson(DASHBOARD_URL, signal);
+    return await fetchJson<DashboardData>(DASHBOARD_URL, signal);
   } catch {
     try {
       const R2_DASHBOARD = 'https://hermes-main-media.devtoy.xyz/fund-system/dashboard.json';
-      return await fetchJson(R2_DASHBOARD, signal);
+      return await fetchJson<DashboardData>(R2_DASHBOARD, signal);
     } catch {
       return null;
     }

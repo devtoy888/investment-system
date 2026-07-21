@@ -1,28 +1,55 @@
-export interface FundHolding {
-  code: string;
-  name: string;
-  shares: number;
-  cost: number;
-  nav: number;
-  estimatedValue: number;
-  profitPct: number;
-  profitAmount: number;
-  sector: string;
-}
+// Types mirroring the API response (snake_case = from Python)
 
 export interface IndexQuote {
   code: string;
   name: string;
   price: number;
-  changePct: number;
-  change: number;
+  change_pct: number;
+}
+
+export interface FundHolding {
+  code: string;
+  name: string;
+  cost: number;
+  nav: number;
+  shares: number;
+  estimated_value: number;
+  profit_pct: number;
+  profit_amount: number;
+  sector: string;
+}
+
+export interface BuildingFund {
+  code: string;
+  name: string;
+  current: number;
+  target: number;
+  progress_pct: number;
+}
+
+export interface Portfolio {
+  holdings: FundHolding[];
+  total_cost: number;
+  total_value: number;
+  total_profit_pct: number;
+  tech_deviation_pct: number;
+  building_funds: BuildingFund[];
+}
+
+export interface SectorRanking {
+  name: string;
+  change_pct: number;
+}
+
+export interface SectorFlow {
+  name: string;
+  change_pct: number;
+  net_inflow_yi: number;
 }
 
 export interface SectorData {
-  name: string;
-  changePct: number;
-  netInflow: number;
-  rank: number;
+  rankings: SectorRanking[];
+  fund_flow: SectorFlow[];
 }
 
 export interface MarketOverview {
@@ -32,45 +59,31 @@ export interface MarketOverview {
   total: number;
 }
 
-export interface KOLSignal {
-  id: string;
-  author: string;
-  time: string;
-  content: string;
-  direction: 'bullish' | 'bearish' | 'neutral';
-  targetSector?: string;
-  accuracy?: number;
-}
-
 export interface AnalysisReport {
-  type: 'morning' | 'noon' | 'closing' | 'weekly';
+  type: string;
   date: string;
   summary: string;
 }
 
+export interface OperationRecord {
+  date: string;
+  file: string;
+}
+
 export interface DashboardData {
   date: string;
+  time: string;
+  updated_at: string;
   indices: IndexQuote[];
-  holdings: FundHolding[];
-  sectors: SectorData[];
-  marketOverview: MarketOverview;
-  totalValue: number;
-  totalProfitPct: number;
-  deviationPct: number;
-  buildingFunds: { code: string; current: number; target: number }[];
+  portfolio: Portfolio;
+  sectors: SectorData;
+  market_overview: MarketOverview;
+  latest_analysis: AnalysisReport[];
+  operations: OperationRecord[];
 }
 
 export interface NavHistory {
   date: string;
   value: number;
   code?: string;
-}
-
-export interface Operation {
-  date: string;
-  fundCode: string;
-  fundName: string;
-  type: 'buy' | 'sell';
-  amount: number;
-  reason?: string;
 }
